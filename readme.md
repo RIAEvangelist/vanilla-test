@@ -17,7 +17,7 @@ GitHub info :
 |pass|`strict` : `boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this if the test passes|
 |fail|`strict` : `boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this if the test fails|
 |done||`string` : numbered test descriptor|Ends the test. If the test has not yet passed|failed, it will fail|
-|report||report : `string` : `report`|report showing passed and failed tests|
+|report||report : `string` : `report`|report showing passed and failed tests. This will also communicate with your CI like circle CI or Travis CI|
 
 ## Strong Type Checking
 `vanilla-test` uses the `strong-type` class which provides methods to test ***all*** the built in js primatives, objects, classes, and even fancy things like async functions and generators.
@@ -76,7 +76,7 @@ function sum(a,b){
     return a+b;
 }
 
-
+// 1) expects num1 to be a number
 try{
     test.expects('num1 to be a number');    
     test.is.number(num1);
@@ -87,6 +87,7 @@ try{
 test.pass();
 test.done();
 
+// 2) expects num2 to be a a number
 try{
     test.expects('num2 to be a a number');    
     test.is.number(num2);
@@ -98,6 +99,7 @@ test.pass();
 test.done();
 
 //this test should fail for demonstration purposes
+// 3) expects num1 == num2
 try{
     test.expects('num1 == num2');    
     test.is.compare(num1,num2);
@@ -108,7 +110,7 @@ try{
 test.pass();
 test.done();
 
-
+// 4) expects num1 == num2
 try{
     test.expects('sum(num1,num2) to be equal to num1+num2');    
 
@@ -123,6 +125,7 @@ try{
 test.pass();
 test.done();
 
+// 5) expects A TypeError when type checks fail
 try{
     test.expects('A TypeError when type checks fail');    
     test.boolean(new Array(2));
