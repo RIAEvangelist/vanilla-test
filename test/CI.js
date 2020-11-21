@@ -81,3 +81,5 @@ try{
 }
 test.fail();
 test.done();
+
+test.report();
