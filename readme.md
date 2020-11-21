@@ -12,7 +12,7 @@ GitHub info :
 
 ## Core Test Methods
 |method|args|returns|description|
-|-|-|
+|-|-|-|-|
 |expects|`description` : a unique `string` test descriptor |`string` : numbered test descriptor|this sets up the current test|
 |pass|`strict` : `boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this if the test passes|
 |fail|`strict` : `boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this if the test fails|
