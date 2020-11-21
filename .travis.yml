@@ -1,6 +1,7 @@
 #OS
 os:
   - linux
+  - windows
   - osx
 
 #node versions

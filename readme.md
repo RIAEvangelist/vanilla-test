@@ -9,7 +9,7 @@ GitHub info :
 ![vanilla-test GitHub Release](https://img.shields.io/github/release/RIAEvangelist/vanilla-test.svg) ![GitHub license vanilla-test license](https://img.shields.io/github/license/RIAEvangelist/vanilla-test.svg) ![open issues for vanilla-test on GitHub](https://img.shields.io/github/issues/RIAEvangelist/vanilla-test.svg)
 
 Build Info :  
-Mac & Linux : [![Build Status](https://travis-ci.org/RIAEvangelist/vanilla-test.svg?branch=master)](https://travis-ci.org/RIAEvangelist/vanilla-test) Windows : [![vanilla-test windows build status](https://ci.appveyor.com/api/projects/status/github/riaevangelist/vanilla-test?branch=master&svg=true)](https://ci.appveyor.com/project/RIAEvangelist/node-ipc/history)
+Travis CI (linux,windows & Mac) : [![Build Status](https://travis-ci.org/RIAEvangelist/vanilla-test.svg?branch=master)](https://travis-ci.org/RIAEvangelist/vanilla-test) Windows : [![vanilla-test windows build status](https://ci.appveyor.com/api/projects/status/github/riaevangelist/vanilla-test?branch=master&svg=true)](https://ci.appveyor.com/project/RIAEvangelist/node-ipc/history)
 
 ***Super light and fast*** Extensible pure JS testing for the win! Vanilla Test works in node, browsers, electron, anywhere JS runs.
 
