@@ -1,6 +1,6 @@
 {
   "name": "vanilla-test",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "minimal test framework for node, browsers, and electron, anywhere javascript can run",
   "main": "index.js",
   "type": "module",

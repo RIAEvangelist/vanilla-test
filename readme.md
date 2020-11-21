@@ -139,3 +139,21 @@ test.fail();
 test.done();
 
 ```
+
+## Node example
+
+run `node ./example/node/basic.js`
+
+![screen shot of vanilla-test example on node](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-node-report.PNG)
+
+## Browser example
+
+run `npm start` then go to [the local test](http://localhost:8000/example/web/index.html). It actually imports the node test into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
+
+#### Chrome
+
+![screen shot of vanilla-test example on chrome](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-chrome-report.PNG)
+
+#### Edge
+
+![screen shot of vanilla-test example on edge](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-edge-report.PNG)
