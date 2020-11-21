@@ -1,0 +1,27 @@
+{
+  "name": "vanilla-test",
+  "version": "0.0.1",
+  "description": "minimal test framework for node, browsers, and electron, anywhere javascript can run",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node-http-server port=8000 verbose=true",
+    "emulate": "\necho COPY AND RUN THESE:\n\ncp ./* ./example/node_modules/vanilla-test/ -Force\n\ncp ./node_modules/strong-type/* ./example/node_modules/strong-type/ -Force\n\ncp ./node_modules/ansi-colors/* ./example/node_modules/ansi-colors/ -Force\n\n"
+  },
+  "keywords": [
+    "test",
+    "vanilla",
+    "minimal",
+    "node",
+    "web",
+    "browser",
+    "es6"
+  ],
+  "author": "Brandon Nozaki Miller",
+  "license": "MIT",
+  "dependencies": {
+    "ansi-colors": "github:RIAEvangelist/ansi-colors",
+    "strong-type": "^0.1.3"
+  }
+}
