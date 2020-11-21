@@ -1,8 +1,4 @@
-//import with relative paths to shim for browser
-//this way the same code will work on the web as it does in node
-//litteraly the same file without even transpiling,  
-//but you can transpile if you want.
-import VanillaTest from '../node_modules/vanilla-test/index.js';
+import VanillaTest from '../example/node_modules/vanilla-test/index.js';
 
 const test=new VanillaTest;
 
@@ -14,6 +10,7 @@ function sum(a,b){
 }
 
 
+// 1) expects num1 to be a number
 try{
     test.expects('num1 to be a number');    
     test.is.number(num1);
@@ -24,6 +21,9 @@ try{
 test.pass();
 test.done();
 
+
+
+// 2) expects num2 to be a a number
 try{
     test.expects('num2 to be a a number');    
     test.is.number(num2);
@@ -34,35 +34,42 @@ try{
 test.pass();
 test.done();
 
-//this test should fail for demonstration purposes
+
+
+// 3) expects num1 !== num2
 try{
     test.expects('num1 == num2');    
-    test.compare(num1,num2);
+    test.is.compare(num1,num2);
 }catch(err){
-    console.log(`test.compare(${num1},${num2}); : num1 and num2 were not equal`);
-    test.fail();
+    console.log(`test.is.compare(${num1},${num2}); : num1 and num2 were not equal`);
+    test.pass();
 }
-test.pass();
+test.fail();
 test.done();
 
 
+
+// 4) expects sum(num1,num2) to be equal to num1+num2
 try{
     test.expects('sum(num1,num2) to be equal to num1+num2');    
 
-    test.compare(
+    test.is.compare(
         sum(num1,num2),
         num1+num2
     );
 }catch(err){
-    console.log(`sum(${num1},${num2}); was not equal to num1+num2`);
+    console.log(`sum(${num1},${num2}); ${sum(num1,num2)} was not equal to ${num1}+${num2}=${num1+num2}`);
     test.fail();
 }
 test.pass();
 test.done();
 
+
+
+// 5) expects A TypeError when type checks fail
 try{
     test.expects('A TypeError when type checks fail');    
-    test.is.boolean(new Array(2));
+    test.boolean(new Array(2));
 }catch(err){
     try{
         test.is.typeError(err);
@@ -74,5 +81,3 @@ try{
 }
 test.fail();
 test.done();
-
-test.report();

@@ -1,0 +1,16 @@
+#OS
+os:
+  - linux
+  - osx
+
+#node versions
+language: node_js
+node_js:
+  - 13
+  - 14
+  - 15
+
+# safelist
+branches:
+  only:
+  - main

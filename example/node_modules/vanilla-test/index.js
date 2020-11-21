@@ -23,7 +23,7 @@ class VanillaTest{
 
         this.#test=`${
             this.#failed.length+this.#passed.length+1
-            }) ${description}`;
+            }) .expects ${description}`;
         
         console.log(`\n${ansi.bgBlack.white(this.#test)}`);
         

@@ -1,11 +1,11 @@
 {
   "name": "vanilla-test",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "minimal test framework for node, browsers, and electron, anywhere javascript can run",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node ./test/CI.js",
     "start": "node-http-server port=8000 verbose=true",
     "emulate": "\necho COPY AND RUN THESE:\n\ncp ./* ./example/node_modules/vanilla-test/ -Force\n\ncp ./node_modules/strong-type/* ./example/node_modules/strong-type/ -Force\n\ncp ./node_modules/ansi-colors-es6/* ./example/node_modules/ansi-colors-es6/ -Force\n\n"
   },
