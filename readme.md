@@ -76,6 +76,7 @@ function sum(a,b){
     return a+b;
 }
 
+
 // 1) expects num1 to be a number
 try{
     test.expects('num1 to be a number');    
@@ -86,6 +87,8 @@ try{
 }
 test.pass();
 test.done();
+
+
 
 // 2) expects num2 to be a a number
 try{
@@ -98,8 +101,10 @@ try{
 test.pass();
 test.done();
 
-//this test should fail for demonstration purposes
+
+
 // 3) expects num1 == num2
+//this test should fail for demonstration purposes
 try{
     test.expects('num1 == num2');    
     test.is.compare(num1,num2);
@@ -109,6 +114,8 @@ try{
 }
 test.pass();
 test.done();
+
+
 
 // 4) expects num1 == num2
 try{
@@ -125,6 +132,8 @@ try{
 test.pass();
 test.done();
 
+
+
 // 5) expects A TypeError when type checks fail
 try{
     test.expects('A TypeError when type checks fail');    
@@ -140,6 +149,13 @@ try{
 }
 test.fail();
 test.done();
+
+
+
+//Lets take a look at the test results and let our CI know 
+// that the tests have completed and passed or failed
+test.report();
+
 
 ```
 
