@@ -17,7 +17,7 @@ GitHub info :
 |pass|`strict` : `boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this if the test passes|
 |fail|`strict` : `boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this if the test fails|
 |done||`string` : numbered test descriptor|Ends the test. If the test has not yet passed|failed, it will fail|
-|report||report : `string` : `report`|report showing passed and failed tests. This will also communicate with your CI like circle CI or Travis CI|
+|report|`CI`:`boolean` defaults to `true`. This will try to exit after reporting. Letting your CI know the test is complete in node, or return the number of failures in the browser. If set to `false`, it will return the data used to report for you to modify etc. could be useful for extensions, beautification, or other integrations.|report : `string` : `report`|report showing passed and failed tests. This will also communicate with your CI like circle CI or Travis CI|
 
 ## Strong Type Checking
 `vanilla-test` uses the `strong-type` class which provides methods to test ***all*** the built in js primatives, objects, classes, and even fancy things like async functions and generators.

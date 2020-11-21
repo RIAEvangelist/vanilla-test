@@ -101,7 +101,7 @@ class VanillaTest{
         return test;
     }
 
-    report(){
+    report(CI=true){
         let report=`
 
 Result : ${
@@ -123,10 +123,25 @@ ${ansi.redBright('Failed :')} ${this.#failed.length}\n`;
         for(let test of this.#passed){
             report+=ansi.bgBlack.greenBright(`${test}\n`);
         }
-
+        
         console.log(ansi.bgBlack(report));
 
-        return report;
+        if(!CI){
+            return {
+                passed:this.#passed,
+                failed:this.#failed
+            };
+        }
+
+        if(process){
+            process.exit(this.#failed.length);
+            //just incase
+            return report;
+        }
+
+        //incase you want to execute 
+        //the same tests on multiple platforms or get fancy
+        return this.#failed.length;
     }
 
     #is=new Is;
