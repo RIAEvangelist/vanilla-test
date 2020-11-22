@@ -161,6 +161,16 @@ ${ansi.redBright('Failed :')} ${this.#failed.length}\n`;
         return this.#failed.length;
     }
 
+    //chew on something to let async operations have a moment
+    delay(delay=1000){
+        this.#is.number(delay);
+        let current=0;
+        while(current<delay){
+            current++;
+        }
+        return this;
+    }
+
     #is=new Is;
     #test='';
     #passed=[];

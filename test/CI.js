@@ -9,6 +9,17 @@ function sum(a,b){
     return a+b;
 }
 
+//helper functions
+const expectTypeErr=(err)=>{
+    try{
+        test.is.typeError(err);
+    }catch(err){
+        console.log(`${err.name} : ${err.message}`);
+        test.fail();
+    }
+    test.pass();
+}
+
 
 // 1) expects num1 to be a number
 try{
@@ -71,13 +82,19 @@ try{
     test.expects('A TypeError when type checks fail');    
     test.boolean(new Array(2));
 }catch(err){
-    try{
-        test.is.typeError(err);
-    }catch{
-        console.log(`${err.name} : ${err.message}`);
-        test.fail();
-    }
-    test.pass();
+    expectTypeErr(err);
+}
+test.fail();
+test.done();
+
+
+
+// 6) expects .delay to throw a TypeError if arg is not a number
+try{
+    test.expects('.delay to throw a type err if arg is not a number');    
+    test.delay('test');
+}catch(err){
+    expectTypeErr(err);
 }
 test.fail();
 test.done();

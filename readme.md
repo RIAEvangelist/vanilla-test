@@ -16,11 +16,14 @@ Travis CI (linux,windows & Mac) : [![Build Status](https://travis-ci.org/RIAEvan
 ## Core Test Methods
 |method|args|returns|description|
 |-|-|-|-|
-|expects|`description` : a unique `string` test descriptor |`string` : numbered test descriptor|this sets up the current test|
-|pass|`strict` : `boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this if the test passes|
-|fail|`strict` : `boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this if the test fails|
+|expects|`description`:`string` a unique test descriptor |`string` : numbered test descriptor|this sets up the current test|
+|pass|`strict`:`boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this to pass the test|
+|fail|`strict`:`boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this to fail the test|
 |done||`string` : numbered test descriptor|Ends the test. If the test has not yet passed|failed, it will fail|
-|report|`CI`:`boolean` defaults to `true`. This will try to exit after reporting. Letting your CI know the test is complete in node, or return the number of failures in the browser. If set to `false`, it will return the data used to report for you to modify etc. could be useful for extensions, beautification, or other integrations.|report : `string` : `report`|report showing passed and failed tests. This will also communicate with your CI like circle CI or Travis CI|
+|report|`CI`:`boolean` defaults to `true`. This will try to exit after reporting letting your CI know the test is complete in node, or return the number of failures in the browser. ***If set to `false`,*** it will return the `results`:`object` for you to use. This could be used for report builders or other integrations. `{passed:[...strings], failed:[...strings]}`|report : `string` : `report`|report showing passed and failed tests. This will also communicate with your CI like circle CI or Travis CI|
+|delay|`delay`:`number` number of times to itterate|chainable ref|this can be used to waste some time while waiting for short async operations to execute, like event propagation |
+|compare|arg1:`any`, arg2:`any`, error:`string`|chainable ref| inherited [stong-type](https://github.com/RIAEvangelist/strong-type) .compare method which checks arg1==arg2 and throws  |
+
 
 ## Strong Type Checking
 `vanilla-test` uses the `strong-type` class which provides methods to test ***all*** the built in js primatives, objects, classes, and even fancy things like async functions and generators.
