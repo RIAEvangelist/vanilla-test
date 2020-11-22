@@ -20,6 +20,15 @@ class VanillaTest{
         return this.#is.throw;
     }
 
+    get strict(){
+        return this.#is.strict;
+    }
+
+    set strict(strict){
+        this.#is.boolean(strict);
+        return this.#is.strict=strict;
+    }
+
     expects(description){
         this.#is.string(description);
 
