@@ -66,6 +66,8 @@ test.is.generator(generator);
 
 These basic examples should be enough to get you started testing right away.
 
+To prepare the browser and node example folder, first run `npm run emulate`. This will make an emulated install with dependancies in the appropriate directories. We need to emulate an actual install for relative paths to work from inside the module itself, as if it was installed in a project on a server somewhere.
+
 ```js
 //import with relative paths to shim for browser
 //this way the same code will work on the web as it does in node
@@ -167,13 +169,16 @@ test.report();
 
 ## Node example
 
-run `node ./example/node/basic.js`
+first run `npm run emulate`
+then run `node ./example/node/basic.js`
 
 ![screen shot of vanilla-test example on node](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-node-report.PNG)
 
 ## Browser example
 
-run `npm start` then go to [the local test](http://localhost:8000/example/web/index.html). It actually imports the node test into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
+first run `npm run emulate`
+
+then run `npm start` then go to [the local test](http://localhost:8000/example/web/index.html). It actually imports the node test into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
 
 #### Chrome
 
