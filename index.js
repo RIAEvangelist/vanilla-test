@@ -4,8 +4,8 @@ import ansi from '../ansi-colors-es6/index.js';
 import Is from '../strong-type/index.js';
 
 class VanillaTest{
-    constructor(strictMode=true){
-        this.#is.boolean(strictMode);
+    constructor(){
+        
     }
 
     get is(){
@@ -142,6 +142,10 @@ ${ansi.redBright('Failed :')} ${this.#failed.length}\n`;
         //incase you want to execute 
         //the same tests on multiple platforms or get fancy
         return this.#failed.length;
+    }
+
+    get compare(){
+        return this.#is.compare;
     }
 
     #is=new Is;
