@@ -12,6 +12,14 @@ class VanillaTest{
         return this.#is;
     }
 
+    get compare(){
+        return this.#is.compare;
+    }
+
+    get throw(){
+        return this.#is.throw;
+    }
+
     expects(description){
         this.#is.string(description);
 
@@ -142,10 +150,6 @@ ${ansi.redBright('Failed :')} ${this.#failed.length}\n`;
         //incase you want to execute 
         //the same tests on multiple platforms or get fancy
         return this.#failed.length;
-    }
-
-    get compare(){
-        return this.#is.compare;
     }
 
     #is=new Is;
