@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node ./test/CI.js",
+    "test": "npm run emulate & node ./test/CI.js",
     "start": "node-http-server port=8000 verbose=true",
-    "emulate": "\necho COPY AND RUN THESE:\n\ncp ./* ./example/node_modules/vanilla-test/ -Force\n\ncp ./node_modules/strong-type/* ./example/node_modules/strong-type/ -Force\n\ncp ./node_modules/ansi-colors-es6/* ./example/node_modules/ansi-colors-es6/ -Force\n\n"
+    "emulate": "npm i & copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./example/node_modules/vanilla-test/\" & copyfiles -V \"./node_modules/**/*\" \"./example/\" & copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./test/node_modules/vanilla-test/\" & copyfiles -V \"./node_modules/**/*\" \"./test/\""
   },
   "keywords": [
     "test",
@@ -25,6 +25,6 @@
     "strong-type": "^0.1.3"
   },
   "devDependencies": {
-    "cpx": "^1.5.0"
+    "copyfiles": "^2.4.0"
   }
 }
