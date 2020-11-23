@@ -173,7 +173,7 @@ Since we use the same files for node and the browser, we need to emulate a produ
 
 first run `npm run emulate`
 
-then run `node ./example/node/basic.js`
+then run `node ./example/basic.js` this is the same file that is used in the browser.
 
 ![screen shot of vanilla-test example on node](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-node-report.PNG)
 
