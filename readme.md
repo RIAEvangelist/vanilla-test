@@ -66,7 +66,21 @@ test.is.generator(generator);
 
 These basic examples should be enough to get you started testing right away.
 
-To prepare the browser and node example folder, first run `npm run emulate`. This will make an emulated install with dependancies in the appropriate directories. We need to emulate an actual install for relative paths to work from inside the module itself, as if it was installed in a project on a server somewhere.
+#### For node
+Since we use the same files for node and the browser, we need to emulate a production `npm i vanilla-test` in the example folder, so be sure to :  
+
+first run `npm run emulate`
+
+then run `node ./example/basic.js` to see the example output.
+
+![screen shot of vanilla-test example on node](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-node-report.PNG)
+
+
+#### For the browser
+run `npm start` this will automatically run `npm run emulate` for you as well. 
+
+Then just go to the [local server](http://localhost:8000) : http://localhost:8000 from here you can see both the examples and the tests. Or go directly to [the local example](http://localhost:8000/example/index.html) : http://localhost:8000/example/index.html. It actually imports the node example into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
+
 
 ```js
 //import with relative paths to shim for browser
@@ -167,28 +181,6 @@ test.report();
 
 ```
 
-## Node example
-
-Since we use the same files for node and the browser, we need to emulate a production `npm i vanilla-test` in the example folder, so be sure to :  
-
-first run `npm run emulate`
-
-then run `node ./example/basic.js` this is the same file that is used in the browser.
-
-![screen shot of vanilla-test example on node](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-node-report.PNG)
-
-## Browser example
-
-run `npm start` then go to [the local example](http://localhost:8000/example/index.html) : http://localhost:8000/example/index.html. It actually imports the node example into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
-
-#### Chrome
-
-![screen shot of vanilla-test example on chrome](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-chrome-report.PNG)
-
-#### Edge
-
-![screen shot of vanilla-test example on edge](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-edge-report.PNG)
-
 ## Tests & Reports
 
 You can run the modules tests and see the reports in either node and the browser. Node will run the tests in the node environment, and browsers will actually imort the node code and run it in the browser.
@@ -204,3 +196,21 @@ run `npm start` then go to [the local test](http://localhost:8000/test/index.htm
 ## Local website
 
 `npm start` actually starts a [node-http-server](https://github.com/RIAEvangelist/node-http-server). So if you just want quick links to the example and test web pages, there is a page in the root of this module with links. You can access it by going to the [local homepage](http://localhost:8000) : http://localhost:8000
+
+
+## Chrome Screenshot
+The address url in the screenshot is outdated, see above for the actual address.
+
+
+![screen shot of vanilla-test example on chrome](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-chrome-report.PNG)
+
+
+## Edge
+The address url in the screenshot is outdated, see above for the actual address.
+
+![screen shot of vanilla-test example on edge](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-edge-report.PNG)
+
+## FireFox
+As of 11/22/2020 FF still does not support private fields or methods in js classes, however, the nightly build has it included behind a flag. With the private field and method flags set to true, FireFox nightly works like a charm... However, firefox's console does not support ansi escape characters, so we will need to make a report builder for it that logs it out better. Thankfully the code is already set up to support that if you run the reports like so : `.report(true)`
+
+![screen shot of vanilla-test example on edge](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-FF-nightly-report.PNG)
