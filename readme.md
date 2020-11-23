@@ -193,6 +193,22 @@ run `npm test` you will see the reults right there in the terminal.
 
 run `npm start` then go to [the local test](http://localhost:8000/test/index.html) : http://localhost:8000/example/index.html. It actually imports the node test into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
 
+## How Did I emulate a production install for the module inside itself???
+
+I'm actually pretty pleased with how easy this was. Feel free to use the same type of scripts in your projects. You can even copy paste and just change the repo/module names if you want. Here is the code from my package.json ***using && is important*** otherwise your commands  will run in parallel, and you really need them to run atomically.
+
+This is needed because we use relative paths in our ES6+ modules to allow the same exact js to work in node and the browser. Its what we have all been waiting for!
+
+```json
+
+"scripts": {
+    "test": "npm run emulate && node ./test/CI.js",
+    "start": "npm run emulate && node-http-server port=8000 verbose=true",
+    "emulate": "npm i && copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./example/node_modules/vanilla-test/\" && copyfiles -V \"./node_modules/**/*\" \"./example/\" && copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./test/node_modules/vanilla-test/\" && copyfiles -V \"./node_modules/**/*\" \"./test/\""
+},
+
+```
+
 ## Local website
 
 `npm start` actually starts a [node-http-server](https://github.com/RIAEvangelist/node-http-server). So if you just want quick links to the example and test web pages, there is a page in the root of this module with links. You can access it by going to the [local homepage](http://localhost:8000) : http://localhost:8000
