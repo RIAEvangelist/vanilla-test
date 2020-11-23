@@ -169,16 +169,17 @@ test.report();
 
 ## Node example
 
+Since we use the same files for node and the browser, we need to emulate a production `npm i vanilla-test` in the example folder, so be sure to :  
+
 first run `npm run emulate`
+
 then run `node ./example/node/basic.js`
 
 ![screen shot of vanilla-test example on node](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-node-report.PNG)
 
 ## Browser example
 
-first run `npm run emulate`
-
-then run `npm start` then go to [the local test](http://localhost:8000/example/web/index.html). It actually imports the node test into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
+run `npm start` then go to [the local example](http://localhost:8000/example/index.html) : http://localhost:8000/example/index.html. It actually imports the node example into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
 
 #### Chrome
 
@@ -187,3 +188,19 @@ then run `npm start` then go to [the local test](http://localhost:8000/example/w
 #### Edge
 
 ![screen shot of vanilla-test example on edge](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-edge-report.PNG)
+
+## Tests & Reports
+
+You can run the modules tests and see the reports in either node and the browser. Node will run the tests in the node environment, and browsers will actually imort the node code and run it in the browser.
+
+#### Node
+
+run `npm test` you will see the reults right there in the terminal.
+
+#### Browser
+
+run `npm start` then go to [the local test](http://localhost:8000/test/index.html) : http://localhost:8000/example/index.html. It actually imports the node test into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
+
+## Local website
+
+`npm start` actually starts a [node-http-server](https://github.com/RIAEvangelist/node-http-server). So if you just want quick links to the example and test web pages, there is a page in the root of this module with links. You can access it by going to the [local homepage](http://localhost:8000) : http://localhost:8000

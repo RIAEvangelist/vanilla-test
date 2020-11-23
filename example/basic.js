@@ -2,7 +2,7 @@
 //this way the same code will work on the web as it does in node
 //litteraly the same file without even transpiling,  
 //but you can transpile if you want.
-import VanillaTest from './vanilla-test/index.js';
+import VanillaTest from './node_modules/vanilla-test/index.js';
 
 const test=new VanillaTest;
 
