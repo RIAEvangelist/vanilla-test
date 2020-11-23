@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "npm run emulate & node ./test/CI.js",
+    "test": "npm run emulate && node ./test/CI.js",
     "start": "node-http-server port=8000 verbose=true",
-    "emulate": "npm i & copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./example/node_modules/vanilla-test/\" & copyfiles -V \"./node_modules/**/*\" \"./example/\" & copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./test/node_modules/vanilla-test/\" & copyfiles -V \"./node_modules/**/*\" \"./test/\""
+    "emulate": "npm i && copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./example/node_modules/vanilla-test/\" && copyfiles -V \"./node_modules/**/*\" \"./example/\" && copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./test/node_modules/vanilla-test/\" && copyfiles -V \"./node_modules/**/*\" \"./test/\""
   },
   "keywords": [
     "test",
