@@ -150,7 +150,7 @@ ${ansi.redBright('Failed :')} ${this.#failed.length}\n`;
             };
         }
 
-        if(process){
+        if(globalThis.process){
             process.exit(this.#failed.length);
             //just incase
             return report;
