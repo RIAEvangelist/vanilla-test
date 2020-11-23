@@ -211,6 +211,6 @@ The address url in the screenshot is outdated, see above for the actual address.
 ![screen shot of vanilla-test example on edge](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-edge-report.PNG)
 
 ## FireFox
-As of 11/22/2020 FF still does not support private fields or methods in js classes, however, the nightly build has it included behind a flag. With the private field and method flags set to true, FireFox nightly works like a charm... However, firefox's console does not support ansi escape characters, so we will need to make a report builder for it that logs it out better. Thankfully the code is already set up to support that if you run the reports like so : `.report(true)`
+As of 11/22/2020 FF still does not support private fields or methods in js classes, however, the nightly build has it included behind a flag. With the private field and method flags set to true, FireFox nightly works like a charm... However, firefox's console does not support ansi escape characters, so we will need to make a report builder for it that logs it out better. Thankfully the code is already set up to support that if you run the reports like so : `.report(false)` it will return an object you can use to make a report in node or the browser. It's documented in the methods table above.
 
-![screen shot of vanilla-test example on edge](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-FF-nightly-report.PNG)
+![screen shot of vanilla-test example on FireFox Nightly](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-FF-nightly-report.PNG)
