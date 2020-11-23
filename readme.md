@@ -39,6 +39,8 @@ import VanillaTest from './node_modules/vanilla-test/index.js';
 //not actually running tests in this example, just demonstrating
 //strong type checking
 
+//see the documentation link above to learn about all the methods, this is just to show a couple
+
 const test=new VanillaTest;
 
 test.is.string('hello');
@@ -59,6 +61,7 @@ test.is.generatorFunction(genFunc);
 
 test.is.generator(generator);
 
+//see the documentation link above to learn about all the methods, this is just to show a couple
 
 ```
 
