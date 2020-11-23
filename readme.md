@@ -79,7 +79,7 @@ then run `node ./example/basic.js` to see the example output.
 #### For the browser
 run `npm start` this will automatically run `npm run emulate` for you as well. 
 
-Then just go to the [local server](http://localhost:8000) : http://localhost:8000 from here you can see both the examples and the tests. Or go directly to [the local example](http://localhost:8000/example/index.html) : http://localhost:8000/example/index.html. It actually imports the node example into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
+Then just go to the [local server](http://localhost:8000) : http://localhost:8000 from here you can see both the examples and the tests. Or go directly to [the local example](http://localhost:8000/example/index.html) : http://localhost:8000/example/. It actually imports the node example into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
 
 
 ```js
@@ -191,7 +191,7 @@ run `npm test` you will see the reults right there in the terminal.
 
 #### Browser
 
-run `npm start` then go to [the local test](http://localhost:8000/test/index.html) : http://localhost:8000/example/index.html. It actually imports the node test into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
+run `npm start` then go to [the local test](http://localhost:8000/test/index.html) : http://localhost:8000/test/. It actually imports the node test into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
 
 ## How Did I emulate a production install for the module inside itself???
 
