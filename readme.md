@@ -216,6 +216,8 @@ This is needed because we use relative paths in our ES6+ modules to allow the sa
 
 `npm start` actually starts a [node-http-server](https://github.com/RIAEvangelist/node-http-server). So if you just want quick links to the example and test web pages, there is a page in the root of this module with links. You can access it by going to the [local homepage](http://localhost:8000) : http://localhost:8000
 
+Provided your router and firewall are not blocking your IP/ports, you can also go to `http://[your-ip-here]:8000/` on any device including your mobile device provided it is on the same network.
+
 
 ## Chrome Screenshot
 The address url in the screenshot is outdated, see above for the actual address.
