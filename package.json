@@ -1,6 +1,6 @@
 {
   "name": "vanilla-test",
-  "version": "1.4.2",
+  "version": "1.4.4",
   "description": "minimal test framework for node, browsers, and electron, anywhere javascript can run",
   "main": "index.js",
   "type": "module",
@@ -21,8 +21,8 @@
   "author": "Brandon Nozaki Miller",
   "license": "MIT",
   "dependencies": {
-    "ansi-colors-es6": "5.0.0",
-    "strong-type": "^0.1.3"
+    "ansi-colors-es6": "^5.0.0",
+    "strong-type": "^0.1.5"
   },
   "devDependencies": {
     "copyfiles": "^2.4.0",
