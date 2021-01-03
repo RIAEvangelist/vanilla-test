@@ -28,7 +28,7 @@
     "strong-type": "^0.1.6"
   },
   "devDependencies": {
-    "copyfiles": "^2.4.0",
+    "copyfiles": "^2.4.1",
     "node-http-server": "^8.1.3"
   }
 }
