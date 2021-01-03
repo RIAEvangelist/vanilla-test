@@ -1,9 +1,12 @@
 {
   "name": "vanilla-test",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "minimal test framework for node, browsers, and electron, anywhere javascript can run",
   "main": "index.js",
   "type": "module",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "scripts": {
     "test": "npm run emulate && node ./test/CI.js",
     "start": "npm run emulate && node-http-server port=8000 verbose=true",
@@ -22,7 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "ansi-colors-es6": "^5.0.0",
-    "strong-type": "^0.1.5"
+    "strong-type": "^0.1.6"
   },
   "devDependencies": {
     "copyfiles": "^2.4.0",
