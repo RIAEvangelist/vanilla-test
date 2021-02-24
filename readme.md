@@ -220,7 +220,7 @@ Provided your router and firewall are not blocking your IP/ports, you can also g
 
 ## Digital Ocean Static App
 
-We use the free Digital Ocean Static Apps to host a version of the local server. It is exactly the same as if you ran npm start on your machine. You can also use this like a CDN as it automatically rebuilds from main/master each time the branch is updated. [vanilla-test CDN home](https://vanilla-test-orhde.ondigitalocean.app/) : https://vanilla-test-orhde.ondigitalocean.app/
+We use the free Digital Ocean Static Apps to host a version of the local server. It is exactly the same as if you ran npm start on your machine. You can also use this like a CDN as it automatically rebuilds from main/master each time the branch is updated. [vanilla-test CDN home](https://cdn-p939v.ondigitalocean.app/vanilla-test/) : https://cdn-p939v.ondigitalocean.app/vanilla-test/
 
 
 ## Chrome Screenshot
