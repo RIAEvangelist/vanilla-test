@@ -107,7 +107,7 @@ try{
     test.expects('num1 to be a number');    
     test.is.number(num1);
 }catch(err){
-    console.log(`${err.name} : ${err.message}`);
+    console.trace(err);
     test.fail();
 }
 test.pass();
@@ -120,7 +120,7 @@ try{
     test.expects('num2 to be a a number');    
     test.is.number(num2);
 }catch(err){
-    console.log(`${err.name} : ${err.message}`);
+    console.trace(err);
     test.fail();
 }
 test.pass();
@@ -167,7 +167,7 @@ try{
     try{
         test.is.typeError(err);
     }catch{
-        console.log(`${err.name} : ${err.message}`);
+        console.trace(err);
         test.pass();
     }
     test.fail();
