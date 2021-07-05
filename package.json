@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "ansi-colors-es6": "^5.0.0",
-    "strong-type": "^1.0.1"
+    "strong-type": "^1.1.0"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
