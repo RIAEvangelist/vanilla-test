@@ -1,78 +1,38 @@
-//import with relative paths to shim for browser
-//this way the same code will work on the web as it does in node
-//litteraly the same file without even transpiling,  
-//but you can transpile if you want.
-import VanillaTest from './node_modules/vanilla-test/index.js';
+import VanillaTest from 'vanilla-test';
 
-const test=new VanillaTest;
+const test = new VanillaTest();
 
-//setup
-const num1=1;
-const num2=2;
-function sum(a,b){
-    return a+b;
-}
+function run(description, assertion) {
+    test.expects(description);
 
-
-try{
-    test.expects('num1 to be a number');    
-    test.is.number(num1);
-}catch(err){
-    console.trace(err);
-    test.fail();
-}
-test.pass();
-test.done();
-
-try{
-    test.expects('num2 to be a a number');    
-    test.is.number(num2);
-}catch(err){
-    console.trace(err);
-    test.fail();
-}
-test.pass();
-test.done();
-
-//this test should fail for demonstration purposes
-try{
-    test.expects('num1 == num2');    
-    test.compare(num1,num2);
-}catch(err){
-    console.log(`test.compare(${num1},${num2}); : num1 and num2 were not equal`);
-    test.fail();
-}
-test.pass();
-test.done();
-
-
-try{
-    test.expects('sum(num1,num2) to be equal to num1+num2');    
-
-    test.compare(
-        sum(num1,num2),
-        num1+num2
-    );
-}catch(err){
-    console.log(`sum(${num1},${num2}); was not equal to num1+num2`);
-    test.fail();
-}
-test.pass();
-test.done();
-
-try{
-    test.expects('A TypeError when type checks fail');    
-    test.is.boolean(new Array(2));
-}catch(err){
-    try{
-        test.is.typeError(err);
-    }catch{
-        console.trace(err);
+    try {
+        assertion();
+        test.pass();
+    } catch (error) {
+        console.error(error);
         test.fail();
     }
-    test.pass();
-}
-test.fail();
-test.done();
 
-test.report();
+    test.done();
+}
+
+run('1 + 2 equals 3', () => test.compare(1 + 2, 3));
+run('the result is a number', () => test.is.number(1 + 2));
+run('invalid boolean input throws TypeError', () => {
+    try {
+        test.is.boolean([]);
+    } catch (error) {
+        test.is.typeError(error);
+        return;
+    }
+
+    throw new Error('Expected a TypeError');
+});
+
+const result = test.report();
+const status = document.querySelector('[data-status]');
+const details = document.querySelector('[data-details]');
+
+status.textContent = result.ok ? 'All example tests passed' : 'Example tests failed';
+status.dataset.ok = String(result.ok);
+details.textContent = `${result.total} tests · ${result.passed.length} passed · ${result.failureCount} failed`;

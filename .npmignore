@@ -1,6 +1,11 @@
-coverage
+/coverage
+*.tgz
 example
 test
-.travis.yml
-appveyor.yml
 index.html
+.github
+badges
+scripts
+vanilla-test.config.json
+CHANGELOG.md
+MIGRATION.md

@@ -1,17 +1,31 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
     <head>
-        <title>vanilla-test node module test report</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>vanilla-test local workspace</title>
         <style>
-            body{
-                font-family: arial;
-            }
+            :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+            body { background: #07111f; color: #dcecff; margin: 0; min-height: 100vh; padding: 3rem; }
+            main { margin: auto; max-width: 58rem; }
+            h1 { font-size: clamp(3rem, 10vw, 7rem); letter-spacing: -.07em; margin: 1rem 0; }
+            p { color: #9cb2c8; font-size: 1.2rem; }
+            nav { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); margin-top: 3rem; }
+            a { background: #0d1b2e; border: 1px solid #254362; border-radius: .8rem; color: #7ee787; font-size: 1.2rem; font-weight: 750; padding: 1.5rem; text-decoration: none; }
+            a:hover { border-color: #66d9ef; transform: translateY(-2px); }
         </style>
     </head>
     <body>
-        <h1>vanilla-test npm module</h1>
-        <a href='./test/'>tests</a>
-        <br>
-        <a href='./example/'>examples</a>
+        <main>
+            <p>Zero-build · Web standards · Native V8 coverage</p>
+            <h1>vanilla-test</h1>
+            <p>Local development workspace for the same JavaScript in Node and Chrome.</p>
+            <nav>
+                <a href="./test/">Run browser tests →</a>
+                <a href="./example/">Open example →</a>
+                <a href="./coverage/chrome/">Chrome coverage →</a>
+                <a href="./coverage/node/">Node coverage →</a>
+            </nav>
+        </main>
     </body>
 </html>

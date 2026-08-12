@@ -1,241 +1,272 @@
 # vanilla-test
 
-This is a minimalist and pure js testing utility/suite/framework. It will work with ES6+ modules and common.js modules. The `VanillaTest` class is perfect for extending and very fast. There is no boilerplate, no fancy setup, just write your tests and run them from your npm test command.
+[![CI](https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml/badge.svg)](https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/vanilla-test.svg)](https://www.npmjs.com/package/vanilla-test)
+[![npm downloads](https://img.shields.io/npm/dm/vanilla-test.svg)](https://www.npmjs.com/package/vanilla-test)
+[![license](https://img.shields.io/github/license/RIAEvangelist/vanilla-test.svg)](licence)
+[![Node.js >=22.12](https://img.shields.io/badge/Node.js-%3E%3D22.12-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Google Chrome](https://img.shields.io/badge/Chrome-native%20V8%20coverage-4285F4?logo=googlechrome&logoColor=white)](https://www.google.com/chrome/)
+[![Node core coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FRIAEvangelist%2Fvanilla-test%2Fmain%2Fbadges%2Fnode-coverage.json)](https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml)
+[![Chrome core coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FRIAEvangelist%2Fvanilla-test%2Fmain%2Fbadges%2Fchrome-coverage.json)](https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml)
 
-npm info :  
-![vanilla-test npm version](https://img.shields.io/npm/v/vanilla-test.svg) ![total npm downloads for vanilla-test](https://img.shields.io/npm/dt/vanilla-test.svg) ![monthly npm downloads for vanilla-test](https://img.shields.io/npm/dm/vanilla-test.svg)
+Minimal, extensible testing for JavaScript that runs directly in Node.js and the browser. The core speaks Web standards: the same untransformed ES module can execute in both runtimes, without a bundle, transpiler, or host-specific branch.
 
-GitHub info :  
-![vanilla-test GitHub Release](https://img.shields.io/github/release/RIAEvangelist/vanilla-test.svg) ![GitHub license vanilla-test license](https://img.shields.io/github/license/RIAEvangelist/vanilla-test.svg) ![open issues for vanilla-test on GitHub](https://img.shields.io/github/issues/RIAEvangelist/vanilla-test.svg)
+`vanilla-test` uses `EventTarget`, `CustomEvent`, and `queueMicrotask` for completion. The shared core does not import Node modules, inspect `process`, or decide a process exit code. Host tooling adapts around the test result.
 
-Build Info :  
-Travis CI (linux,windows & Mac) : [![Build Status](https://travis-ci.org/RIAEvangelist/vanilla-test.svg?branch=main)](https://travis-ci.org/RIAEvangelist/vanilla-test) Appveyor CI (Windows) : [![vanilla-test windows build status](https://ci.appveyor.com/api/projects/status/github/riaevangelist/vanilla-test?branch=main&svg=true)](https://ci.appveyor.com/project/RIAEvangelist/vanilla-test/history)
+## Install
 
-***Super light and fast*** Extensible pure JS testing for the win! Vanilla Test works in node, browsers, electron, anywhere JS runs.
-
-## Core Test Methods
-|method|args|returns|description|
-|-|-|-|-|
-|expects|`description`:`string` a unique test descriptor |`string` : numbered test descriptor|this sets up the current test|
-|pass|`strict`:`boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this to pass the test|
-|fail|`strict`:`boolean` throw if the test already passed or failed previously. This defaults to `false`|`string` : numbered test descriptor|call this to fail the test|
-|done||`string` : numbered test descriptor|Ends the test. If the test has not yet passed|failed, it will fail|
-|report|`CI`:`boolean` defaults to `true`. This will try to exit after reporting letting your CI know the test is complete in node, or return the number of failures in the browser. ***If set to `false`,*** it will return the `results`:`object` for you to use. This could be used for report builders or other integrations. `{passed:[...strings], failed:[...strings]}`|report : `string` : `report`|report showing passed and failed tests. This will also communicate with your CI like circle CI or Travis CI|
-|delay|`delay`:`number` number of times to itterate|chainable ref|this can be used to waste some time while waiting for short async operations to execute, like event propagation |
-|compare|arg1:`any`, arg2:`any`, error:`string`|chainable ref| inherited [stong-type](https://github.com/RIAEvangelist/strong-type) .compare method which checks arg1==arg2 and throws  |
-
-
-## Strong Type Checking
-`vanilla-test` uses the `strong-type` class which provides methods to test ***all*** the built in js primatives, objects, classes, and even fancy things like async functions and generators.
-
-[full strong-type documentation](https://github.com/RIAEvangelist/strong-type)
-
-The `strong-type` methods are available on the `.is` method.
-
-```js
-
-import VanillaTest from './node_modules/vanilla-test/index.js';
-
-//not actually running tests in this example, just demonstrating
-//strong type checking
-
-//see the documentation link above to learn about all the methods, this is just to show a couple
-
-const test=new VanillaTest;
-
-test.is.string('hello');
-
-test.is.number(1);
-
-test.is.int8Array(new Int8Array(3));
-
-test.is.asyncFunction(async function(){});
-
-test.is.asyncGeneratorFunction(async function*(){});
-
-
-function* genFunc(){}
-let generator=genFunc();
-
-test.is.generatorFunction(genFunc);
-
-test.is.generator(generator);
-
-//see the documentation link above to learn about all the methods, this is just to show a couple
-
+```sh
+npm install vanilla-test
 ```
 
-## Basic Examples
+Node.js 22.12 or newer is required.
 
-These basic examples should be enough to get you started testing right away.
-
-#### For node
-Since we use the same files for node and the browser, we need to emulate a production `npm i vanilla-test` in the example folder, so be sure to :  
-
-first run `npm run emulate`
-
-then run `node ./example/basic.js` to see the example output.
-
-![screen shot of vanilla-test example on node](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-node-report.PNG)
-
-
-#### For the browser
-run `npm start` this will automatically run `npm run emulate` for you as well. 
-
-Then just go to the [local server](http://localhost:8000) : http://localhost:8000 from here you can see both the examples and the tests. Or go directly to [the local example](http://localhost:8000/example/index.html) : http://localhost:8000/example/. It actually imports the node example into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
-
+## One test module, two runtimes
 
 ```js
-//import with relative paths to shim for browser
-//this way the same code will work on the web as it does in node
-//litteraly the same file without even transpiling,  
-//but you can transpile if you want.
-import VanillaTest from './node_modules/vanilla-test/index.js';
+import VanillaTest from 'vanilla-test';
 
-const test=new VanillaTest;
+export default async function run() {
+    const test = new VanillaTest();
 
-//setup
-const num1=1;
-const num2=2;
-function sum(a,b){
-    return a+b;
-}
+    test.expects('addition preserves the total');
 
-
-// 1) expects num1 to be a number
-try{
-    test.expects('num1 to be a number');    
-    test.is.number(num1);
-}catch(err){
-    console.trace(err);
-    test.fail();
-}
-test.pass();
-test.done();
-
-
-
-// 2) expects num2 to be a a number
-try{
-    test.expects('num2 to be a a number');    
-    test.is.number(num2);
-}catch(err){
-    console.trace(err);
-    test.fail();
-}
-test.pass();
-test.done();
-
-
-
-// 3) expects num1 == num2
-//this test should fail for demonstration purposes
-try{
-    test.expects('num1 == num2');    
-    test.compare(num1,num2);
-}catch(err){
-    console.log(`test.compare(${num1},${num2}); : num1 and num2 were not equal`);
-    test.fail();
-}
-test.pass();
-test.done();
-
-
-
-// 4) expects num1 == num2
-try{
-    test.expects('sum(num1,num2) to be equal to num1+num2');    
-
-    test.compare(
-        sum(num1,num2),
-        num1+num2
-    );
-}catch(err){
-    console.log(`sum(${num1},${num2}); was not equal to num1+num2`);
-    test.fail();
-}
-test.pass();
-test.done();
-
-
-
-// 5) expects A TypeError when type checks fail
-try{
-    test.expects('A TypeError when type checks fail');    
-    test.boolean(new Array(2));
-}catch(err){
-    try{
-        test.is.typeError(err);
-    }catch{
-        console.trace(err);
+    try {
+        test.compare(1 + 2, 3);
         test.pass();
+    } catch (error) {
+        console.error(error);
+        test.fail();
     }
-    test.fail();
+
+    test.done();
+
+    return test.report();
 }
-test.fail();
-test.done();
-
-
-
-//Lets take a look at the test results and let our CI know 
-// that the tests have completed and passed or failed
-test.report();
-
-
 ```
 
-## Tests & Reports
+That file contains no Node-only or browser-only code. Import and call `run()` from a thin Node or browser adapter, or give the module directly to the coverage CLI for both runtimes.
 
-You can run the modules tests and see the reports in either node and the browser. Node will run the tests in the node environment, and browsers will actually imort the node code and run it in the browser.
+The returned result is frozen and has this shape:
 
-#### Node
+```js
+{
+    passed: ['1) .expects addition preserves the total'],
+    failed: [],
+    total: 1,
+    failureCount: 0,
+    ok: true,
+    report: 'rendered console report'
+}
+```
 
-run `npm test` you will see the reults right there in the terminal.
+### Browser import map
 
-#### Browser
+Browsers resolve package names through an import map. No source rewrite is needed:
 
-run `npm start` then go to [the local test](http://localhost:8000/test/index.html) : http://localhost:8000/test/. It actually imports the node test into the browser and runs it, same exact file, no transpiling or custom code for the browser. If you want to transpile though, you can.
+```html
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>vanilla-test</title>
+        <script type="importmap">
+        {
+            "imports": {
+                "vanilla-test": "/node_modules/vanilla-test/index.js",
+                "ansi-colors-es6": "/node_modules/ansi-colors-es6/index.js",
+                "strong-type": "/node_modules/strong-type/index.js"
+            }
+        }
+        </script>
+    </head>
+    <body>
+        <script type="module">
+            import run from './shared-test.js';
+            const result = await run();
+            document.body.dataset.ok = String(result.ok);
+        </script>
+    </body>
+</html>
+```
 
-## How Did I emulate a production install for the module inside itself???
+Serve the project over HTTP; browsers do not treat a `file:` URL like a web origin. This repository's example server is available with `npm start`.
 
-I'm actually pretty pleased with how easy this was. Feel free to use the same type of scripts in your projects. You can even copy paste and just change the repo/module names if you want. Here is the code from my package.json ***using && is important*** otherwise your commands  will run in parallel, and you really need them to run atomically.
+## API
 
-This is needed because we use relative paths in our ES6+ modules to allow the same exact js to work in node and the browser. Its what we have all been waiting for!
+### `new VanillaTest()`
+
+Creates an isolated test runner. Each instance owns its descriptions, active test, and results.
+
+### `test.expects(description)`
+
+Starts one test and returns its numbered description. Descriptions must be strings and unique within the instance. Finish the active test before starting another.
+
+### `test.pass(strict = false)` / `test.fail(strict = false)`
+
+Records the active test once. Repeating a decision is ignored by default; strict mode throws a `ReferenceError`.
+
+### `test.done()`
+
+Finishes the active test and returns its numbered description. An undecided test is failed automatically.
+
+### `test.report()`
+
+Prints the report, freezes and returns the result snapshot, then announces completion in a microtask. Calling it again returns the same snapshot. A reported instance cannot start another test.
+
+The core never calls `process.exit()` or sets `process.exitCode`. The Node coverage adapter maps `result.ok` to its own exit status; browser callers can consume the same result directly.
+
+### `test.onComplete(listener, options)`
+
+Subscribes to the `vanilla-test:complete` event and returns an unsubscribe function. The listener receives the frozen result at `event.detail`.
+
+```js
+const unsubscribe = test.onComplete((event) => {
+    console.log(event.detail.ok);
+    unsubscribe();
+});
+
+test.report();
+```
+
+The event name is also exported as `VANILLA_TEST_COMPLETE_EVENT`.
+
+### `test.is`, `test.compare`, `test.throw`, and `test.strict`
+
+These expose the runtime type checks provided by [`strong-type`](https://github.com/RIAEvangelist/strong-type). `compare(actual, expected)` throws when the values do not compare successfully.
+
+### `test.delay(iterations = 1000)`
+
+Performs a short synchronous loop for a nonnegative safe-integer iteration count and returns the runner for chaining. Prefer promises and events for real asynchronous coordination.
+
+## Native V8 coverage
+
+`vanilla-test` keeps coverage outside the shared test module and measures each runtime independently.
+
+The repository's 100% gates apply to the shipped Web-standard core (`index.js`). The Node-only coverage CLI is exercised by integration, package-smoke, invalid-input, timeout, and path-safety checks without mixing host tooling into the isomorphic core score.
+
+- Node coverage uses [`c8`](https://github.com/bcoe/c8) over Node's native V8 coverage.
+- Chrome coverage launches installed Google Chrome with Playwright, collects Chrome's native precise V8 coverage, and renders it with [`monocart-coverage-reports`](https://github.com/cenfun/monocart-coverage-reports).
+- Included but never loaded source files count as 0%.
+- Node and Chrome each enforce their own statement, branch, function, and line thresholds.
+- There is no source instrumentation, `nyc`, browser shim, bundler, or transpiler in the coverage path.
+
+Install Google Chrome Stable before running Chrome coverage. The CLI deliberately does not substitute another browser.
+
+### Commands
+
+From this repository:
+
+```sh
+npm test
+npm run coverage
+npm run coverage:node
+npm run coverage:chrome
+npm run screenshots
+```
+
+For an installed package or with `npx`:
+
+```sh
+vanilla-test coverage
+vanilla-test coverage all
+vanilla-test coverage node
+vanilla-test coverage chrome
+```
+
+`coverage` and `coverage all` run both collectors and keep both reports. Ordinary failure in one runtime does not discard the other runtime's report.
+
+Useful CLI options:
+
+```text
+--config <path>       configuration file (default: vanilla-test.config.json)
+--chrome-path <path>  explicit Google Chrome executable
+--headed              show Chrome while coverage runs
+--timeout-ms <ms>     completion timeout
+--help                command help
+--version             package version
+```
+
+Exit status `0` means tests and thresholds passed, `1` means an assertion or coverage gate failed, `2` means the harness or configuration failed, and `130` means the run was interrupted.
+
+### Configuration
+
+Create `vanilla-test.config.json` in the project being measured:
 
 ```json
-
-"scripts": {
-    "test": "npm run emulate && node ./test/CI.js",
-    "start": "npm run emulate && node-http-server port=8000 verbose=true",
-    "emulate": "npm i && copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./example/node_modules/vanilla-test/\" && copyfiles -V \"./node_modules/**/*\" \"./example/\" && copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./test/node_modules/vanilla-test/\" && copyfiles -V \"./node_modules/**/*\" \"./test/\""
-},
-
+{
+    "entry": "./test/CI.js",
+    "reportsDirectory": "./coverage",
+    "thresholds": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+    },
+    "timeoutMs": 30000,
+    "node": {
+        "include": ["index.js"]
+    },
+    "chrome": {
+        "include": ["index.js"],
+        "imports": {},
+        "headless": true,
+        "executablePath": null
+    }
+}
 ```
 
-## Local website
+Paths are resolved from the configuration file's directory. Keep `entry`, included source, reports, and served browser imports inside the project root. The CLI rejects unknown keys, invalid thresholds and timeouts, empty include scopes, and escaping paths.
 
-`npm start` actually starts a [node-http-server](https://github.com/RIAEvangelist/node-http-server). So if you just want quick links to the example and test web pages, there is a page in the root of this module with links. You can access it by going to the [local homepage](http://localhost:8000) : http://localhost:8000
+The CLI supplies local import-map defaults for `vanilla-test` and its runtime dependencies. Use `chrome.imports` only to override those package specifiers or to add imports used by your own shared test entry.
 
-Provided your router and firewall are not blocking your IP/ports, you can also go to `http://[your-ip-here]:8000/` on any device including your mobile device provided it is on the same network.
+A CLI entry module exports a default or named `run()` function and returns its final result. The result must expose both `ok` and `failureCount`, and the values must agree, so the adapter can distinguish a finished passing suite from a failed or malformed run.
 
-## Digital Ocean Static App
+Reports are written separately:
 
-We use the free Digital Ocean Static Apps to host a version of the local server. It is exactly the same as if you ran npm start on your machine. You can also use this like a CDN as it automatically rebuilds from main/master each time the branch is updated. [vanilla-test CDN home](https://cdn-p939v.ondigitalocean.app/vanilla-test/) : https://cdn-p939v.ondigitalocean.app/vanilla-test/
+```text
+coverage/
+  node/
+    index.html
+    lcov.info
+    coverage-summary.json
+  chrome/
+    index.html
+    lcov.info
+    coverage-summary.json
+```
 
+## Reports and screenshots
 
-## Chrome Screenshot
-The address url in the screenshot is outdated, see above for the actual address.
+The same source is exercised untransformed in real Chrome and Node.js.
 
+### Chrome test run
 
-![screen shot of vanilla-test example on chrome](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-chrome-report.PNG)
+![vanilla-test running in Google Chrome](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-chrome-v2.png)
 
+### Chrome native V8 coverage
 
-## Edge
-The address url in the screenshot is outdated, see above for the actual address.
+![vanilla-test Chrome native V8 coverage](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-chrome-coverage-v2.png)
 
-![screen shot of vanilla-test example on edge](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-edge-report.PNG)
+### Node native V8 coverage
 
-## FireFox
-As of 11/22/2020 FF still does not support private fields or methods in js classes, however, the nightly build has it included behind a flag. With the private field and method flags set to true, FireFox nightly works like a charm... However, firefox's console does not support ansi escape characters, so we will need to make a report builder for it that logs it out better. Thankfully the code is already set up to support that if you run the reports like so : `.report(false)` it will return an object you can use to make a report in node or the browser. It's documented in the methods table above.
+![vanilla-test Node native V8 coverage](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-node-coverage-v2.png)
 
-![screen shot of vanilla-test example on FireFox Nightly](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-FF-nightly-report.PNG)
+Generate fresh local images with `npm run screenshots`. CI also uploads its coverage and screenshot artifacts for inspection.
+
+## Development
+
+```sh
+npm ci
+npm test
+npm run coverage
+npm start
+```
+
+GitHub Actions tests the minimum Node 22.12 runtime and current Node 24 LTS, runs the independent Node and real-Chrome coverage gates on Node 24, verifies the packed npm artifact, and uploads the generated reports and screenshots.
+
+See the [v2 migration guide](https://github.com/RIAEvangelist/vanilla-test/blob/main/MIGRATION.md) when upgrading from v1 and the [changelog](https://github.com/RIAEvangelist/vanilla-test/blob/main/CHANGELOG.md) for release details.
+
+## License
+
+[MIT](licence)

@@ -1,0 +1,143 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test / Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - '22.12.0'
+          - '24'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+  coverage:
+    name: Native V8 coverage / Node 24 + Chrome
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install Google Chrome Stable
+        id: chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+
+      - name: Show runtime versions
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: |
+          node --version
+          "$CHROME_PATH" --version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Node and Chrome coverage
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: npm run coverage -- --chrome-path "$CHROME_PATH"
+
+      - name: Capture fresh screenshots
+        if: always()
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: npm run screenshots
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-v8-coverage
+          path: coverage/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-screenshots
+          path: |
+            example/img/vanilla-test-chrome-v2.png
+            example/img/vanilla-test-chrome-coverage-v2.png
+            example/img/vanilla-test-node-coverage-v2.png
+          if-no-files-found: error
+          retention-days: 14
+
+  package-smoke:
+    name: Packed npm artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Pack, install, and import the artifact
+        shell: bash
+        run: |
+          TARBALL="$(npm pack --silent)"
+          SMOKE_DIRECTORY="$RUNNER_TEMP/vanilla-test-package-smoke"
+          mkdir -p "$SMOKE_DIRECTORY"
+          cd "$SMOKE_DIRECTORY"
+          npm init --yes
+          npm install "$GITHUB_WORKSPACE/$TARBALL"
+          node --input-type=module --eval "import VanillaTest from 'vanilla-test'; const test = new VanillaTest(); test.expects('packed package imports'); test.pass(); test.done(); const result = test.report(); if (!result.ok || result.total !== 1) process.exitCode = 1;"
+
+      - name: Upload packed npm artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vanilla-test-v2-package
+          path: vanilla-test-2.0.0.tgz
+          if-no-files-found: error
+          retention-days: 14

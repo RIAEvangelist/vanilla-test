@@ -1,16 +1,25 @@
 {
   "name": "vanilla-test",
-  "version": "1.4.9",
-  "description": "minimal test framework for node, browsers, and electron, anywhere javascript can run",
+  "version": "2.0.0",
+  "description": "Zero-build, Web-standard JavaScript testing for Node and browsers",
   "main": "index.js",
   "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "bin": {
+    "vanilla-test": "bin/vanilla-test.js"
+  },
   "engines": {
-    "node": ">=12.21.0"
+    "node": ">=22.12.0"
   },
   "scripts": {
-    "test": "npm run emulate && node ./test/CI.js",
-    "start": "npm run emulate && node-http-server port=8000 verbose=true",
-    "emulate": "npm i && copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./example/node_modules/vanilla-test/\" && copyfiles -V \"./node_modules/**/*\" \"./example/\" && copyfiles -V \"./!(node_modules)/*\" \"./**!(node_modules)\"  \"./test/node_modules/vanilla-test/\" && copyfiles -V \"./node_modules/**/*\" \"./test/\""
+    "test": "node ./test/node.js && node --test ./test/tooling.js",
+    "coverage": "node ./bin/vanilla-test.js coverage",
+    "coverage:node": "node ./bin/vanilla-test.js coverage node",
+    "coverage:chrome": "node ./bin/vanilla-test.js coverage chrome",
+    "screenshots": "node ./scripts/screenshots.js",
+    "start": "node ./scripts/serve.js"
   },
   "keywords": [
     "test",
@@ -25,14 +34,23 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/RIAEvangelist/vanilla-test.git"
+    "url": "git+https://github.com/RIAEvangelist/vanilla-test.git"
   },
   "dependencies": {
     "ansi-colors-es6": "^5.0.0",
+    "c8": "^12.0.0",
+    "monocart-coverage-reports": "^2.12.12",
+    "playwright-core": "^1.62.1",
     "strong-type": "^1.1.0"
   },
-  "devDependencies": {
-    "copyfiles": "^2.4.1",
-    "node-http-server": "^8.1.3"
-  }
+  "bugs": {
+    "url": "https://github.com/RIAEvangelist/vanilla-test/issues"
+  },
+  "homepage": "https://github.com/RIAEvangelist/vanilla-test#readme",
+  "directories": {
+    "example": "example",
+    "lib": "lib",
+    "test": "test"
+  },
+  "devDependencies": {}
 }
