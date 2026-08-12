@@ -1,4 +1,4 @@
-# vanilla-test
+![vanilla-test — native JavaScript testing for Node.js and browsers](assets/vanilla-test-header.png)
 
 [Visit the vanilla-test GitHub.io site](https://riaevangelist.github.io/vanilla-test/)
 
