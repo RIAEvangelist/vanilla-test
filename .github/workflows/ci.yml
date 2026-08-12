@@ -105,6 +105,37 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: Assemble GitHub Pages site
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          mkdir -p _site
+          git archive --format=tar HEAD | tar --extract --directory=_site
+
+          mkdir -p \
+            _site/node_modules/ansi-colors-es6 \
+            _site/node_modules/strong-type
+          cp node_modules/ansi-colors-es6/index.js _site/node_modules/ansi-colors-es6/
+          cp node_modules/strong-type/index.js _site/node_modules/strong-type/
+          cp --recursive coverage _site/coverage
+
+          test -f _site/test/index.html
+          test -f _site/test/CI.js
+          test -f _site/node_modules/ansi-colors-es6/index.js
+          test -f _site/node_modules/strong-type/index.js
+          test -f _site/coverage/chrome/index.html
+          test -f _site/coverage/node/index.html
+
+      - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v6
+
+      - name: Upload GitHub Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
   package-smoke:
     name: Packed npm artifact
     runs-on: ubuntu-latest
@@ -141,3 +172,21 @@ jobs:
           path: vanilla-test-2.0.0.tgz
           if-no-files-found: error
           retention-days: 14
+
+  deploy-pages:
+    name: Deploy GitHub Pages
+    if: github.event_name != 'pull_request'
+    needs: coverage
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
