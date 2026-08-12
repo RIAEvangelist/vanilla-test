@@ -1,5 +1,7 @@
 # vanilla-test
 
+[Visit the vanilla-test GitHub.io site](https://riaevangelist.github.io/vanilla-test/)
+
 [![CI](https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml/badge.svg)](https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/vanilla-test.svg)](https://www.npmjs.com/package/vanilla-test)
 [![npm downloads](https://img.shields.io/npm/dm/vanilla-test.svg)](https://www.npmjs.com/package/vanilla-test)
