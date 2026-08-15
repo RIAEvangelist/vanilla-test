@@ -258,6 +258,7 @@ jobs:
             _site/testing \
             _site/coverage \
             _site/cli \
+            _site/playground \
             _site/test \
             _site/example/img \
             _site/assets \
@@ -273,6 +274,7 @@ jobs:
           cp testing/index.html _site/testing/
           cp coverage/index.html _site/coverage/
           cp cli/index.html _site/cli/
+          cp playground/index.html playground/playground.js _site/playground/
           cp test/index.html test/CI.js _site/test/
           cp example/index.html example/basic.js _site/example/
           cp example/img/vanilla-test-*-v2.png _site/example/img/
@@ -291,8 +293,12 @@ jobs:
           test -f _site/testing/index.html
           test -f _site/coverage/index.html
           test -f _site/cli/index.html
+          test -f _site/playground/index.html
+          test -f _site/playground/playground.js
           test -f _site/assets/og.png
           test -f _site/data/status.json
+          test -f _site/example/index.html
+          test -f _site/example/basic.js
           test -f _site/example/img/vanilla-test-chrome-v2.png
           test -f _site/example/img/vanilla-test-chrome-coverage-v2.png
           test -f _site/example/img/vanilla-test-node-coverage-v2.png
