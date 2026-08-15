@@ -92,6 +92,23 @@ function normalizeThresholds(value) {
     return result;
 }
 
+function decimalFraction(value) {
+    const [coefficient, exponentText = '0'] = value.toString().toLowerCase().split('e');
+    const [whole, fraction = ''] = coefficient.split('.');
+    const exponent = Number(exponentText);
+    const digits = BigInt(`${whole}${fraction}`);
+    const scale = fraction.length - exponent;
+    return scale <= 0
+        ? [digits * (10n ** BigInt(-scale)), 1n]
+        : [digits, 10n ** BigInt(scale)];
+}
+
+function meetsThreshold(item, required) {
+    if (item.total === 0) return true;
+    const [minimum, scale] = decimalFraction(required);
+    return BigInt(item.covered) * 100n * scale >= BigInt(item.total) * minimum;
+}
+
 function normalizeCoverage(value, thresholds, runtime) {
     const source = requireObject(value, `${runtime} coverage summary`);
     const total = requireObject(source.total, `${runtime} coverage summary total`);
@@ -109,7 +126,7 @@ function normalizeCoverage(value, thresholds, runtime) {
     }
 
     const minimumPct = Math.min(...METRICS.map((metric) => metrics[metric].pct));
-    const ok = METRICS.every((metric) => metrics[metric].pct >= thresholds[metric]);
+    const ok = METRICS.every((metric) => meetsThreshold(metrics[metric], thresholds[metric]));
     return { runtime, ok, minimumPct, metrics };
 }
 

@@ -8,10 +8,14 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import { HELP, main, parseArguments } from '../lib/coverage/cli.js';
+import { isCoverageRequestAllowed } from '../lib/coverage/chrome.js';
 import { loadConfig, packagePathFromModule } from '../lib/coverage/config.js';
 import { createIncludeMatcher, globToRegExp, toPosix } from '../lib/coverage/glob.js';
+import { getThresholdFailures } from '../lib/coverage/native-report.js';
+import { runNodeCoverage } from '../lib/coverage/node.js';
 import { selectRun, summarizeResult, validateResult } from '../lib/coverage/result.js';
 import { startServer } from '../lib/coverage/server.js';
+import { mergeV8ScriptCoverage } from '../lib/coverage/v8-merge.js';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const entryRunner = path.join(projectRoot, 'lib', 'coverage', 'entry-runner.js');
@@ -260,6 +264,15 @@ test('local coverage server serves only files inside its root', async (context) 
     assert.equal((await request(server.origin, '/%E0%A4%A')).status, 400);
 });
 
+test('Chrome coverage permits only requests to its exact loopback origin', () => {
+    const origin = 'http://127.0.0.1:43210';
+    assert.equal(isCoverageRequestAllowed(`${origin}/entry.js`, origin), true);
+    assert.equal(isCoverageRequestAllowed('http://127.0.0.1:43211/entry.js', origin), false);
+    assert.equal(isCoverageRequestAllowed('https://example.com/entry.js', origin), false);
+    assert.equal(isCoverageRequestAllowed('data:,favicon', origin), false);
+    assert.equal(isCoverageRequestAllowed('not a URL', origin), false);
+});
+
 test('entry runner maps pass, failure, invalid output, timeout, and leaked handles', async (context) => {
     assert.equal((await runEntry(context, 'export default () => ({ ok: true, failureCount: 0 });\n')).code, 0);
     assert.equal((await runEntry(context, 'export const run = () => ({ ok: false, failureCount: 2 });\n')).code, 1);
@@ -283,4 +296,197 @@ test('entry runner maps pass, failure, invalid output, timeout, and leaked handl
     const invalidArguments = await runRunner([]);
     assert.equal(invalidArguments.code, 2);
     assert.match(invalidArguments.stderr, /invalid arguments/);
+});
+
+test('native V8 records merge collapsed, missing, nested, and crossing executions', () => {
+    const functionRecord = (ranges) => ({
+        functionName: 'fixture',
+        isBlockCoverage: ranges.length > 1,
+        ranges
+    });
+    const root = (count) => ({ startOffset: 0, endOffset: 10, count });
+
+    const collapsed = mergeV8ScriptCoverage([
+        { functions: [functionRecord([root(1), { startOffset: 2, endOffset: 8, count: 0 }])] },
+        { functions: [functionRecord([root(2)])] }
+    ], 10);
+    assert.deepEqual(collapsed.functions[0].ranges, [
+        root(3),
+        { startOffset: 2, endOffset: 8, count: 2 }
+    ]);
+
+    const missing = mergeV8ScriptCoverage([
+        { functions: [functionRecord([root(1)])] },
+        { functions: [] }
+    ], 10);
+    assert.deepEqual(missing.functions[0].ranges, [root(1)]);
+
+    const nested = mergeV8ScriptCoverage([
+        { functions: [functionRecord([
+            root(1),
+            { startOffset: 2, endOffset: 8, count: 0 },
+            { startOffset: 3, endOffset: 7, count: 1 }
+        ])] },
+        { functions: [functionRecord([
+            root(1),
+            { startOffset: 2, endOffset: 8, count: 2 },
+            { startOffset: 3, endOffset: 7, count: 0 }
+        ])] }
+    ], 10);
+    assert.deepEqual(nested.functions[0].ranges, [
+        root(2),
+        { startOffset: 3, endOffset: 7, count: 1 }
+    ]);
+
+    const crossing = mergeV8ScriptCoverage([
+        { functions: [functionRecord([root(1), { startOffset: 0, endOffset: 7, count: 0 }])] },
+        { functions: [functionRecord([root(1), { startOffset: 3, endOffset: 10, count: 0 }])] }
+    ], 10);
+    assert.deepEqual(crossing.functions[0].ranges, [
+        root(2),
+        { startOffset: 0, endOffset: 3, count: 1 },
+        { startOffset: 3, endOffset: 7, count: 0 },
+        { startOffset: 7, endOffset: 10, count: 1 }
+    ]);
+
+    assert.throws(() => mergeV8ScriptCoverage([
+        { functions: [functionRecord([
+            root(1),
+            { startOffset: 0, endOffset: 7, count: 0 },
+            { startOffset: 3, endOffset: 10, count: 0 }
+        ])] }
+    ], 10), /partially overlapping/);
+    assert.throws(() => mergeV8ScriptCoverage([
+        { functions: [functionRecord([root(Number.MAX_SAFE_INTEGER)])] },
+        { functions: [functionRecord([root(1)])] }
+    ], 10), /MAX_SAFE_INTEGER/);
+});
+
+test('native coverage gates compare exact ratios independently of display precision', () => {
+    const record = (total, covered) => Object.fromEntries(
+        ['statements', 'branches', 'functions', 'lines']
+            .map((metric) => [metric, { total, covered, skipped: 0, pct: 0 }])
+    );
+
+    const exactDecimal = { total: record(100, 57), 'exact.js': record(100, 57) };
+    assert.deepEqual(getThresholdFailures(exactDecimal, { statements: 57 }), []);
+
+    const repeatingDecimal = { total: record(3, 2), 'fraction.js': record(3, 2) };
+    assert.deepEqual(getThresholdFailures(repeatingDecimal, { statements: 66.665 }), []);
+    const failures = getThresholdFailures(repeatingDecimal, { statements: 66.667 });
+    assert.equal(failures.length, 2);
+    assert.ok(failures.every((failure) => failure.metric === 'statements'));
+    assert.ok(failures.every((failure) => failure.reason === 'below-threshold'));
+    assert.ok(failures.every((failure) => failure.message.includes('66.6666…% (required 66.667%)')));
+});
+
+test('Node coverage parent watchdog terminates a synchronous entry', async (context) => {
+    const root = await temporaryDirectory(context);
+    const entry = path.join(root, 'entry.js');
+    const configPath = path.join(root, 'vanilla-test.config.json');
+    await fs.writeFile(entry, 'for (;;) {}\nexport default () => ({ ok: true, failureCount: 0 });\n', 'utf8');
+    await fs.writeFile(configPath, `${JSON.stringify({
+        entry: './entry.js',
+        reportsDirectory: './coverage',
+        thresholds: { statements: 0, branches: 0, functions: 0, lines: 0 },
+        timeoutMs: 25,
+        node: { include: ['entry.js'] },
+        chrome: { include: ['entry.js'], imports: {}, headless: true, executablePath: null }
+    })}\n`, 'utf8');
+
+    const errors = [];
+    const originalError = console.error;
+    const started = Date.now();
+    console.error = (...values) => errors.push(values.join(' '));
+    try {
+        assert.equal(await runNodeCoverage(loadConfig(configPath)), 2);
+    } finally {
+        console.error = originalError;
+    }
+    assert.ok(Date.now() - started < 3_000, 'Parent watchdog did not stop the synchronous entry promptly.');
+    assert.match(errors.join('\n'), /timed out after 25 ms/);
+});
+
+test('README and Pages documentation cover the public API, CLI, config, reports, and console cues', async () => {
+    const [readme, home, api, cli, coverage, testing, example, browserVerification, harness] = await Promise.all([
+        fs.readFile(path.join(projectRoot, 'readme.md'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'api', 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'cli', 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'coverage', 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'testing', 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'example', 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'test', 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'lib', 'coverage', 'harness.js'), 'utf8')
+    ]);
+    const apiDocumentation = `${readme}\n${api}`;
+    const cliDocumentation = `${readme}\n${cli}`;
+    const site = `${home}\n${api}\n${cli}\n${coverage}\n${testing}`;
+
+    for (const apiName of [
+        'new VanillaTest()',
+        'test.is',
+        'test.compare',
+        'test.throw',
+        'test.strict',
+        'test.expects(description)',
+        'test.pass(strict = false)',
+        'test.fail(strict = false)',
+        'test.done()',
+        'test.report()',
+        'test.onComplete(listener, options)',
+        'test.delay(iterations = 1000)',
+        'VANILLA_TEST_COMPLETE_EVENT'
+    ]) {
+        assert.ok(apiDocumentation.includes(apiName), `Missing API documentation for ${apiName}`);
+    }
+
+    for (const cliOption of ['--config', '--chrome-path', '--headed', '--timeout-ms', '--help', '--version']) {
+        assert.ok(cliDocumentation.includes(cliOption), `Missing CLI documentation for ${cliOption}`);
+    }
+
+    for (const configField of ['entry', 'reportsDirectory', 'thresholds', 'timeoutMs', 'node.include', 'chrome.include', 'chrome.imports', 'chrome.headless', 'chrome.executablePath']) {
+        assert.ok(cliDocumentation.includes(configField), `Missing configuration documentation for ${configField}`);
+    }
+
+    assert.match(cliDocumentation, /vanilla-test coverage \[all\|node\|chrome\] \[options\]/);
+    assert.match(cliDocumentation, /"executablePath": null/);
+    assert.match(cliDocumentation, /CHROME_PATH/);
+    for (const script of ['test', 'test:core', 'test:tooling', 'coverage', 'coverage:node', 'coverage:chrome', 'site:status', 'screenshots', 'start']) {
+        const aliases = script === 'test'
+            ? ['npm test', 'npm run test']
+            : script === 'start'
+                ? ['npm start', 'npm run start']
+                : [`npm run ${script}`];
+        assert.ok(aliases.some((alias) => cliDocumentation.includes(alias)), `Missing npm script documentation for ${script}`);
+    }
+
+    assert.match(readme, /^# vanilla-test$/m);
+    assert.match(readme, /riaevangelist\.github\.io\/vanilla-test/);
+    assert.match(readme, /test-results\.json/);
+    assert.match(readme, /\.vanilla-test-coverage\.json/);
+    assert.match(coverage, /screenshot-gallery/);
+    const images = new Map([
+        ['vanilla-test-chrome-v2.png', [1425, 2348]],
+        ['vanilla-test-chrome-coverage-v2.png', [1425, 2130]],
+        ['vanilla-test-node-coverage-v2.png', [1425, 2130]]
+    ]);
+    for (const [image, [width, height]] of images) {
+        assert.ok(readme.includes(image), `README does not link ${image}`);
+        assert.ok(coverage.includes(image), `Coverage site does not link ${image}`);
+        assert.ok(coverage.includes(`${image}" width="${width}" height="${height}"`), `Coverage site has stale dimensions for ${image}`);
+        const source = await fs.readFile(path.join(projectRoot, 'example', 'img', image));
+        assert.equal(source.subarray(1, 4).toString('ascii'), 'PNG');
+        assert.equal(source.readUInt32BE(16), width);
+        assert.equal(source.readUInt32BE(20), height);
+    }
+
+    assert.match(site, /Native V8|native V8/);
+    assert.doesNotMatch(site, /\b(?:c8|Playwright|Monocart|Istanbul)\b/i);
+    assert.match(example, /type="importmap"/);
+    assert.match(example, /No build step/);
+    assert.match(browserVerification, /Chrome console/);
+    assert.match(browserVerification, /visible panel mirrors messages/);
+    assert.match(browserVerification, /consoleOutput\.append/);
+    assert.match(harness, /Check the console or DevTools/);
 });

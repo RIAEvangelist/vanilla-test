@@ -1,7 +1,7 @@
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { spawn } from 'node:child_process';
-import { chromium } from 'playwright-core';
+import { launchChrome } from '../lib/coverage/chrome-session.js';
 
 const root = resolve(import.meta.dirname, '..');
 const imageDirectory = resolve(root, 'example', 'img');
@@ -30,28 +30,21 @@ try {
         });
     });
 
-    const browser = await chromium.launch({
-        ...(process.env.CHROME_PATH
-            ? { executablePath: process.env.CHROME_PATH }
-            : { channel: 'chrome' }),
-        headless: true
+    const browser = await launchChrome({
+        executablePath: process.env.CHROME_PATH || null,
+        headless: true,
+        timeoutMs: 30_000,
+        viewport: { width: 1440, height: 1000 }
     });
 
     try {
-        const page = await browser.newPage({
+        const page = await browser.createPage({
             colorScheme: 'dark',
-            deviceScaleFactor: 1,
-            viewport: { width: 1440, height: 1000 }
+            viewport: { width: 1440, height: 1000, deviceScaleFactor: 1 }
         });
 
-        await page.goto(`${origin}/test/`, { waitUntil: 'networkidle' });
-        await page.waitForFunction(() => {
-            const explicit = document.querySelector('[data-vanilla-test-status][data-ok]');
-            const fallback = document.querySelector('[data-status][data-ok]');
-            const explicitFinished = explicit?.dataset.ok === 'true' || explicit?.dataset.ok === 'false';
-            const fallbackFinished = fallback?.dataset.ok === 'true' || fallback?.dataset.ok === 'false';
-            return explicitFinished || fallbackFinished || document.body.dataset.complete === 'true';
-        });
+        await page.goto(`${origin}/test/`);
+        await page.waitForFunction(() => globalThis.__VANILLA_TEST_RESULT__ !== undefined);
         await page.screenshot({
             path: resolve(imageDirectory, 'vanilla-test-chrome-v2.png'),
             fullPage: true
@@ -61,10 +54,11 @@ try {
             [`${origin}/coverage/chrome/`, 'vanilla-test-chrome-coverage-v2.png'],
             [`${origin}/coverage/node/`, 'vanilla-test-node-coverage-v2.png']
         ]) {
-            const response = await page.goto(url, { waitUntil: 'networkidle' });
-            if (!response?.ok()) {
+            const response = await fetch(url, { method: 'HEAD' });
+            if (!response.ok) {
                 throw new Error(`Coverage report is unavailable at ${url}`);
             }
+            await page.goto(url);
             await page.screenshot({ path: resolve(imageDirectory, filename), fullPage: true });
         }
     } finally {

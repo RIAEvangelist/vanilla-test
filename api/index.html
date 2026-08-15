@@ -59,7 +59,7 @@
                             <tbody>
                                 <tr><td>Idle</td><td><code>expects(description)</code> or <code>report()</code></td><td><code>expects()</code> creates one active test.</td></tr>
                                 <tr><td>Active</td><td><code>pass()</code>, <code>fail()</code>, then <code>done()</code></td><td><code>done()</code> returns the runner to idle.</td></tr>
-                                <tr><td>Reported</td><td><code>report()</code> only</td><td>The same immutable snapshot is returned; no new test may start.</td></tr>
+                                <tr><td>Reported</td><td><code>report()</code> and non-lifecycle helpers</td><td>The same immutable snapshot is returned; <code>expects()</code> cannot start a new test.</td></tr>
                             </tbody>
                         </table>
                     </div>

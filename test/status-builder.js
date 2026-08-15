@@ -6,6 +6,7 @@ import test from 'node:test';
 
 import {
     buildSiteStatus,
+    normalizeCoverage,
     normalizeSharedTests,
     parseArguments,
     parseTapSummary
@@ -143,4 +144,24 @@ test('rejects inconsistent shared test artifacts and CLI options', () => {
         packageSmoke: 'passed'
     });
     assert.throws(() => parseArguments(['--unknown']), /Unknown option/);
+});
+
+test('compares coverage thresholds against the exact covered/total ratio', () => {
+    const summary = (covered, total, pct) => ({
+        total: Object.fromEntries(
+            ['statements', 'branches', 'functions', 'lines'].map((metric) => [metric, {
+                covered,
+                total,
+                skipped: 0,
+                pct
+            }])
+        )
+    });
+    const thresholds = (value) => Object.fromEntries(
+        ['statements', 'branches', 'functions', 'lines'].map((metric) => [metric, value])
+    );
+
+    assert.equal(normalizeCoverage(summary(57, 100, 57), thresholds(57), 'node').ok, true);
+    assert.equal(normalizeCoverage(summary(2, 3, 66.66), thresholds(66.665), 'node').ok, true);
+    assert.equal(normalizeCoverage(summary(2, 3, 66.66), thresholds(66.667), 'node').ok, false);
 });

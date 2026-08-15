@@ -83,7 +83,7 @@
                             <tbody>
                                 <tr><td>Shared-core verification</td><td>Node 22.12, Node 24, Chrome Stable</td><td>Exports, typed arguments, state guards, decisions, immutable reports, events, isolation, delay</td><td>The public Web-standard API does not behave consistently.</td></tr>
                                 <tr><td>Node tooling integration</td><td>Node 22.12 and Node 24</td><td>Argument parsing, exit codes, result validation, glob matching, configuration, local server safety, timeouts and leaked handles</td><td>The developer-facing CLI or harness boundary is broken.</td></tr>
-                                <tr><td>Native coverage gates</td><td>Node 24 and Chrome Stable</td><td>Independent statement, branch, function, and line measurements of <code>index.js</code></td><td>One runtime did not exercise the complete configured core scope.</td></tr>
+                                <tr><td>Native coverage gates</td><td>Node 24 and Chrome Stable</td><td>Independent executable-range, block-range, function-range, and executable-line measurements of <code>index.js</code></td><td>One runtime did not exercise the complete configured core scope.</td></tr>
                                 <tr><td>Packed npm artifact</td><td>Clean Node 24 project</td><td><code>npm pack</code>, install the tarball, import package name, run and validate one result</td><td>The repository may pass while the published file set is unusable.</td></tr>
                             </tbody>
                         </table>
@@ -98,7 +98,7 @@
                     <h2>Run tests locally</h2>
                     <div class="code-block"><pre><code>npm ci
 npm test</code></pre></div>
-                    <p><code>npm test</code> first executes <code>test/CI.js</code> through the thin Node adapter, then runs <code>test/tooling.js</code> with Node's built-in test runner.</p>
+                    <p><code>npm test</code> first executes <code>test/CI.js</code> through the thin <code>test/node.js</code> adapter, then runs <code>test/tooling.js</code>, <code>test/output.js</code>, <code>test/server-security.js</code>, and <code>test/status-builder.js</code> with Node's built-in test runner.</p>
                     <div class="code-block"><pre><code>npm run coverage
 <span class="code-comment"># or isolate one collector</span>
 npm run coverage:node

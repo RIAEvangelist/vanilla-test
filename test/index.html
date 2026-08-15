@@ -68,8 +68,21 @@
             </div>
         </section>
 
+        <section class="console-panel" aria-labelledby="console-title">
+            <div class="console-toolbar">
+                <div class="console-heading" id="console-title">Chrome console</div>
+                <div class="console-tools" aria-hidden="true">
+                    <span>top</span>
+                    <span>Default levels</span>
+                </div>
+            </div>
+            <div class="console-output" id="console-output" role="log" aria-live="polite">
+                <div class="console-empty">Waiting for browser output…</div>
+            </div>
+        </section>
+
         <div class="link-panel">
-            <p>Coverage runs this same module while independently collecting native V8 execution data for the configured shared-core scope.</p>
+            <p>The visible panel mirrors messages to the real DevTools console. Coverage runs this same module while independently collecting native V8 execution data for the configured shared-core scope.</p>
             <a class="button button--secondary" href="../coverage/">Review published coverage</a>
         </div>
     </main>
@@ -90,9 +103,67 @@
 
         const status = document.querySelector('[data-vanilla-test-status]');
         const checks = document.querySelector('#checks');
+        const consoleOutput = document.querySelector('#console-output');
+        const nativeConsole = Object.fromEntries(
+            ['log', 'warn', 'error'].map((level) => [level, console[level].bind(console)])
+        );
+
+        function formatConsoleValue(value) {
+            if (typeof value === 'string') return value;
+            if (typeof value === 'bigint') return `${value}n`;
+            if (typeof value === 'symbol' || typeof value === 'function') return String(value);
+            if (value instanceof Error) return `${value.name}: ${value.message}`;
+
+            try {
+                const seen = new WeakSet();
+                const serialized = JSON.stringify(value, (_key, nestedValue) => {
+                    if (typeof nestedValue === 'bigint') return `${nestedValue}n`;
+                    if (typeof nestedValue === 'symbol' || typeof nestedValue === 'function') return String(nestedValue);
+                    if (nestedValue instanceof Error) return `${nestedValue.name}: ${nestedValue.message}`;
+                    if (nestedValue && typeof nestedValue === 'object') {
+                        if (seen.has(nestedValue)) return '[Circular]';
+                        seen.add(nestedValue);
+                    }
+                    return nestedValue;
+                });
+                return serialized ?? String(value);
+            } catch {
+                try {
+                    return String(value);
+                } catch {
+                    return '[Unprintable value]';
+                }
+            }
+        }
+
+        function appendConsoleLine(level, values) {
+            consoleOutput.querySelector('.console-empty')?.remove();
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            line.dataset.level = level;
+            const message = document.createElement('span');
+            message.textContent = values.map(formatConsoleValue).join(' ');
+            line.append(message);
+            consoleOutput.append(line);
+        }
+
+        for (const level of ['log', 'warn', 'error']) {
+            console[level] = (...values) => {
+                nativeConsole[level](...values);
+                appendConsoleLine(level, values);
+            };
+        }
 
         try {
             const result = await run();
+            console.log('run() result fields', {
+                ok: result.ok,
+                failureCount: result.failureCount,
+                total: result.total,
+                passed: result.passed.length,
+                failed: result.failed.length,
+                frameworkLogCount: result.frameworkLogCount
+            });
             globalThis.__VANILLA_TEST_RESULT__ = result;
             status.dataset.ok = String(result.ok);
             document.querySelector('#status-title').textContent = result.ok ? 'All shared checks passed' : 'Verification failed';
@@ -119,6 +190,7 @@
                 checks.append(item);
             }
         } catch (error) {
+            console.error('run() rejected', error);
             status.dataset.ok = 'false';
             document.querySelector('#status-title').textContent = 'Harness error';
             document.querySelector('#status-copy').textContent = error instanceof Error ? error.message : String(error);

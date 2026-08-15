@@ -10,6 +10,9 @@ All notable changes to this project are documented here.
 - Generated quality status data and Shields endpoints sourced from the tested runtime artifacts.
 - Engineer-focused Overview, Guide, API, Testing, Coverage, and CLI documentation pages.
 - Target-specific configuration so Node-only projects may omit `chrome` and Chrome-only projects may omit `node`.
+- Project-owned native V8 range analysis and standalone HTML, LCOV, and JSON coverage reports.
+- Direct Chrome DevTools Protocol launching, collection, console forwarding, and screenshots.
+- Complete README references for the public API, CLI, npm scripts, configuration, and Chrome executable selection.
 
 ### Changed
 
@@ -18,6 +21,8 @@ All notable changes to this project are documented here.
 - GitHub Pages now deploys a curated documentation artifact rather than archiving the repository workspace.
 - The npm package uses an explicit runtime/documentation allowlist and excludes site, test, and report assets.
 - GitHub Actions dependencies are pinned to immutable release commits.
+- Chrome verification screenshots now include a visible console panel.
+- Package author is now `Roshi _ _`.
 
 ### Security
 
@@ -25,6 +30,10 @@ All notable changes to this project are documented here.
 - Both local servers deny dotfiles, common credential files, and private-key formats, and enforce real-path containment across links.
 - Local responses now include CSP, CORP, no-referrer, no-sniff, frame-denial, and no-store headers.
 - Chrome coverage blocks browser requests outside the bound coverage origin.
+
+### Removed
+
+- The `c8`, `playwright-core`, and `monocart-coverage-reports` dependencies, including the former Istanbul-branded report output.
 
 ## [2.0.0] - 2026-08-12
 

@@ -107,6 +107,8 @@ test('workspace server preserves valid site routes while enforcing the same boun
     const root = await temporaryDirectory(context);
     await fs.writeFile(path.join(root, 'index.html'), '<!doctype html><title>Workspace</title>');
     await fs.writeFile(path.join(root, 'module.mjs'), 'export const ready = true;\n');
+    await fs.mkdir(path.join(root, 'coverage', 'node'), { recursive: true });
+    await fs.writeFile(path.join(root, 'coverage', 'node', 'index.html'), '<!doctype html><title>Node report</title>');
     await writeSensitiveFixtures(root);
 
     const server = await startWorkspaceServer({ root, port: 0 });
@@ -121,6 +123,11 @@ test('workspace server preserves valid site routes while enforcing the same boun
     assert.equal(module.status, 200);
     assert.match(module.headers['content-type'], /^text\/javascript/);
     assertSecurityHeaders(module);
+
+    const report = await request(server.origin, '/reports/node/');
+    assert.equal(report.status, 200);
+    assert.match(report.body, /Node report/);
+    assertSecurityHeaders(report);
 
     assert.equal((await request(server.origin, '/', { host: 'attacker.example' })).status, 421);
     assert.equal((await request(server.origin, '/.git/config')).status, 403);

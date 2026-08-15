@@ -53,10 +53,26 @@ vanilla-test coverage all
 vanilla-test coverage node
 vanilla-test coverage chrome</code></pre></div>
                     <p><code>coverage</code> and <code>coverage all</code> run Node first, then Chrome. An ordinary assertion or threshold failure in Node does not discard its report or prevent the Chrome collector from producing its own report.</p>
-                    <p>Repository contributors can use the equivalent npm scripts:</p>
-                    <div class="code-block"><pre><code>npm run coverage
-npm run coverage:node
-npm run coverage:chrome</code></pre></div>
+                    <p>Repository contributors can use the npm scripts below. Run a script exactly as shown; append CLI options after <code>--</code>.</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>npm command</th><th>Underlying command</th><th>Purpose</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>npm test</code></td><td><code>npm run test:core &amp;&amp; npm run test:tooling</code></td><td>Run every core and tooling test.</td></tr>
+                                <tr><td><code>npm run test:core</code></td><td><code>node ./test/node.js</code></td><td>Run the shared core suite directly in Node.js.</td></tr>
+                                <tr><td><code>npm run test:tooling</code></td><td><code>node --test ./test/tooling.js ./test/output.js ./test/server-security.js ./test/status-builder.js</code></td><td>Run CLI, report, output, server-security, and site-status tests.</td></tr>
+                                <tr><td><code>npm run coverage</code></td><td><code>node ./bin/vanilla-test.js coverage</code></td><td>Run the Node and Chrome collectors.</td></tr>
+                                <tr><td><code>npm run coverage:node</code></td><td><code>node ./bin/vanilla-test.js coverage node</code></td><td>Run only Node coverage.</td></tr>
+                                <tr><td><code>npm run coverage:chrome</code></td><td><code>node ./bin/vanilla-test.js coverage chrome</code></td><td>Run only Chrome coverage.</td></tr>
+                                <tr><td><code>npm run site:status</code></td><td><code>node ./scripts/build-site-status.js --run-tooling</code></td><td>Refresh site status data and Shields badges from current artifacts.</td></tr>
+                                <tr><td><code>npm run screenshots</code></td><td><code>node ./scripts/screenshots.js</code></td><td>Regenerate the Chrome test and native-report screenshots after coverage.</td></tr>
+                                <tr><td><code>npm start</code></td><td><code>node ./scripts/serve.js</code></td><td>Serve the repository and documentation locally.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="code-block"><pre><code>npm run coverage -- --timeout-ms 60000
+npm run coverage:chrome -- --headed
+npm run coverage:chrome -- --chrome-path "/opt/google/chrome/google-chrome"</code></pre></div>
                 </section>
 
                 <section>
@@ -102,21 +118,65 @@ npm run coverage:chrome</code></pre></div>
 }</code></pre></div>
                     <div class="table-wrap">
                         <table>
-                            <thead><tr><th>Key</th><th>Contract</th></tr></thead>
+                            <thead><tr><th>Key</th><th>Required/default</th><th>Contract</th></tr></thead>
                             <tbody>
-                                <tr><td><code>entry</code></td><td>Existing project-local module exporting a default function or named <code>run()</code>.</td></tr>
-                                <tr><td><code>reportsDirectory</code></td><td>Project-local output directory; defaults to <code>./coverage</code>.</td></tr>
-                                <tr><td><code>thresholds</code></td><td>All four numeric percentages from 0 through 100. Defaults to 100 for every metric.</td></tr>
-                                <tr><td><code>timeoutMs</code></td><td>Integer from 1 through 3,600,000. Default: 30,000.</td></tr>
-                                <tr><td><code>node.include</code></td><td>Nonempty array of positive project-relative globs. At least one file must match.</td></tr>
-                                <tr><td><code>chrome.include</code></td><td>Independent nonempty include scope for Chrome. At least one file must match.</td></tr>
-                                <tr><td><code>chrome.imports</code></td><td>Additional or overriding browser specifiers mapped to files inside the project.</td></tr>
-                                <tr><td><code>chrome.headless</code></td><td>Boolean; defaults to <code>true</code>.</td></tr>
-                                <tr><td><code>chrome.executablePath</code></td><td>Optional path to Google Chrome. CLI <code>--chrome-path</code> takes precedence.</td></tr>
+                                <tr><td><code>entry</code></td><td>Required</td><td>Existing project-local module exporting a default function or named <code>run()</code>.</td></tr>
+                                <tr><td><code>reportsDirectory</code></td><td><code>./coverage</code></td><td>Project-local parent for atomically staged, runtime-owned reports.</td></tr>
+                                <tr><td><code>thresholds</code></td><td>Every metric defaults to <code>100</code></td><td>If present, contains all four numeric percentages—<code>statements</code>, <code>branches</code>, <code>functions</code>, and <code>lines</code>—from 0 through 100.</td></tr>
+                                <tr><td><code>timeoutMs</code></td><td><code>30000</code></td><td>Integer from 1 through 3,600,000.</td></tr>
+                                <tr><td><code>node</code></td><td>Required for <code>all</code>/<code>node</code></td><td>Node collector object. It may be omitted for a Chrome-only run.</td></tr>
+                                <tr><td><code>node.include</code></td><td>Required with <code>node</code></td><td>Nonempty array of positive project-relative globs. At least one file must match.</td></tr>
+                                <tr><td><code>chrome</code></td><td>Required for <code>all</code>/<code>chrome</code></td><td>Chrome collector object. It may be omitted for a Node-only run.</td></tr>
+                                <tr><td><code>chrome.include</code></td><td>Required with <code>chrome</code></td><td>Independent nonempty include scope for Chrome. At least one file must match.</td></tr>
+                                <tr><td><code>chrome.imports</code></td><td><code>{}</code></td><td>Additional or overriding browser specifiers mapped to files inside the project.</td></tr>
+                                <tr><td><code>chrome.headless</code></td><td><code>true</code></td><td>Boolean selecting visible or headless Chrome. CLI <code>--headed</code> forces <code>false</code>.</td></tr>
+                                <tr><td><code>chrome.executablePath</code></td><td><code>null</code></td><td>String path or <code>null</code>. A config path is resolved from the configuration directory. CLI <code>--chrome-path</code> takes precedence.</td></tr>
                             </tbody>
                         </table>
                     </div>
                     <p>When you run only one collector, its sibling configuration object is optional: a Node-only configuration may omit <code>chrome</code>, and a Chrome-only configuration may omit <code>node</code>. The <code>all</code> target requires both objects.</p>
+                </section>
+
+                <section>
+                    <h2>Choose Chrome with <code>executablePath</code></h2>
+                    <p><code>null</code> is the portable default, not a placeholder. It tells vanilla-test to check <code>CHROME_PATH</code>, standard Google Chrome Stable locations on Windows, macOS, and Linux, then Chrome executable names available on <code>PATH</code>.</p>
+                    <div class="code-block"><pre><code>{
+    "chrome": {
+        "include": ["index.js"],
+        "imports": {},
+        "headless": true,
+        "executablePath": null
+    }
+}</code></pre></div>
+                    <p>Use a committed string when every machine shares one nonstandard installation. JSON requires Windows backslashes to be escaped:</p>
+                    <div class="code-block"><pre><code>{
+    "chrome": {
+        "include": ["index.js"],
+        "imports": {},
+        "headless": true,
+        "executablePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+    }
+}</code></pre></div>
+                    <p>For machine-specific and CI installations, leave the config at <code>null</code> and use an environment or command-line override:</p>
+                    <div class="code-block"><pre><code># PowerShell
+$env:CHROME_PATH = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+npm run coverage:chrome
+npm run coverage:chrome -- --chrome-path 'D:\Browsers\Chrome\chrome.exe'
+
+# macOS or Linux shell
+CHROME_PATH=/usr/bin/google-chrome-stable npm run coverage:chrome
+npm run coverage:chrome -- --chrome-path "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"</code></pre></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Precedence</th><th>Source</th><th>Path base</th></tr></thead>
+                            <tbody>
+                                <tr><td>1 (highest)</td><td><code>--chrome-path &lt;path&gt;</code></td><td>Current shell directory</td></tr>
+                                <tr><td>2</td><td>String <code>chrome.executablePath</code></td><td>Configuration-file directory</td></tr>
+                                <tr><td>3</td><td><code>CHROME_PATH</code></td><td>Environment value</td></tr>
+                                <tr><td>4</td><td>Stable-location and <code>PATH</code> discovery</td><td>Operating system</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
 
                 <section>
@@ -151,7 +211,7 @@ npm run coverage:chrome</code></pre></div>
                             <tbody>
                                 <tr><td><code>0</code></td><td>Tests and coverage thresholds passed.</td><td>Success.</td></tr>
                                 <tr><td><code>1</code></td><td>An assertion failed or a coverage threshold was missed.</td><td>Product/test failure.</td></tr>
-                                <tr><td><code>2</code></td><td>Usage, configuration, dependency, launch, timeout, or malformed-result failure.</td><td>Harness/infrastructure failure.</td></tr>
+                                <tr><td><code>2</code></td><td>Usage, configuration, missing runtime prerequisite, launch, timeout, or malformed-result failure.</td><td>Harness/infrastructure failure.</td></tr>
                                 <tr><td><code>130</code></td><td>The process was interrupted by SIGINT or SIGTERM.</td><td>Cancelled/interrupted run.</td></tr>
                             </tbody>
                         </table>
@@ -162,16 +222,32 @@ npm run coverage:chrome</code></pre></div>
                     <h2>Output layout</h2>
                     <div class="code-block"><pre><code>coverage/
   node/
+    .vanilla-test-coverage.json
     index.html
     lcov.info
     coverage-summary.json
     test-results.json
   chrome/
+    .vanilla-test-coverage.json
     index.html
     lcov.info
     coverage-summary.json
-    test-results.json</code></pre></div>
-                    <p>Each runtime directory also contains a hidden ownership marker. A collector stages its output and replaces only a directory previously created by vanilla-test, and only after a valid run completes. An unowned directory is refused; a harness failure preserves the previous known-good report. Running both collectors retains both final reports. The documentation site's <a href="../coverage/">coverage page</a> normalizes those summaries and links the complete published reports.</p>
+    test-results.json
+    vanilla-test-chrome.png</code></pre></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Artifact</th><th>Meaning</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>index.html</code></td><td>Standalone project-owned native V8 coverage report.</td></tr>
+                                <tr><td><code>lcov.info</code></td><td>Native metrics in conventional LCOV transport form.</td></tr>
+                                <tr><td><code>coverage-summary.json</code></td><td>Aggregate and per-file native metric totals.</td></tr>
+                                <tr><td><code>test-results.json</code></td><td>Plain, ANSI-free suite status, counts, and descriptions.</td></tr>
+                                <tr><td><code>.vanilla-test-coverage.json</code></td><td>Runtime ownership marker used to protect unrelated directories.</td></tr>
+                                <tr><td><code>vanilla-test-chrome.png</code></td><td>Successful Chrome harness screenshot; Chrome output only.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>A collector builds a complete report in a temporary sibling directory. After a valid completed run—even a test or threshold failure—it atomically replaces only a report carrying the matching ownership marker. An unowned directory is refused. Configuration, harness, timeout, collector, or interruption failures clean up staging and preserve the previous known-good report. Running both collectors retains both final reports. The documentation site's <a href="../coverage/">coverage page</a> normalizes those summaries and links the complete published reports.</p>
                 </section>
 
                 <section>

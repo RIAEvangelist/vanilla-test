@@ -41,7 +41,7 @@
         <header class="site-shell hero--single">
             <p class="eyebrow">Native V8 coverage</p>
             <h1>Two collectors. Two independent gates.</h1>
-            <p class="lede">Node and Google Chrome execute the same shared entry, then report coverage using their own V8-backed tooling. Neither result is inferred from the other.</p>
+            <p class="lede">Node and Google Chrome execute the same shared entry, then the project-owned collectors and reporter derive transparent metrics directly from each runtime's V8 ranges. Neither result is inferred from the other.</p>
         </header>
 
         <div class="site-shell page-layout">
@@ -57,16 +57,16 @@
                                 <tr><th>Metric</th><th>Required</th><th>Node percent</th><th>Node covered</th><th>Chrome percent</th><th>Chrome covered</th></tr>
                             </thead>
                             <tbody>
-                                <tr><td>Statements</td><td data-status-threshold="statements">configured gate</td><td class="metric-value" data-status-metric="node.statements.pct">—</td><td data-status-metric="node.statements.count">—</td><td class="metric-value" data-status-metric="chrome.statements.pct">—</td><td data-status-metric="chrome.statements.count">—</td></tr>
-                                <tr><td>Branches</td><td data-status-threshold="branches">configured gate</td><td class="metric-value" data-status-metric="node.branches.pct">—</td><td data-status-metric="node.branches.count">—</td><td class="metric-value" data-status-metric="chrome.branches.pct">—</td><td data-status-metric="chrome.branches.count">—</td></tr>
-                                <tr><td>Functions</td><td data-status-threshold="functions">configured gate</td><td class="metric-value" data-status-metric="node.functions.pct">—</td><td data-status-metric="node.functions.count">—</td><td class="metric-value" data-status-metric="chrome.functions.pct">—</td><td data-status-metric="chrome.functions.count">—</td></tr>
-                                <tr><td>Lines</td><td data-status-threshold="lines">configured gate</td><td class="metric-value" data-status-metric="node.lines.pct">—</td><td data-status-metric="node.lines.count">—</td><td class="metric-value" data-status-metric="chrome.lines.pct">—</td><td data-status-metric="chrome.lines.count">—</td></tr>
+                                <tr><td>Executable ranges (<code>statements</code>)</td><td data-status-threshold="statements">configured gate</td><td class="metric-value" data-status-metric="node.statements.pct">—</td><td data-status-metric="node.statements.count">—</td><td class="metric-value" data-status-metric="chrome.statements.pct">—</td><td data-status-metric="chrome.statements.count">—</td></tr>
+                                <tr><td>Block ranges (<code>branches</code>)</td><td data-status-threshold="branches">configured gate</td><td class="metric-value" data-status-metric="node.branches.pct">—</td><td data-status-metric="node.branches.count">—</td><td class="metric-value" data-status-metric="chrome.branches.pct">—</td><td data-status-metric="chrome.branches.count">—</td></tr>
+                                <tr><td>Function ranges (<code>functions</code>)</td><td data-status-threshold="functions">configured gate</td><td class="metric-value" data-status-metric="node.functions.pct">—</td><td data-status-metric="node.functions.count">—</td><td class="metric-value" data-status-metric="chrome.functions.pct">—</td><td data-status-metric="chrome.functions.count">—</td></tr>
+                                <tr><td>Executable lines (<code>lines</code>)</td><td data-status-threshold="lines">configured gate</td><td class="metric-value" data-status-metric="node.lines.pct">—</td><td data-status-metric="node.lines.count">—</td><td class="metric-value" data-status-metric="chrome.lines.pct">—</td><td data-status-metric="chrome.lines.count">—</td></tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="callout">
                         <strong>Raw totals are not cross-runtime equivalents.</strong>
-                        <p>c8 and Chrome's precise-coverage reporter map V8 ranges into statements, branches, functions, and lines differently. Compare each runtime with its own threshold; do not use the Node and Chrome totals as an implementation-size comparison.</p>
+                        <p>Both collectors use the same project-owned range analyzer, but V8 may emit or collapse ranges differently along each execution path. Compare each runtime with its own threshold; these are native execution-range measurements, not parser-derived statement or branch counts.</p>
                     </div>
                     <div class="actions">
                         <a class="button" href="../reports/node/">Open the detailed Node report</a>
@@ -83,8 +83,9 @@
 }</code></pre></div>
                     <ul>
                         <li>Included files that are never loaded count as zero coverage.</li>
-                        <li>Node applies total and per-file gates through c8.</li>
-                        <li>Chrome applies total and per-file gates after collecting precise V8 coverage.</li>
+                        <li>Node applies every configured threshold to each included file.</li>
+                        <li>Chrome applies every configured threshold to both the aggregate total and each included file.</li>
+                        <li>Unloaded files cannot satisfy a positive function or block gate because their internal V8 structure is unknown.</li>
                         <li>Assertion failure and coverage failure both produce exit status <code>1</code>.</li>
                         <li>Harness or configuration failure produces exit status <code>2</code>.</li>
                     </ul>
@@ -96,18 +97,18 @@
                     <div class="grid grid--two">
                         <article class="card">
                             <span class="card__label">Node</span>
-                            <h3>c8 over native V8 data</h3>
-                            <p>The CLI launches c8 with <code>--all</code>, per-file thresholds, and the configured include globs. It emits text, HTML, LCOV, and JSON summary reports.</p>
+                            <h3>Built-in V8 coverage</h3>
+                            <p>The CLI launches the test entry with Node's <code>NODE_V8_COVERAGE</code> output enabled, merges repeated script records, and applies per-file gates to the configured include scope.</p>
                         </article>
                         <article class="card">
                             <span class="card__label">Chrome</span>
                             <h3>Precise coverage in real Chrome</h3>
-                            <p>Playwright launches installed Google Chrome, starts V8 JavaScript coverage, runs the shared harness, and hands native ranges to Monocart for HTML, LCOV, and JSON output.</p>
+                            <p>A project-owned DevTools pipe launches installed Google Chrome Stable, starts precise V8 coverage, forwards console output, runs the shared harness, and captures a diagnostic screenshot.</p>
                         </article>
                     </div>
                     <div class="callout">
                         <strong>The execution path stays uninstrumented.</strong>
-                        <p>No nyc transform, source rewrite, browser shim, bundle, or transpiler is inserted before either runtime executes the module.</p>
+                        <p>No third-party coverage engine, browser automation framework, source rewrite, browser shim, bundle, or transpiler is inserted before either runtime executes the module.</p>
                     </div>
                 </section>
 
@@ -117,14 +118,36 @@
                         <table>
                             <thead><tr><th>Artifact</th><th>Use</th></tr></thead>
                             <tbody>
-                                <tr><td><code>index.html</code></td><td>Interactive, file-level inspection for engineers.</td></tr>
+                                <tr><td><code>index.html</code></td><td>Standalone project-owned native V8 report.</td></tr>
                                 <tr><td><code>lcov.info</code></td><td>Interchange with editors and coverage consumers.</td></tr>
                                 <tr><td><code>coverage-summary.json</code></td><td>Machine-readable covered, total, and percentage values.</td></tr>
+                                <tr><td><code>test-results.json</code></td><td>Normalized, ANSI-free suite outcome for the selected runtime.</td></tr>
+                                <tr><td><code>.vanilla-test-coverage.json</code></td><td>Ownership marker used for safe atomic report replacement.</td></tr>
+                                <tr><td><code>vanilla-test-chrome.png</code></td><td>Successful Chrome harness screenshot in the Chrome report.</td></tr>
                                 <tr><td><code>data/status.json</code></td><td>Normalized package, runtime, test, coverage, commit, and timestamp provenance for this documentation site.</td></tr>
                             </tbody>
                         </table>
                     </div>
                     <p>CI retains downloadable coverage artifacts and publishes the successful main-build reports here. A failed current build is still visible through the repository's CI status; a previous Pages deployment should not be interpreted without its displayed commit.</p>
+                </section>
+
+                <section>
+                    <h2>Current test and report screenshots</h2>
+                    <p>These PNGs are regenerated by the same CI run that builds the native reports. Open any image to inspect it at full size.</p>
+                    <div class="screenshot-gallery">
+                        <figure class="screenshot-card screenshot-card--wide">
+                            <a href="../example/img/vanilla-test-chrome-v2.png"><img src="../example/img/vanilla-test-chrome-v2.png" width="1425" height="2348" loading="lazy" decoding="async" alt="Chrome verification showing all 17 shared checks passed and visible console output"></a>
+                            <figcaption><strong>Chrome test + console</strong><span>All 17 shared checks pass, and the captured page shows the console summary.</span></figcaption>
+                        </figure>
+                        <figure class="screenshot-card">
+                            <a href="../example/img/vanilla-test-node-coverage-v2.png"><img src="../example/img/vanilla-test-node-coverage-v2.png" width="1425" height="2130" loading="lazy" decoding="async" alt="Project-owned Node native V8 coverage report"></a>
+                            <figcaption><strong>Node native V8 report</strong><span>Built directly from Node's V8 records.</span></figcaption>
+                        </figure>
+                        <figure class="screenshot-card">
+                            <a href="../example/img/vanilla-test-chrome-coverage-v2.png"><img src="../example/img/vanilla-test-chrome-coverage-v2.png" width="1425" height="2130" loading="lazy" decoding="async" alt="Project-owned Chrome native V8 coverage report"></a>
+                            <figcaption><strong>Chrome native V8 report</strong><span>Collected directly over the Chrome DevTools Protocol.</span></figcaption>
+                        </figure>
+                    </div>
                 </section>
 
                 <section>
@@ -144,7 +167,7 @@ npm run coverage:chrome</code></pre></div>
                 <strong>Published context</strong>
                 <ul>
                     <li>Scope: shared core</li>
-                    <li>Node: <span data-status-node-coverage>V8 via c8</span></li>
+                    <li>Node: <span data-status-node-coverage>built-in V8 coverage</span></li>
                     <li>Chrome: <span data-status-chrome>Google Chrome Stable</span></li>
                     <li>Source transforms: none</li>
                     <li>Reports: HTML, LCOV, JSON</li>

@@ -22,6 +22,8 @@ if (!result.ok) {
 }
 ```
 
+Check the console or terminal for the detailed report.
+
 The result and its `passed` and `failed` arrays are frozen. It includes:
 
 ```js
@@ -48,6 +50,8 @@ const unsubscribe = test.onComplete(({ detail }) => {
 test.report();
 ```
 
+Check the console for the event result and test report.
+
 Completion is dispatched as `vanilla-test:complete` in a microtask. The event name is exported as `VANILLA_TEST_COMPLETE_EVENT`.
 
 ## Test lifecycle corrections
@@ -68,15 +72,17 @@ Replace copied fixtures and instrumented coverage commands with the bundled cove
 vanilla-test coverage all
 ```
 
-Add `vanilla-test.config.json` and identify the shared entry plus the files owned by each runtime. Node uses c8 with native V8 coverage. Chrome uses real Google Chrome's native precise V8 coverage through Playwright and Monocart. Reports and 100% gates remain independent under `coverage/node` and `coverage/chrome`.
+Check the terminal for coverage progress, totals, and errors.
 
-There is no Istanbul/nyc source instrumentation in v2. The exact JavaScript that runs normally is the JavaScript that coverage measures.
+Add `vanilla-test.config.json` and identify the shared entry plus the files owned by each runtime. Node writes built-in V8 coverage, Chrome returns precise V8 coverage over the Chrome DevTools Protocol, and the project-owned reporter produces both sets of artifacts. Reports and 100% gates remain independent under `coverage/node` and `coverage/chrome`.
+
+There is no c8, Istanbul/nyc, Playwright, Monocart, or source instrumentation in the current coverage path. The exact JavaScript that runs normally is the JavaScript that coverage measures.
 
 See the README for the complete configuration contract and CLI options.
 
 ## Script replacement
 
-Replace the old `emulate`/recursive copy scripts with direct commands:
+For a consuming project, replace the old `emulate`/recursive copy scripts with direct package commands:
 
 ```json
 {
@@ -84,11 +90,11 @@ Replace the old `emulate`/recursive copy scripts with direct commands:
         "test": "node ./test/node.js",
         "coverage": "vanilla-test coverage all",
         "coverage:node": "vanilla-test coverage node",
-        "coverage:chrome": "vanilla-test coverage chrome",
-        "start": "node ./scripts/serve.js",
-        "screenshots": "node ./scripts/screenshots.js"
+        "coverage:chrome": "vanilla-test coverage chrome"
     }
 }
 ```
 
-The exact repository scripts may include internal entry paths while developing the package; consumers should use the published `vanilla-test` executable.
+Check the terminal when these npm scripts run; each command prints its result or output location.
+
+The repository also has maintainer-only `start` and `screenshots` scripts. They are not published package commands; consumers should use their own static server or screenshot tooling when needed.

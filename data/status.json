@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-15T02:12:56.341Z",
+  "generatedAt": "2026-08-15T03:18:18.469Z",
   "commit": {
     "sha": null,
     "short": null,
@@ -12,7 +12,7 @@
   },
   "runtimes": {
     "node": "v24.18.0",
-    "chrome": null
+    "chrome": "Google Chrome 151.0.7922.138"
   },
   "status": {
     "ok": true,
@@ -80,8 +80,8 @@
       "runtime": "node",
       "suite": "tooling",
       "ok": true,
-      "total": 20,
-      "passedCount": 20,
+      "total": 26,
+      "passedCount": 26,
       "failureCount": 0,
       "skippedCount": 0,
       "cancelledCount": 0
@@ -106,23 +106,23 @@
       "minimumPct": 100,
       "metrics": {
         "statements": {
-          "covered": 224,
-          "total": 224,
-          "pct": 100
-        },
-        "branches": {
           "covered": 54,
           "total": 54,
           "pct": 100
         },
+        "branches": {
+          "covered": 35,
+          "total": 35,
+          "pct": 100
+        },
         "functions": {
-          "covered": 16,
-          "total": 16,
+          "covered": 19,
+          "total": 19,
           "pct": 100
         },
         "lines": {
-          "covered": 224,
-          "total": 224,
+          "covered": 171,
+          "total": 171,
           "pct": 100
         }
       }
@@ -133,23 +133,23 @@
       "minimumPct": 100,
       "metrics": {
         "statements": {
-          "covered": 85,
-          "total": 85,
+          "covered": 54,
+          "total": 54,
           "pct": 100
         },
         "branches": {
-          "covered": 41,
-          "total": 41,
+          "covered": 35,
+          "total": 35,
           "pct": 100
         },
         "functions": {
-          "covered": 17,
-          "total": 17,
+          "covered": 19,
+          "total": 19,
           "pct": 100
         },
         "lines": {
-          "covered": 85,
-          "total": 85,
+          "covered": 171,
+          "total": 171,
           "pct": 100
         }
       }

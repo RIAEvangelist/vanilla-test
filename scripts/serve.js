@@ -75,7 +75,12 @@ export async function startWorkspaceServer({
             return;
         }
 
-        let file = resolve(resolvedRoot, `.${pathname}`);
+        const workspacePathname = pathname === '/reports'
+            ? '/coverage'
+            : pathname.startsWith('/reports/')
+                ? `/coverage/${pathname.slice('/reports/'.length)}`
+                : pathname;
+        let file = resolve(resolvedRoot, `.${workspacePathname}`);
         if (!isPathInside(resolvedRoot, file)) {
             send(response, 403, 'Forbidden');
             return;

@@ -40,7 +40,7 @@
     "browser",
     "es6"
   ],
-  "author": "Brandon Nozaki Miller",
+  "author": "Roshi _ _",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -48,9 +48,6 @@
   },
   "dependencies": {
     "ansi-colors-es6": "^5.0.0",
-    "c8": "^12.0.0",
-    "monocart-coverage-reports": "^2.12.12",
-    "playwright-core": "^1.62.1",
     "strong-type": "^1.1.0"
   },
   "bugs": {
@@ -61,6 +58,5 @@
     "example": "example",
     "lib": "lib",
     "test": "test"
-  },
-  "devDependencies": {}
+  }
 }
