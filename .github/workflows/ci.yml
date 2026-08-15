@@ -46,6 +46,8 @@ jobs:
     name: Native V8 coverage / Node 24 + Chrome
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      VANILLA_TEST_CHROME_NO_SANDBOX: '1'
 
     steps:
       - name: Check out repository
