@@ -166,6 +166,12 @@ npm run coverage:chrome -- --chrome-path 'D:\Browsers\Chrome\chrome.exe'
 # macOS or Linux shell
 CHROME_PATH=/usr/bin/google-chrome-stable npm run coverage:chrome
 npm run coverage:chrome -- --chrome-path "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"</code></pre></div>
+                    <p>Keep Chrome's sandbox enabled by default. On an isolated Linux CI runner that cannot provide a usable Chrome sandbox, opt out for that job only:</p>
+                    <div class="code-block"><pre><code>VANILLA_TEST_CHROME_NO_SANDBOX=1 npm run coverage</code></pre></div>
+                    <div class="callout">
+                        <strong>CI escape hatch, not a normal default.</strong>
+                        <p>The variable accepts only <code>0</code>, <code>1</code>, an empty value, or an unset value; empty and unset both preserve the sandbox. <code>1</code> adds Chrome's <code>--no-sandbox</code> flag and reduces browser isolation; do not use it on a general-purpose workstation or an untrusted shared runner.</p>
+                    </div>
                     <div class="table-wrap">
                         <table>
                             <thead><tr><th>Precedence</th><th>Source</th><th>Path base</th></tr></thead>

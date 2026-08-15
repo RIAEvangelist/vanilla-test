@@ -8,6 +8,10 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import { HELP, main, parseArguments } from '../lib/coverage/cli.js';
+import {
+    buildChromeLaunchArguments,
+    chromeNoSandboxFromEnvironment
+} from '../lib/coverage/chrome-session.js';
 import { isCoverageRequestAllowed } from '../lib/coverage/chrome.js';
 import { loadConfig, packagePathFromModule } from '../lib/coverage/config.js';
 import { createIncludeMatcher, globToRegExp, toPosix } from '../lib/coverage/glob.js';
@@ -271,6 +275,27 @@ test('Chrome coverage permits only requests to its exact loopback origin', () =>
     assert.equal(isCoverageRequestAllowed('https://example.com/entry.js', origin), false);
     assert.equal(isCoverageRequestAllowed('data:,favicon', origin), false);
     assert.equal(isCoverageRequestAllowed('not a URL', origin), false);
+});
+
+test('Chrome sandbox bypass requires an explicit validated environment opt-in', () => {
+    assert.equal(chromeNoSandboxFromEnvironment({}), false);
+    assert.equal(chromeNoSandboxFromEnvironment({ VANILLA_TEST_CHROME_NO_SANDBOX: '' }), false);
+    assert.equal(chromeNoSandboxFromEnvironment({ VANILLA_TEST_CHROME_NO_SANDBOX: '0' }), false);
+    assert.equal(chromeNoSandboxFromEnvironment({ VANILLA_TEST_CHROME_NO_SANDBOX: '1' }), true);
+    assert.throws(
+        () => chromeNoSandboxFromEnvironment({ VANILLA_TEST_CHROME_NO_SANDBOX: 'true' }),
+        /must be 0, 1, empty, or unset/
+    );
+
+    const options = {
+        userDataDirectory: '/temporary/chrome-profile',
+        width: 1440,
+        height: 1000,
+        headless: true,
+        args: []
+    };
+    assert.equal(buildChromeLaunchArguments({ ...options, noSandbox: false }).includes('--no-sandbox'), false);
+    assert.equal(buildChromeLaunchArguments({ ...options, noSandbox: true }).includes('--no-sandbox'), true);
 });
 
 test('entry runner maps pass, failure, invalid output, timeout, and leaked handles', async (context) => {

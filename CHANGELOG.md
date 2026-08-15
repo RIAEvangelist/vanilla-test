@@ -13,6 +13,7 @@ All notable changes to this project are documented here.
 - Project-owned native V8 range analysis and standalone HTML, LCOV, and JSON coverage reports.
 - Direct Chrome DevTools Protocol launching, collection, console forwarding, and screenshots.
 - Complete README references for the public API, CLI, npm scripts, configuration, and Chrome executable selection.
+- An explicit, validated `VANILLA_TEST_CHROME_NO_SANDBOX=1` escape hatch for constrained Linux CI runners.
 
 ### Changed
 

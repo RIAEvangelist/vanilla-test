@@ -487,12 +487,21 @@ CHROME_PATH=/usr/bin/google-chrome-stable npm run coverage:chrome
 npm run coverage:chrome -- --chrome-path "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ```
 
+Keep Chrome's sandbox enabled for normal local runs. If an isolated Linux CI runner cannot provide a usable Chrome sandbox, opt out explicitly for that job only:
+
+```sh
+VANILLA_TEST_CHROME_NO_SANDBOX=1 npm run coverage
+```
+
+The variable accepts only `0`, `1`, an empty value, or an unset value; empty and unset both preserve the sandbox. `1` adds Chrome's `--no-sandbox` launch flag and reduces browser isolation, so do not set it on a general-purpose workstation or an untrusted shared runner.
+
 | Setting precedence | Highest to lowest |
 | --- | --- |
 | Chrome executable | `--chrome-path` → configured `chrome.executablePath` → `CHROME_PATH` → platform discovery |
 | Timeout | `--timeout-ms` → configured `timeoutMs` → `30000` |
 | Headless mode | `--headed` forces `false` → configured `chrome.headless` → `true` |
 | Browser import | Configured `chrome.imports` entry → generated local default |
+| Chrome sandbox | Enabled by default; `VANILLA_TEST_CHROME_NO_SANDBOX=1` disables it only for constrained CI |
 
 ### Exit statuses
 
