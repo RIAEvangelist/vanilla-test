@@ -491,19 +491,20 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
     assert.match(readme, /test-results\.json/);
     assert.match(readme, /\.vanilla-test-coverage\.json/);
     assert.match(coverage, /screenshot-gallery/);
-    const images = new Map([
-        ['vanilla-test-chrome-v2.png', [1425, 2348]],
-        ['vanilla-test-chrome-coverage-v2.png', [1425, 2130]],
-        ['vanilla-test-node-coverage-v2.png', [1425, 2130]]
-    ]);
-    for (const [image, [width, height]] of images) {
+    const images = [
+        'vanilla-test-chrome-v2.png',
+        'vanilla-test-chrome-coverage-v2.png',
+        'vanilla-test-node-coverage-v2.png'
+    ];
+    for (const image of images) {
         assert.ok(readme.includes(image), `README does not link ${image}`);
         assert.ok(coverage.includes(image), `Coverage site does not link ${image}`);
-        assert.ok(coverage.includes(`${image}" width="${width}" height="${height}"`), `Coverage site has stale dimensions for ${image}`);
+        assert.ok(coverage.includes(`${image}" width="1425"`), `Coverage site is missing the stable width for ${image}`);
+        assert.doesNotMatch(coverage, new RegExp(`${image.replaceAll('.', '\\.')}.+?height="`), `Coverage site hard-codes a platform-dependent height for ${image}`);
         const source = await fs.readFile(path.join(projectRoot, 'example', 'img', image));
         assert.equal(source.subarray(1, 4).toString('ascii'), 'PNG');
-        assert.equal(source.readUInt32BE(16), width);
-        assert.equal(source.readUInt32BE(20), height);
+        assert.equal(source.readUInt32BE(16), 1425);
+        assert.ok(source.readUInt32BE(20) > 1000, `${image} is unexpectedly short`);
     }
 
     assert.match(site, /Native V8|native V8/);
