@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "label": "node core coverage",
-  "message": "100%",
+  "label": "shared core · node coverage",
+  "message": "100% minimum",
   "color": "brightgreen"
 }

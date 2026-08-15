@@ -1,5 +1,8 @@
 npm-debug.log
 node_modules/
 /coverage/
+!/coverage/
+/coverage/*
+!/coverage/index.html
 /.coverage-shared/
 *.tgz

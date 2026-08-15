@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="How vanilla-test verifies its shared core, Node tooling, package artifact, runtime matrix, and live browser behavior.">
+    <meta name="color-scheme" content="dark">
+    <meta property="og:title" content="Testing strategy · vanilla-test">
+    <meta property="og:description" content="How vanilla-test verifies its shared core, Node tooling, package artifact, runtime matrix, and live browser behavior.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://riaevangelist.github.io/vanilla-test/testing/">
+    <meta property="og:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <meta property="og:image:alt" content="vanilla-test — native JavaScript testing for Node.js and browsers">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Testing strategy · vanilla-test">
+    <meta name="twitter:description" content="How vanilla-test verifies its shared core, Node tooling, package artifact, runtime matrix, and live browser behavior.">
+    <meta name="twitter:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <link rel="canonical" href="https://riaevangelist.github.io/vanilla-test/testing/">
+    <link rel="stylesheet" href="../assets/site.css">
+    <title>Testing strategy · vanilla-test</title>
+</head>
+<body data-status-url="../data/status.json">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+        <div class="site-shell site-header__inner">
+            <a class="brand" href="../" aria-label="vanilla-test documentation home"><span class="brand__mark" aria-hidden="true">VT</span><span>vanilla-test</span></a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../">Overview</a></li>
+                    <li><a href="../guide/">Get started</a></li>
+                    <li><a href="../api/">API</a></li>
+                    <li><a href="../testing/" aria-current="page">Testing</a></li>
+                    <li><a href="../coverage/">Coverage</a></li>
+                    <li><a href="../cli/">CLI</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <header class="site-shell hero--single">
+            <p class="eyebrow">Testing strategy</p>
+            <h1>Different suites prove different claims.</h1>
+            <p class="lede">The shared API is executed unchanged across runtimes. Node-only tests attack the tooling boundary. A packed-artifact smoke check verifies what npm consumers actually install.</p>
+        </header>
+
+        <div class="site-shell page-layout">
+            <article class="prose">
+                <section>
+                    <div class="status-band__header">
+                        <h2>Latest published result</h2>
+                        <p class="status-provenance"><span data-status-state="loading" aria-live="polite">Loading verified status…</span> · <span data-status-generated>latest successful main build</span> · <a data-status-commit href="https://github.com/RIAEvangelist/vanilla-test/commits/main">main</a></p>
+                    </div>
+                    <div class="status-grid status-grid--four">
+                        <article class="status-card">
+                            <span>Shared · Node</span>
+                            <strong data-status-summary="shared-node">Same core suite</strong>
+                            <p>Host-neutral API and lifecycle behavior.</p>
+                        </article>
+                        <article class="status-card">
+                            <span>Shared · Chrome</span>
+                            <strong data-status-summary="shared-chrome">Same core suite</strong>
+                            <p>Real browser, native module, no transform.</p>
+                        </article>
+                        <article class="status-card">
+                            <span>Node tooling</span>
+                            <strong data-status-summary="tooling">Integration suite</strong>
+                            <p>CLI, configuration, server, timeout, and paths.</p>
+                        </article>
+                        <article class="status-card">
+                            <span>Packed artifact</span>
+                            <strong data-status-summary="smoke">Install verified</strong>
+                            <p>Clean-project installation and package-name import.</p>
+                        </article>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Suite topology</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Gate</th><th>Runtime</th><th>Evidence</th><th>Failure means</th></tr></thead>
+                            <tbody>
+                                <tr><td>Shared-core verification</td><td>Node 22.12, Node 24, Chrome Stable</td><td>Exports, typed arguments, state guards, decisions, immutable reports, events, isolation, delay</td><td>The public Web-standard API does not behave consistently.</td></tr>
+                                <tr><td>Node tooling integration</td><td>Node 22.12 and Node 24</td><td>Argument parsing, exit codes, result validation, glob matching, configuration, local server safety, timeouts and leaked handles</td><td>The developer-facing CLI or harness boundary is broken.</td></tr>
+                                <tr><td>Native coverage gates</td><td>Node 24 and Chrome Stable</td><td>Independent statement, branch, function, and line measurements of <code>index.js</code></td><td>One runtime did not exercise the complete configured core scope.</td></tr>
+                                <tr><td>Packed npm artifact</td><td>Clean Node 24 project</td><td><code>npm pack</code>, install the tarball, import package name, run and validate one result</td><td>The repository may pass while the published file set is unusable.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="callout">
+                        <strong>Do not combine these into one “test count.”</strong>
+                        <p>The shared checks, Node integration cases, coverage gates, and package smoke have different units and scopes. Report each gate independently.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Run tests locally</h2>
+                    <div class="code-block"><pre><code>npm ci
+npm test</code></pre></div>
+                    <p><code>npm test</code> first executes <code>test/CI.js</code> through the thin Node adapter, then runs <code>test/tooling.js</code> with Node's built-in test runner.</p>
+                    <div class="code-block"><pre><code>npm run coverage
+<span class="code-comment"># or isolate one collector</span>
+npm run coverage:node
+npm run coverage:chrome</code></pre></div>
+                    <p>Chrome coverage requires Google Chrome Stable. The CLI intentionally does not substitute Chromium, Edge, Firefox, or another browser.</p>
+                </section>
+
+                <section>
+                    <h2>What the shared suite checks</h2>
+                    <div class="grid grid--two">
+                        <article class="card">
+                            <span class="card__label">Surface</span>
+                            <h3>Exports and type helpers</h3>
+                            <p>Default/named class identity, event name, EventTarget inheritance, strong-type delegates, strict state, and typed public arguments.</p>
+                        </article>
+                        <article class="card">
+                            <span class="card__label">Lifecycle</span>
+                            <h3>State transition guards</h3>
+                            <p>Active-test requirements, duplicate descriptions, one active test, undecided failure, and post-report sealing.</p>
+                        </article>
+                        <article class="card">
+                            <span class="card__label">Results</span>
+                            <h3>Snapshots and isolation</h3>
+                            <p>Deeply frozen arrays, failure accounting, empty suites, idempotent reporting, and isolated instances.</p>
+                        </article>
+                        <article class="card">
+                            <span class="card__label">Events</span>
+                            <h3>Host-neutral completion</h3>
+                            <p>Microtask timing, event detail identity, one-time dispatch, and idempotent unsubscribe behavior.</p>
+                        </article>
+                    </div>
+                    <div class="actions">
+                        <a class="button" href="../test/">Run these checks in your browser</a>
+                        <a class="button button--secondary" href="https://github.com/RIAEvangelist/vanilla-test/blob/main/test/CI.js">Read the shared verifier</a>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Interpret the live browser page correctly</h2>
+                    <p>The deployed verification page executes the current deployed <code>test/CI.js</code> in your browser. It proves that browser run only. The published status above records the corresponding Node and Chrome CI executions and includes commit and timestamp provenance.</p>
+                    <ul>
+                        <li>A green live page is useful interactive evidence, not a substitute for the CI matrix.</li>
+                        <li>A stale deployed page can lag current <code>main</code>; use the CI badge and displayed commit together.</li>
+                        <li>Coverage percentages prove execution of the configured scope, not correctness outside that scope.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Add the right kind of test</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Change</th><th>Put the test here</th><th>Reason</th></tr></thead>
+                            <tbody>
+                                <tr><td>Public core API or lifecycle</td><td><code>test/CI.js</code></td><td>It must run unchanged in Node and Chrome.</td></tr>
+                                <tr><td>CLI, config, filesystem, process, or server behavior</td><td><code>test/tooling.js</code></td><td>These are intentionally Node-specific host concerns.</td></tr>
+                                <tr><td>Published-file boundary</td><td>Package smoke step</td><td>Repository-relative imports can hide packaging defects.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>Keep the shared verifier independent of vanilla-test itself as an oracle. Its small Web-standard assertion helpers prevent the framework from certifying its own behavior.</p>
+                </section>
+            </article>
+
+            <aside class="page-aside" aria-label="Testing principles">
+                <strong>Testing principles</strong>
+                <ul>
+                    <li>Same source, real hosts</li>
+                    <li>Independent oracle</li>
+                    <li>Host tooling tested separately</li>
+                    <li>Published artifact smoke-tested</li>
+                    <li>Every status carries provenance</li>
+                </ul>
+                <p>Next: inspect the <a href="../coverage/">coverage scope and raw reports</a>.</p>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-shell site-footer__inner">
+            <p>vanilla-test <span data-status-version>v2</span> · MIT licensed</p>
+            <nav aria-label="Project links">
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/MIGRATION.md">Migration</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/CHANGELOG.md">Changelog</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test">GitHub</a>
+                <a href="https://www.npmjs.com/package/vanilla-test">npm</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/licence">License</a>
+            </nav>
+        </div>
+    </footer>
+    <script type="module" src="../assets/site.js"></script>
+</body>
+</html>

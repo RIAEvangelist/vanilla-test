@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="vanilla-test coverage CLI reference: commands, options, strict JSON configuration, exit codes, output files, and CI integration.">
+    <meta name="color-scheme" content="dark">
+    <meta property="og:title" content="Coverage CLI · vanilla-test">
+    <meta property="og:description" content="vanilla-test coverage CLI reference: commands, options, strict JSON configuration, exit codes, output files, and CI integration.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://riaevangelist.github.io/vanilla-test/cli/">
+    <meta property="og:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <meta property="og:image:alt" content="vanilla-test — native JavaScript testing for Node.js and browsers">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Coverage CLI · vanilla-test">
+    <meta name="twitter:description" content="vanilla-test coverage CLI reference: commands, options, strict JSON configuration, exit codes, output files, and CI integration.">
+    <meta name="twitter:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <link rel="canonical" href="https://riaevangelist.github.io/vanilla-test/cli/">
+    <link rel="stylesheet" href="../assets/site.css">
+    <title>Coverage CLI · vanilla-test</title>
+</head>
+<body data-status-url="../data/status.json">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+        <div class="site-shell site-header__inner">
+            <a class="brand" href="../" aria-label="vanilla-test documentation home"><span class="brand__mark" aria-hidden="true">VT</span><span>vanilla-test</span></a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../">Overview</a></li>
+                    <li><a href="../guide/">Get started</a></li>
+                    <li><a href="../api/">API</a></li>
+                    <li><a href="../testing/">Testing</a></li>
+                    <li><a href="../coverage/">Coverage</a></li>
+                    <li><a href="../cli/" aria-current="page">CLI</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <header class="site-shell hero--single">
+            <p class="eyebrow">Coverage CLI</p>
+            <h1>Strict inputs, explicit hosts, stable exit codes.</h1>
+            <p class="lede">The CLI wraps native Node and Chrome coverage without changing the shared source. Its configuration rejects ambiguous keys and paths before either collector starts.</p>
+        </header>
+
+        <div class="site-shell page-layout">
+            <article class="prose">
+                <section>
+                    <h2>Commands</h2>
+                    <div class="code-block"><pre><code>vanilla-test coverage
+vanilla-test coverage all
+vanilla-test coverage node
+vanilla-test coverage chrome</code></pre></div>
+                    <p><code>coverage</code> and <code>coverage all</code> run Node first, then Chrome. An ordinary assertion or threshold failure in Node does not discard its report or prevent the Chrome collector from producing its own report.</p>
+                    <p>Repository contributors can use the equivalent npm scripts:</p>
+                    <div class="code-block"><pre><code>npm run coverage
+npm run coverage:node
+npm run coverage:chrome</code></pre></div>
+                </section>
+
+                <section>
+                    <h2>Options</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Option</th><th>Behavior</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>--config &lt;path&gt;</code></td><td>Use a JSON configuration file. Default: <code>vanilla-test.config.json</code> in the current directory.</td></tr>
+                                <tr><td><code>--chrome-path &lt;path&gt;</code></td><td>Launch an explicit Google Chrome executable. The resolved target must be a file.</td></tr>
+                                <tr><td><code>--headed</code></td><td>Show Chrome during the browser run, overriding <code>chrome.headless</code>.</td></tr>
+                                <tr><td><code>--timeout-ms &lt;ms&gt;</code></td><td>Override <code>timeoutMs</code> with a positive integer up to 3,600,000.</td></tr>
+                                <tr><td><code>--help</code></td><td>Print command usage.</td></tr>
+                                <tr><td><code>--version</code></td><td>Print the installed package version.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>Options may appear once. Unknown arguments, duplicate options, or options missing a value are usage errors.</p>
+                </section>
+
+                <section>
+                    <h2>Configuration</h2>
+                    <p>Paths are resolved from the directory containing the configuration file, not from whichever directory contains the installed package.</p>
+                    <div class="code-block"><pre><code>{
+    "entry": "./test/CI.js",
+    "reportsDirectory": "./coverage",
+    "thresholds": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+    },
+    "timeoutMs": 30000,
+    "node": {
+        "include": ["index.js"]
+    },
+    "chrome": {
+        "include": ["index.js"],
+        "imports": {},
+        "headless": true,
+        "executablePath": null
+    }
+}</code></pre></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Key</th><th>Contract</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>entry</code></td><td>Existing project-local module exporting a default function or named <code>run()</code>.</td></tr>
+                                <tr><td><code>reportsDirectory</code></td><td>Project-local output directory; defaults to <code>./coverage</code>.</td></tr>
+                                <tr><td><code>thresholds</code></td><td>All four numeric percentages from 0 through 100. Defaults to 100 for every metric.</td></tr>
+                                <tr><td><code>timeoutMs</code></td><td>Integer from 1 through 3,600,000. Default: 30,000.</td></tr>
+                                <tr><td><code>node.include</code></td><td>Nonempty array of positive project-relative globs. At least one file must match.</td></tr>
+                                <tr><td><code>chrome.include</code></td><td>Independent nonempty include scope for Chrome. At least one file must match.</td></tr>
+                                <tr><td><code>chrome.imports</code></td><td>Additional or overriding browser specifiers mapped to files inside the project.</td></tr>
+                                <tr><td><code>chrome.headless</code></td><td>Boolean; defaults to <code>true</code>.</td></tr>
+                                <tr><td><code>chrome.executablePath</code></td><td>Optional path to Google Chrome. CLI <code>--chrome-path</code> takes precedence.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>When you run only one collector, its sibling configuration object is optional: a Node-only configuration may omit <code>chrome</code>, and a Chrome-only configuration may omit <code>node</code>. The <code>all</code> target requires both objects.</p>
+                </section>
+
+                <section>
+                    <h2>Entry result contract</h2>
+                    <p>The imported entry may return synchronously or asynchronously. Its result must expose consistent <code>ok</code> and <code>failureCount</code> values:</p>
+                    <div class="code-block"><pre><code>{ ok: true, failureCount: 0 }
+{ ok: false, failureCount: 2 }</code></pre></div>
+                    <p>Missing, negative, non-integer, or contradictory values are harness failures. This prevents an incomplete or malformed suite from being treated as a successful run.</p>
+                </section>
+
+                <section>
+                    <h2>Path and import safety</h2>
+                    <ul>
+                        <li>Entry, reports, included source, and browser-import targets must stay inside the configuration root after real-path resolution.</li>
+                        <li>Include scopes accept positive globs only; absolute paths, parent traversal, and <code>!</code> negation are rejected.</li>
+                        <li>Browser import targets must be local files. Remote URLs and protocol-relative URLs are rejected.</li>
+                        <li>The temporary browser server permits only <code>GET</code> and <code>HEAD</code>, requires its exact loopback <code>Host</code>, denies dotfiles and common secret/key paths, and rejects traversal and link escapes.</li>
+                        <li>The Chrome page blocks requests outside the bound coverage origin; local responses add CSP, CORP, no-referrer, no-sniff, frame-denial, and no-store headers.</li>
+                        <li>Unknown configuration keys are errors rather than silently ignored settings.</li>
+                    </ul>
+                    <div class="callout">
+                        <strong>Configuration is an allowlist.</strong>
+                        <p>Keep source scope and browser imports narrow enough that a coverage run cannot accidentally serve or measure unrelated files.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Exit statuses</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Status</th><th>Meaning</th><th>CI interpretation</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>0</code></td><td>Tests and coverage thresholds passed.</td><td>Success.</td></tr>
+                                <tr><td><code>1</code></td><td>An assertion failed or a coverage threshold was missed.</td><td>Product/test failure.</td></tr>
+                                <tr><td><code>2</code></td><td>Usage, configuration, dependency, launch, timeout, or malformed-result failure.</td><td>Harness/infrastructure failure.</td></tr>
+                                <tr><td><code>130</code></td><td>The process was interrupted by SIGINT or SIGTERM.</td><td>Cancelled/interrupted run.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Output layout</h2>
+                    <div class="code-block"><pre><code>coverage/
+  node/
+    index.html
+    lcov.info
+    coverage-summary.json
+    test-results.json
+  chrome/
+    index.html
+    lcov.info
+    coverage-summary.json
+    test-results.json</code></pre></div>
+                    <p>Each runtime directory also contains a hidden ownership marker. A collector stages its output and replaces only a directory previously created by vanilla-test, and only after a valid run completes. An unowned directory is refused; a harness failure preserves the previous known-good report. Running both collectors retains both final reports. The documentation site's <a href="../coverage/">coverage page</a> normalizes those summaries and links the complete published reports.</p>
+                </section>
+
+                <section>
+                    <h2>CI recipe</h2>
+                    <div class="code-block"><pre><code>- run: npm ci
+- run: npm test
+- run: npm run coverage -- --chrome-path "$CHROME_PATH"</code></pre></div>
+                    <p>Install Google Chrome Stable explicitly in CI and log the exact Node and Chrome versions beside the artifacts. Treat the Node test matrix, coverage collectors, and packed-artifact smoke as separate required gates before publishing quality data.</p>
+                    <div class="actions">
+                        <a class="button" href="https://github.com/RIAEvangelist/vanilla-test/blob/main/.github/workflows/ci.yml">Inspect this repository's workflow</a>
+                        <a class="button button--secondary" href="../testing/">Understand every test gate</a>
+                    </div>
+                </section>
+            </article>
+
+            <aside class="page-aside" aria-label="CLI guarantees">
+                <strong>CLI guarantees</strong>
+                <ul>
+                    <li>Unknown input is rejected</li>
+                    <li>Project paths stay contained</li>
+                    <li>Collectors report independently</li>
+                    <li>Exit statuses are stable</li>
+                    <li>Original source is executed</li>
+                </ul>
+                <p>Current published results are on the <a href="../coverage/">coverage page</a>.</p>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-shell site-footer__inner">
+            <p>vanilla-test <span data-status-version>v2</span> · MIT licensed</p>
+            <nav aria-label="Project links">
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/MIGRATION.md">Migration</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/CHANGELOG.md">Changelog</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test">GitHub</a>
+                <a href="https://www.npmjs.com/package/vanilla-test">npm</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/licence">License</a>
+            </nav>
+        </div>
+    </footer>
+    <script type="module" src="../assets/site.js"></script>
+</body>
+</html>

@@ -28,10 +28,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
@@ -49,17 +49,17 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up Node.js 24
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: '24'
           cache: npm
 
       - name: Install Google Chrome Stable
         id: chrome
-        uses: browser-actions/setup-chrome@v2
+        uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # v2
         with:
           chrome-version: stable
 
@@ -78,6 +78,15 @@ jobs:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
         run: npm run coverage -- --chrome-path "$CHROME_PATH"
 
+      - name: Record coverage runtimes
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        shell: bash
+        run: |
+          CHROME_VERSION="$("$CHROME_PATH" --version)"
+          export CHROME_VERSION
+          node --input-type=module --eval "import fs from 'node:fs'; fs.writeFileSync('coverage/runtime.json', JSON.stringify({ node: process.version, chrome: process.env.CHROME_VERSION }, null, 2) + '\n');"
+
       - name: Capture fresh screenshots
         if: always()
         env:
@@ -86,7 +95,7 @@ jobs:
 
       - name: Upload coverage reports
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: native-v8-coverage
           path: coverage/
@@ -95,7 +104,7 @@ jobs:
 
       - name: Upload screenshots
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: coverage-screenshots
           path: |
@@ -105,37 +114,6 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Assemble GitHub Pages site
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: |
-          mkdir -p _site
-          git archive --format=tar HEAD | tar --extract --directory=_site
-
-          mkdir -p \
-            _site/node_modules/ansi-colors-es6 \
-            _site/node_modules/strong-type
-          cp node_modules/ansi-colors-es6/index.js _site/node_modules/ansi-colors-es6/
-          cp node_modules/strong-type/index.js _site/node_modules/strong-type/
-          cp --recursive coverage _site/coverage
-
-          test -f _site/test/index.html
-          test -f _site/test/CI.js
-          test -f _site/node_modules/ansi-colors-es6/index.js
-          test -f _site/node_modules/strong-type/index.js
-          test -f _site/coverage/chrome/index.html
-          test -f _site/coverage/node/index.html
-
-      - name: Configure GitHub Pages
-        if: github.event_name != 'pull_request'
-        uses: actions/configure-pages@v6
-
-      - name: Upload GitHub Pages artifact
-        if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: _site
-
   package-smoke:
     name: Packed npm artifact
     runs-on: ubuntu-latest
@@ -143,10 +121,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up Node.js 24
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: '24'
           cache: npm
@@ -155,28 +133,174 @@ jobs:
         run: npm ci
 
       - name: Pack, install, and import the artifact
+        env:
+          SMOKE_ENTRY: |
+            import VanillaTest from 'vanilla-test';
+
+            export default function run() {
+                const test = new VanillaTest();
+                test.expects('installed package runs under coverage');
+                test.pass();
+                test.done();
+                return test.report();
+            }
+          SMOKE_CONFIG: >-
+            {"entry":"./entry.mjs","reportsDirectory":"./coverage","thresholds":{"statements":100,"branches":100,"functions":100,"lines":100},"node":{"include":["entry.mjs"]},"timeoutMs":30000}
         shell: bash
         run: |
           TARBALL="$(npm pack --silent)"
+          TARBALL_PATH="$GITHUB_WORKSPACE/$TARBALL"
+          PACK_FILE_LIST="$RUNNER_TEMP/vanilla-test-pack-files.txt"
+          EXPECTED_VERSION="$(node --print "JSON.parse(require('node:fs').readFileSync('package.json', 'utf8')).version")"
+
+          test -f "$TARBALL_PATH"
+          tar -tf "$TARBALL_PATH" > "$PACK_FILE_LIST"
+          for REQUIRED_FILE in \
+            package/package.json \
+            package/index.js \
+            package/bin/vanilla-test.js \
+            package/lib/coverage/cli.js \
+            package/CHANGELOG.md \
+            package/MIGRATION.md
+          do
+            grep --fixed-strings --line-regexp --quiet -- "$REQUIRED_FILE" "$PACK_FILE_LIST"
+          done
+
+          if grep --extended-regexp --quiet '^package/(assets|badges|coverage|data|example|scripts|test|\.github)/' "$PACK_FILE_LIST"; then
+            echo "Packed artifact contains repository-only site or test files."
+            grep --extended-regexp '^package/(assets|badges|coverage|data|example|scripts|test|\.github)/' "$PACK_FILE_LIST"
+            exit 1
+          fi
+
           SMOKE_DIRECTORY="$RUNNER_TEMP/vanilla-test-package-smoke"
           mkdir -p "$SMOKE_DIRECTORY"
           cd "$SMOKE_DIRECTORY"
           npm init --yes
-          npm install "$GITHUB_WORKSPACE/$TARBALL"
-          node --input-type=module --eval "import VanillaTest from 'vanilla-test'; const test = new VanillaTest(); test.expects('packed package imports'); test.pass(); test.done(); const result = test.report(); if (!result.ok || result.total !== 1) process.exitCode = 1;"
+          npm install "$TARBALL_PATH"
+          EXPECTED_VERSION="$EXPECTED_VERSION" node --input-type=module --eval "import fs from 'node:fs'; import VanillaTest from 'vanilla-test'; const manifest = JSON.parse(fs.readFileSync('./node_modules/vanilla-test/package.json', 'utf8')); const test = new VanillaTest(); test.expects('packed package imports'); test.pass(); test.done(); const result = test.report(); if (!result.ok || result.total !== 1 || manifest.version !== process.env.EXPECTED_VERSION) process.exitCode = 1;"
+          test "$(./node_modules/.bin/vanilla-test --version)" = "$EXPECTED_VERSION"
+          node --input-type=module --eval "import fs from 'node:fs'; fs.writeFileSync('entry.mjs', process.env.SMOKE_ENTRY); fs.writeFileSync('vanilla-test.config.json', process.env.SMOKE_CONFIG + '\n');"
+          ./node_modules/.bin/vanilla-test coverage node
+          test -f coverage/node/test-results.json
+          test -f coverage/node/coverage-summary.json
+          node --input-type=module --eval "import fs from 'node:fs'; const result = JSON.parse(fs.readFileSync('coverage/node/test-results.json', 'utf8')); if (result.runtime !== 'node' || !result.ok || result.total !== 1 || result.passedCount !== 1 || result.failureCount !== 0) process.exitCode = 1;"
 
       - name: Upload packed npm artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: vanilla-test-v2-package
-          path: vanilla-test-2.0.0.tgz
+          name: packed-npm-artifact
+          path: '*.tgz'
           if-no-files-found: error
           retention-days: 14
+
+  site:
+    name: Curated documentation site
+    if: github.event_name != 'pull_request'
+    needs:
+      - test
+      - coverage
+      - package-smoke
+    permissions:
+      contents: read
+      pages: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download native V8 reports
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: native-v8-coverage
+          path: coverage
+
+      - name: Build quality status data and badges
+        shell: bash
+        run: |
+          test -f coverage/runtime.json
+          test -f coverage/node/test-results.json
+          test -f coverage/node/coverage-summary.json
+          test -f coverage/chrome/test-results.json
+          test -f coverage/chrome/coverage-summary.json
+          npm run site:status -- --package-smoke passed
+
+      - name: Assemble curated GitHub Pages site
+        shell: bash
+        run: |
+          mkdir -p \
+            _site/guide \
+            _site/api \
+            _site/testing \
+            _site/coverage \
+            _site/cli \
+            _site/test \
+            _site/example \
+            _site/assets \
+            _site/data \
+            _site/badges \
+            _site/reports \
+            _site/node_modules/ansi-colors-es6 \
+            _site/node_modules/strong-type
+
+          cp index.html _site/
+          cp guide/index.html _site/guide/
+          cp api/index.html _site/api/
+          cp testing/index.html _site/testing/
+          cp coverage/index.html _site/coverage/
+          cp cli/index.html _site/cli/
+          cp test/index.html test/CI.js _site/test/
+          cp example/index.html example/basic.js _site/example/
+          cp assets/site.css assets/site.js assets/og.png _site/assets/
+          cp data/status.json _site/data/
+          cp badges/*.json _site/badges/
+          cp index.js _site/
+          cp node_modules/ansi-colors-es6/index.js _site/node_modules/ansi-colors-es6/
+          cp node_modules/strong-type/index.js _site/node_modules/strong-type/
+          cp --recursive coverage/node _site/reports/node
+          cp --recursive coverage/chrome _site/reports/chrome
+
+          test -f _site/index.html
+          test -f _site/guide/index.html
+          test -f _site/api/index.html
+          test -f _site/testing/index.html
+          test -f _site/coverage/index.html
+          test -f _site/cli/index.html
+          test -f _site/assets/og.png
+          test -f _site/data/status.json
+          test -f _site/reports/node/index.html
+          test -f _site/reports/node/test-results.json
+          test -f _site/reports/chrome/index.html
+          test -f _site/reports/chrome/test-results.json
+          test -f _site/node_modules/ansi-colors-es6/index.js
+          test -f _site/node_modules/strong-type/index.js
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: _site
 
   deploy-pages:
     name: Deploy GitHub Pages
     if: github.event_name != 'pull_request'
-    needs: coverage
+    needs:
+      - test
+      - coverage
+      - package-smoke
+      - site
     permissions:
       pages: write
       id-token: write
@@ -189,4 +313,4 @@ jobs:
     steps:
       - name: Deploy GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5

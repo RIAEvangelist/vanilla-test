@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Current native V8 coverage for the vanilla-test shared core, with independent Node and Chrome metrics, scope, thresholds, and raw reports.">
+    <meta name="color-scheme" content="dark">
+    <meta property="og:title" content="Native V8 coverage · vanilla-test">
+    <meta property="og:description" content="Current native V8 coverage for the vanilla-test shared core, with independent Node and Chrome metrics, scope, thresholds, and raw reports.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://riaevangelist.github.io/vanilla-test/coverage/">
+    <meta property="og:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <meta property="og:image:alt" content="vanilla-test — native JavaScript testing for Node.js and browsers">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Native V8 coverage · vanilla-test">
+    <meta name="twitter:description" content="Current native V8 coverage for the vanilla-test shared core, with independent Node and Chrome metrics, scope, thresholds, and raw reports.">
+    <meta name="twitter:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <link rel="canonical" href="https://riaevangelist.github.io/vanilla-test/coverage/">
+    <link rel="stylesheet" href="../assets/site.css">
+    <title>Native V8 coverage · vanilla-test</title>
+</head>
+<body data-status-url="../data/status.json">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+        <div class="site-shell site-header__inner">
+            <a class="brand" href="../" aria-label="vanilla-test documentation home"><span class="brand__mark" aria-hidden="true">VT</span><span>vanilla-test</span></a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../">Overview</a></li>
+                    <li><a href="../guide/">Get started</a></li>
+                    <li><a href="../api/">API</a></li>
+                    <li><a href="../testing/">Testing</a></li>
+                    <li><a href="../coverage/" aria-current="page">Coverage</a></li>
+                    <li><a href="../cli/">CLI</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <header class="site-shell hero--single">
+            <p class="eyebrow">Native V8 coverage</p>
+            <h1>Two collectors. Two independent gates.</h1>
+            <p class="lede">Node and Google Chrome execute the same shared entry, then report coverage using their own V8-backed tooling. Neither result is inferred from the other.</p>
+        </header>
+
+        <div class="site-shell page-layout">
+            <article class="prose">
+                <section>
+                    <div class="status-band__header">
+                        <h2>Latest published metrics</h2>
+                        <p class="status-provenance"><span data-status-state="loading" aria-live="polite">Loading verified status…</span> · <span data-status-generated>latest successful main build</span> · <a data-status-commit href="https://github.com/RIAEvangelist/vanilla-test/commits/main">main</a></p>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Metric</th><th>Required</th><th>Node percent</th><th>Node covered</th><th>Chrome percent</th><th>Chrome covered</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Statements</td><td data-status-threshold="statements">configured gate</td><td class="metric-value" data-status-metric="node.statements.pct">—</td><td data-status-metric="node.statements.count">—</td><td class="metric-value" data-status-metric="chrome.statements.pct">—</td><td data-status-metric="chrome.statements.count">—</td></tr>
+                                <tr><td>Branches</td><td data-status-threshold="branches">configured gate</td><td class="metric-value" data-status-metric="node.branches.pct">—</td><td data-status-metric="node.branches.count">—</td><td class="metric-value" data-status-metric="chrome.branches.pct">—</td><td data-status-metric="chrome.branches.count">—</td></tr>
+                                <tr><td>Functions</td><td data-status-threshold="functions">configured gate</td><td class="metric-value" data-status-metric="node.functions.pct">—</td><td data-status-metric="node.functions.count">—</td><td class="metric-value" data-status-metric="chrome.functions.pct">—</td><td data-status-metric="chrome.functions.count">—</td></tr>
+                                <tr><td>Lines</td><td data-status-threshold="lines">configured gate</td><td class="metric-value" data-status-metric="node.lines.pct">—</td><td data-status-metric="node.lines.count">—</td><td class="metric-value" data-status-metric="chrome.lines.pct">—</td><td data-status-metric="chrome.lines.count">—</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="callout">
+                        <strong>Raw totals are not cross-runtime equivalents.</strong>
+                        <p>c8 and Chrome's precise-coverage reporter map V8 ranges into statements, branches, functions, and lines differently. Compare each runtime with its own threshold; do not use the Node and Chrome totals as an implementation-size comparison.</p>
+                    </div>
+                    <div class="actions">
+                        <a class="button" href="../reports/node/">Open the detailed Node report</a>
+                        <a class="button button--secondary" href="../reports/chrome/">Open the detailed Chrome report</a>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Measured scope</h2>
+                    <p>The repository config includes only <code>index.js</code> for both collectors. The published percentage therefore means complete execution of the shipped Web-standard core—not complete execution of every Node-only coverage helper.</p>
+                    <div class="code-block"><pre><code>{
+    "node": { "include": ["index.js"] },
+    "chrome": { "include": ["index.js"] }
+}</code></pre></div>
+                    <ul>
+                        <li>Included files that are never loaded count as zero coverage.</li>
+                        <li>Node applies total and per-file gates through c8.</li>
+                        <li>Chrome applies total and per-file gates after collecting precise V8 coverage.</li>
+                        <li>Assertion failure and coverage failure both produce exit status <code>1</code>.</li>
+                        <li>Harness or configuration failure produces exit status <code>2</code>.</li>
+                    </ul>
+                    <p>Node-only coverage tooling is verified separately by integration, invalid-input, timeout, leaked-handle, and path-safety tests. See the <a href="../testing/">testing strategy</a> for that boundary.</p>
+                </section>
+
+                <section>
+                    <h2>How each collector works</h2>
+                    <div class="grid grid--two">
+                        <article class="card">
+                            <span class="card__label">Node</span>
+                            <h3>c8 over native V8 data</h3>
+                            <p>The CLI launches c8 with <code>--all</code>, per-file thresholds, and the configured include globs. It emits text, HTML, LCOV, and JSON summary reports.</p>
+                        </article>
+                        <article class="card">
+                            <span class="card__label">Chrome</span>
+                            <h3>Precise coverage in real Chrome</h3>
+                            <p>Playwright launches installed Google Chrome, starts V8 JavaScript coverage, runs the shared harness, and hands native ranges to Monocart for HTML, LCOV, and JSON output.</p>
+                        </article>
+                    </div>
+                    <div class="callout">
+                        <strong>The execution path stays uninstrumented.</strong>
+                        <p>No nyc transform, source rewrite, browser shim, bundle, or transpiler is inserted before either runtime executes the module.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Report artifacts</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Artifact</th><th>Use</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>index.html</code></td><td>Interactive, file-level inspection for engineers.</td></tr>
+                                <tr><td><code>lcov.info</code></td><td>Interchange with editors and coverage consumers.</td></tr>
+                                <tr><td><code>coverage-summary.json</code></td><td>Machine-readable covered, total, and percentage values.</td></tr>
+                                <tr><td><code>data/status.json</code></td><td>Normalized package, runtime, test, coverage, commit, and timestamp provenance for this documentation site.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>CI retains downloadable coverage artifacts and publishes the successful main-build reports here. A failed current build is still visible through the repository's CI status; a previous Pages deployment should not be interpreted without its displayed commit.</p>
+                </section>
+
+                <section>
+                    <h2>Run the same gates locally</h2>
+                    <div class="code-block"><pre><code>npm run coverage
+<span class="code-comment"># collectors can also run independently</span>
+npm run coverage:node
+npm run coverage:chrome</code></pre></div>
+                    <div class="link-panel">
+                        <p>Use configuration to choose the entry, include scope, threshold, report directory, browser imports, Chrome executable, and timeout.</p>
+                        <a class="button button--secondary" href="../cli/">Read the CLI contract</a>
+                    </div>
+                </section>
+            </article>
+
+            <aside class="page-aside" aria-label="Coverage context">
+                <strong>Published context</strong>
+                <ul>
+                    <li>Scope: shared core</li>
+                    <li>Node: <span data-status-node-coverage>V8 via c8</span></li>
+                    <li>Chrome: <span data-status-chrome>Google Chrome Stable</span></li>
+                    <li>Source transforms: none</li>
+                    <li>Reports: HTML, LCOV, JSON</li>
+                </ul>
+                <p>Coverage measures execution. Pair it with the <a href="../testing/">behavioral test evidence</a>.</p>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-shell site-footer__inner">
+            <p>vanilla-test <span data-status-version>v2</span> · MIT licensed</p>
+            <nav aria-label="Project links">
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/MIGRATION.md">Migration</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/CHANGELOG.md">Changelog</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test">GitHub</a>
+                <a href="https://www.npmjs.com/package/vanilla-test">npm</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/licence">License</a>
+            </nav>
+        </div>
+    </footer>
+    <script type="module" src="../assets/site.js"></script>
+</body>
+</html>

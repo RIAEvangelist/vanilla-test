@@ -10,11 +10,12 @@ import { fileURLToPath } from 'node:url';
 import { HELP, main, parseArguments } from '../lib/coverage/cli.js';
 import { loadConfig, packagePathFromModule } from '../lib/coverage/config.js';
 import { createIncludeMatcher, globToRegExp, toPosix } from '../lib/coverage/glob.js';
-import { selectRun, validateResult } from '../lib/coverage/result.js';
+import { selectRun, summarizeResult, validateResult } from '../lib/coverage/result.js';
 import { startServer } from '../lib/coverage/server.js';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const entryRunner = path.join(projectRoot, 'lib', 'coverage', 'entry-runner.js');
+const packageVersion = JSON.parse(await fs.readFile(path.join(projectRoot, 'package.json'), 'utf8')).version;
 
 async function temporaryDirectory(context) {
     const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'vanilla-test-tooling-'));
@@ -109,7 +110,7 @@ test('CLI help, version, and usage errors have stable exit codes', async () => {
         assert.equal(await main([]), 0);
         assert.equal(log.at(-1), HELP);
         assert.equal(await main(['--version']), 0);
-        assert.match(log.at(-1), /^2\.0\.0$/);
+        assert.equal(log.at(-1), packageVersion);
         assert.equal(await main(['coverage', '--no-such-option']), 2);
         assert.match(errors.at(-1), /Unknown argument/);
     } finally {
@@ -128,6 +129,33 @@ test('result selection and validation reject ambiguous failure states', () => {
         assert.throws(() => validateResult(value, 'fixture'), /fixture/);
     }
     assert.throws(() => selectRun({}, 'fixture'), /default function or named run function/);
+
+    assert.deepEqual(summarizeResult({
+        ok: false,
+        failureCount: 1,
+        total: 2,
+        passed: ['\u001B[32mpass\u001B[39m'],
+        failed: ['\u001B[31mfail\u001B[39m']
+    }, 'node'), {
+        schemaVersion: 1,
+        runtime: 'node',
+        ok: false,
+        total: 2,
+        passedCount: 1,
+        failureCount: 1,
+        passed: ['pass'],
+        failed: ['fail']
+    });
+    assert.deepEqual(summarizeResult({ ok: false, failureCount: 2 }, 'chrome'), {
+        schemaVersion: 1,
+        runtime: 'chrome',
+        ok: false,
+        total: 2,
+        passedCount: 0,
+        failureCount: 2,
+        passed: [],
+        failed: []
+    });
 });
 
 test('glob helpers match only positive project-relative paths', () => {
@@ -193,6 +221,16 @@ test('configuration resolves, freezes, and validates project-local inputs', asyn
     assert.throws(() => loadConfig(configPath), /positive project-relative glob/);
     await write({ ...base, thresholds: { ...base.thresholds, lines: 101 } });
     assert.throws(() => loadConfig(configPath), /0 through 100/);
+
+    const { chrome, ...nodeOnly } = base;
+    await write(nodeOnly);
+    assert.deepEqual(loadConfig(configPath, { target: 'node' }).node.include, ['entry.js']);
+    assert.throws(() => loadConfig(configPath), /chrome must be an object/);
+
+    const { node, ...chromeOnly } = base;
+    await write(chromeOnly);
+    assert.deepEqual(loadConfig(configPath, { target: 'chrome' }).chrome.include, ['entry.js']);
+    assert.throws(() => loadConfig(configPath), /node must be an object/);
 });
 
 test('local coverage server serves only files inside its root', async (context) => {

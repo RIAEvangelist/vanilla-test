@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="vanilla-test API reference: runner lifecycle, assertions, immutable reports, completion events, strict behavior, and errors.">
+    <meta name="color-scheme" content="dark">
+    <meta property="og:title" content="API reference · vanilla-test">
+    <meta property="og:description" content="vanilla-test API reference: runner lifecycle, assertions, immutable reports, completion events, strict behavior, and errors.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://riaevangelist.github.io/vanilla-test/api/">
+    <meta property="og:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <meta property="og:image:alt" content="vanilla-test — native JavaScript testing for Node.js and browsers">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="API reference · vanilla-test">
+    <meta name="twitter:description" content="vanilla-test API reference: runner lifecycle, assertions, immutable reports, completion events, strict behavior, and errors.">
+    <meta name="twitter:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <link rel="canonical" href="https://riaevangelist.github.io/vanilla-test/api/">
+    <link rel="stylesheet" href="../assets/site.css">
+    <title>API reference · vanilla-test</title>
+</head>
+<body data-status-url="../data/status.json">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+        <div class="site-shell site-header__inner">
+            <a class="brand" href="../" aria-label="vanilla-test documentation home"><span class="brand__mark" aria-hidden="true">VT</span><span>vanilla-test</span></a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../">Overview</a></li>
+                    <li><a href="../guide/">Get started</a></li>
+                    <li><a href="../api/" aria-current="page">API</a></li>
+                    <li><a href="../testing/">Testing</a></li>
+                    <li><a href="../coverage/">Coverage</a></li>
+                    <li><a href="../cli/">CLI</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <header class="site-shell hero--single">
+            <p class="eyebrow">API reference</p>
+            <h1>A small stateful runner with explicit completion.</h1>
+            <p class="lede">Each instance owns its active test, descriptions, results, and type helper. A reported runner is final and returns the same frozen snapshot on every later report.</p>
+        </header>
+
+        <div class="site-shell page-layout">
+            <article class="prose">
+                <section>
+                    <h2>Imports and lifecycle</h2>
+                    <div class="code-block"><pre><code><span class="code-keyword">import</span> VanillaTest, {
+    VanillaTest <span class="code-keyword">as</span> NamedVanillaTest,
+    VANILLA_TEST_COMPLETE_EVENT
+} <span class="code-keyword">from</span> <span class="code-string">'vanilla-test'</span>;</code></pre></div>
+                    <p>The default and named class exports are the same value. <code>VanillaTest</code> extends <code>EventTarget</code>; completion uses the exported <code>vanilla-test:complete</code> event name.</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>State</th><th>Allowed operation</th><th>Transition</th></tr></thead>
+                            <tbody>
+                                <tr><td>Idle</td><td><code>expects(description)</code> or <code>report()</code></td><td><code>expects()</code> creates one active test.</td></tr>
+                                <tr><td>Active</td><td><code>pass()</code>, <code>fail()</code>, then <code>done()</code></td><td><code>done()</code> returns the runner to idle.</td></tr>
+                                <tr><td>Reported</td><td><code>report()</code> only</td><td>The same immutable snapshot is returned; no new test may start.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Runner methods</h2>
+                    <div class="method-list">
+                        <article class="method">
+                            <h3>new VanillaTest()</h3>
+                            <p>Creates an isolated runner. Instances do not share descriptions, strict state, listeners, or results.</p>
+                            <dl><dt>Returns</dt><dd>A new <code>VanillaTest</code> instance.</dd></dl>
+                        </article>
+                        <article class="method">
+                            <h3>test.expects(description)</h3>
+                            <p>Starts one test and logs its numbered description. The raw description must be a unique string within this runner.</p>
+                            <dl><dt>Returns</dt><dd>The numbered test description.</dd><dt>Throws</dt><dd><code>TypeError</code> for a non-string; <code>ReferenceError</code> for an active test, duplicate description, or reported runner.</dd></dl>
+                        </article>
+                        <article class="method">
+                            <h3>test.pass(strict = false)</h3>
+                            <p>Records the active test as passed. A repeated decision returns the existing description unless this call's <code>strict</code> argument is <code>true</code>.</p>
+                            <dl><dt>Returns</dt><dd>The active numbered description.</dd><dt>Throws</dt><dd><code>TypeError</code> for a non-boolean argument; <code>ReferenceError</code> when no test is active or a strict repeated decision occurs.</dd></dl>
+                        </article>
+                        <article class="method">
+                            <h3>test.fail(strict = false)</h3>
+                            <p>Records the active test as failed. Repeated-decision behavior matches <code>pass()</code>.</p>
+                            <dl><dt>Returns</dt><dd>The active numbered description.</dd><dt>Throws</dt><dd>The same argument, active-test, and strict-repeat errors as <code>pass()</code>.</dd></dl>
+                        </article>
+                        <article class="method">
+                            <h3>test.done()</h3>
+                            <p>Finishes the active test. If neither decision method ran, <code>done()</code> records the test as failed before clearing it.</p>
+                            <dl><dt>Returns</dt><dd>The finished numbered description.</dd><dt>Throws</dt><dd><code>ReferenceError</code> when there is no active test.</dd></dl>
+                        </article>
+                        <article class="method">
+                            <h3>test.report()</h3>
+                            <p>Prints the report once, freezes the result and its arrays, schedules the completion event in a microtask, and returns the result. An empty suite is a successful report.</p>
+                            <dl><dt>Returns</dt><dd>The same frozen result object for every call.</dd><dt>Throws</dt><dd><code>ReferenceError</code> if an active test has not been finished.</dd></dl>
+                        </article>
+                        <article class="method">
+                            <h3>test.onComplete(listener, options)</h3>
+                            <p>Subscribes to the completion event and returns an idempotent unsubscribe function. The frozen result is available at <code>event.detail</code>.</p>
+                            <dl><dt>Returns</dt><dd>A zero-argument unsubscribe function.</dd><dt>Throws</dt><dd><code>TypeError</code> when <code>listener</code> is not a function.</dd></dl>
+                        </article>
+                        <article class="method">
+                            <h3>test.delay(iterations = 1000)</h3>
+                            <p>Runs a synchronous loop and returns the runner for chaining. It is retained as a small host-neutral delay primitive, not an asynchronous timer.</p>
+                            <dl><dt>Returns</dt><dd>The runner instance.</dd><dt>Throws</dt><dd><code>TypeError</code> unless the value is a nonnegative safe integer.</dd></dl>
+                        </article>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Result contract</h2>
+                    <p>Consumers should branch on <code>ok</code> or <code>failureCount</code>, not parse the rendered console string.</p>
+                    <div class="code-block"><pre><code>{
+    passed: [<span class="code-string">'1) .expects addition preserves the total'</span>],
+    failed: [],
+    total: 1,
+    failureCount: 0,
+    ok: true,
+    report: <span class="code-string">'rendered console report'</span>
+}</code></pre></div>
+                    <ul>
+                        <li>The object and both arrays are frozen.</li>
+                        <li><code>ok</code> is true exactly when <code>failureCount</code> is zero.</li>
+                        <li><code>report()</code> never calls <code>process.exit()</code> or sets <code>process.exitCode</code>.</li>
+                        <li>The completion event fires after <code>report()</code> returns, in a microtask, and only once.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Type helpers and strict state</h2>
+                    <p>Each runner owns one <a href="https://github.com/RIAEvangelist/strong-type"><code>strong-type</code></a> instance:</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Member</th><th>Behavior</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>test.is</code></td><td>The complete strong-type instance for predicate and assertion helpers.</td></tr>
+                                <tr><td><code>test.compare</code></td><td>A direct reference to <code>test.is.compare</code>.</td></tr>
+                                <tr><td><code>test.throw</code></td><td>A direct reference to <code>test.is.throw</code>.</td></tr>
+                                <tr><td><code>test.strict</code></td><td>Reads or writes the helper's boolean strict setting. This is separate from the per-call strict argument on <code>pass()</code> and <code>fail()</code>.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Completion events</h2>
+                    <div class="code-block"><pre><code><span class="code-keyword">const</span> unsubscribe = test.onComplete((event) =&gt; {
+    console.log(event.detail.ok);
+    unsubscribe();
+}, { once: true });
+
+<span class="code-keyword">const</span> result = test.report();
+<span class="code-comment">// event dispatch occurs in the next microtask</span></code></pre></div>
+                    <div class="callout">
+                        <strong>Subscribe before reporting.</strong>
+                        <p>A runner dispatches completion once. Calling <code>report()</code> again returns the cached result but does not log or dispatch again.</p>
+                    </div>
+                </section>
+            </article>
+
+            <aside class="page-aside" aria-label="API invariants">
+                <strong>Core invariants</strong>
+                <ul>
+                    <li>One active test at a time</li>
+                    <li>Unique descriptions per runner</li>
+                    <li>Undecided means failed</li>
+                    <li>Reported means sealed</li>
+                    <li>Results are deeply immutable</li>
+                </ul>
+                <p>See the <a href="../testing/">test strategy</a> for the checks that enforce these behaviors.</p>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-shell site-footer__inner">
+            <p>vanilla-test <span data-status-version>v2</span> · MIT licensed</p>
+            <nav aria-label="Project links">
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/MIGRATION.md">Migration</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/CHANGELOG.md">Changelog</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test">GitHub</a>
+                <a href="https://www.npmjs.com/package/vanilla-test">npm</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/licence">License</a>
+            </nav>
+        </div>
+    </footer>
+    <script type="module" src="../assets/site.js"></script>
+</body>
+</html>

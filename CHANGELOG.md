@@ -2,6 +2,30 @@
 
 All notable changes to this project are documented here.
 
+## [2.1.0] - 2026-08-14
+
+### Added
+
+- Normalized, ANSI-free `test-results.json` artifacts for Node and Chrome coverage runs.
+- Generated quality status data and Shields endpoints sourced from the tested runtime artifacts.
+- Engineer-focused Overview, Guide, API, Testing, Coverage, and CLI documentation pages.
+- Target-specific configuration so Node-only projects may omit `chrome` and Chrome-only projects may omit `node`.
+
+### Changed
+
+- Coverage reports are built in a staging directory and published only after a valid run completes.
+- Existing reports require a vanilla-test ownership marker before replacement; failed runs preserve the previous known-good report.
+- GitHub Pages now deploys a curated documentation artifact rather than archiving the repository workspace.
+- The npm package uses an explicit runtime/documentation allowlist and excludes site, test, and report assets.
+- GitHub Actions dependencies are pinned to immutable release commits.
+
+### Security
+
+- The loopback coverage and workspace servers require the exact bound `Host`, preventing DNS-rebinding reads of project files.
+- Both local servers deny dotfiles, common credential files, and private-key formats, and enforce real-path containment across links.
+- Local responses now include CSP, CORP, no-referrer, no-sniff, frame-denial, and no-store headers.
+- Chrome coverage blocks browser requests outside the bound coverage origin.
+
 ## [2.0.0] - 2026-08-12
 
 ### Added

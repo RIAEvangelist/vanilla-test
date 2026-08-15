@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-15T02:12:56.341Z",
+  "commit": {
+    "sha": null,
+    "short": null,
+    "url": null
+  },
+  "package": {
+    "name": "vanilla-test",
+    "version": "2.1.0"
+  },
+  "runtimes": {
+    "node": "v24.18.0",
+    "chrome": null
+  },
+  "status": {
+    "ok": true,
+    "label": "passing"
+  },
+  "tests": {
+    "scope": "shared-core",
+    "shared": {
+      "node": {
+        "runtime": "node",
+        "ok": true,
+        "total": 17,
+        "passedCount": 17,
+        "failureCount": 0,
+        "passed": [
+          "exports the same class by default and by name",
+          "exposes the strong-type helpers and strict setting",
+          "validates every public typed argument",
+          "guards operations which require an active test",
+          "guards against starting a second active test",
+          "rejects duplicate raw descriptions without corrupting state",
+          "makes repeated pass and fail calls lenient by default",
+          "throws for repeated decisions in strict mode",
+          "automatically fails an undecided test in done",
+          "requires an active test to be done before reporting",
+          "returns a complete deeply immutable failure snapshot",
+          "reports a passing empty suite",
+          "dispatches one completion event after report returns",
+          "unsubscribes completion listeners idempotently",
+          "makes report idempotent and seals the suite",
+          "keeps VanillaTest instances isolated",
+          "delay validates, iterates, defaults, and remains chainable"
+        ],
+        "failed": []
+      },
+      "chrome": {
+        "runtime": "chrome",
+        "ok": true,
+        "total": 17,
+        "passedCount": 17,
+        "failureCount": 0,
+        "passed": [
+          "exports the same class by default and by name",
+          "exposes the strong-type helpers and strict setting",
+          "validates every public typed argument",
+          "guards operations which require an active test",
+          "guards against starting a second active test",
+          "rejects duplicate raw descriptions without corrupting state",
+          "makes repeated pass and fail calls lenient by default",
+          "throws for repeated decisions in strict mode",
+          "automatically fails an undecided test in done",
+          "requires an active test to be done before reporting",
+          "returns a complete deeply immutable failure snapshot",
+          "reports a passing empty suite",
+          "dispatches one completion event after report returns",
+          "unsubscribes completion listeners idempotently",
+          "makes report idempotent and seals the suite",
+          "keeps VanillaTest instances isolated",
+          "delay validates, iterates, defaults, and remains chainable"
+        ],
+        "failed": []
+      }
+    },
+    "tooling": {
+      "runtime": "node",
+      "suite": "tooling",
+      "ok": true,
+      "total": 20,
+      "passedCount": 20,
+      "failureCount": 0,
+      "skippedCount": 0,
+      "cancelledCount": 0
+    },
+    "packageSmoke": {
+      "evaluated": true,
+      "ok": true,
+      "label": "passed"
+    }
+  },
+  "coverage": {
+    "scope": "shared-core",
+    "thresholds": {
+      "statements": 100,
+      "branches": 100,
+      "functions": 100,
+      "lines": 100
+    },
+    "node": {
+      "runtime": "node",
+      "ok": true,
+      "minimumPct": 100,
+      "metrics": {
+        "statements": {
+          "covered": 224,
+          "total": 224,
+          "pct": 100
+        },
+        "branches": {
+          "covered": 54,
+          "total": 54,
+          "pct": 100
+        },
+        "functions": {
+          "covered": 16,
+          "total": 16,
+          "pct": 100
+        },
+        "lines": {
+          "covered": 224,
+          "total": 224,
+          "pct": 100
+        }
+      }
+    },
+    "chrome": {
+      "runtime": "chrome",
+      "ok": true,
+      "minimumPct": 100,
+      "metrics": {
+        "statements": {
+          "covered": 85,
+          "total": 85,
+          "pct": 100
+        },
+        "branches": {
+          "covered": 41,
+          "total": 41,
+          "pct": 100
+        },
+        "functions": {
+          "covered": 17,
+          "total": 17,
+          "pct": 100
+        },
+        "lines": {
+          "covered": 85,
+          "total": 85,
+          "pct": 100
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Build a vanilla-test suite that runs unchanged in Node.js and Google Chrome using native ES modules and browser import maps.">
+    <meta name="color-scheme" content="dark">
+    <meta property="og:title" content="Get started · vanilla-test">
+    <meta property="og:description" content="Build a vanilla-test suite that runs unchanged in Node.js and Google Chrome using native ES modules and browser import maps.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://riaevangelist.github.io/vanilla-test/guide/">
+    <meta property="og:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <meta property="og:image:alt" content="vanilla-test — native JavaScript testing for Node.js and browsers">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Get started · vanilla-test">
+    <meta name="twitter:description" content="Build a vanilla-test suite that runs unchanged in Node.js and Google Chrome using native ES modules and browser import maps.">
+    <meta name="twitter:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <link rel="canonical" href="https://riaevangelist.github.io/vanilla-test/guide/">
+    <link rel="stylesheet" href="../assets/site.css">
+    <title>Get started · vanilla-test</title>
+</head>
+<body data-status-url="../data/status.json">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+        <div class="site-shell site-header__inner">
+            <a class="brand" href="../" aria-label="vanilla-test documentation home"><span class="brand__mark" aria-hidden="true">VT</span><span>vanilla-test</span></a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../">Overview</a></li>
+                    <li><a href="../guide/" aria-current="page">Get started</a></li>
+                    <li><a href="../api/">API</a></li>
+                    <li><a href="../testing/">Testing</a></li>
+                    <li><a href="../coverage/">Coverage</a></li>
+                    <li><a href="../cli/">CLI</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <header class="site-shell hero--single">
+            <p class="eyebrow">Get started</p>
+            <h1>One suite. Two runtime adapters.</h1>
+            <p class="lede">Keep assertions in a host-neutral module. Node and the browser each import that same module and decide what a failed result means for their environment.</p>
+        </header>
+
+        <div class="site-shell page-layout">
+            <article class="prose">
+                <section>
+                    <h2>Install and confirm the runtime</h2>
+                    <p>vanilla-test v2 requires Node.js 22.12 or newer and uses native ES modules. Install it as a project dependency:</p>
+                    <div class="code-block"><pre><code>npm install vanilla-test</code></pre></div>
+                    <p>If your project does not already use ESM, add <code>"type": "module"</code> to its <code>package.json</code>. No compiler or test-specific file transform is required.</p>
+                </section>
+
+                <section>
+                    <h2>Create the shared suite</h2>
+                    <p>Export a default or named <code>run()</code> function. Return the result from <code>report()</code> so any host can determine success without reading console output.</p>
+                    <div class="code-block"><pre><code><span class="code-keyword">import</span> VanillaTest <span class="code-keyword">from</span> <span class="code-string">'vanilla-test'</span>;
+
+<span class="code-keyword">export default async function</span> run() {
+    <span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+
+    test.expects(<span class="code-string">'addition preserves the total'</span>);
+    <span class="code-keyword">try</span> {
+        test.compare(1 + 2, 3);
+        test.pass();
+    } <span class="code-keyword">catch</span> (error) {
+        console.error(error);
+        test.fail();
+    }
+    test.done();
+
+    <span class="code-keyword">return</span> test.report();
+}</code></pre></div>
+                    <div class="callout">
+                        <strong>Lifecycle invariant</strong>
+                        <p>Every <code>expects()</code> begins one active test. Decide it with <code>pass()</code> or <code>fail()</code>, then call <code>done()</code> before starting another test or reporting.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Add the Node adapter</h2>
+                    <p>The shared core does not set a process exit code. A thin Node entry translates the frozen result into the convention used by shells and CI:</p>
+                    <div class="code-block"><pre><code><span class="code-keyword">import</span> run <span class="code-keyword">from</span> <span class="code-string">'./shared-test.js'</span>;
+
+<span class="code-keyword">const</span> result = <span class="code-keyword">await</span> run();
+process.exitCode = result.ok ? 0 : 1;</code></pre></div>
+                    <div class="code-block"><pre><code>node ./test/node.js</code></pre></div>
+                </section>
+
+                <section>
+                    <h2>Add the browser adapter</h2>
+                    <p>Browsers resolve package specifiers with an import map. Serve the project over HTTP; a <code>file:</code> URL is not an equivalent Web origin.</p>
+                    <div class="code-block"><pre><code>&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;script type="importmap"&gt;
+    {
+        "imports": {
+            "vanilla-test": "/node_modules/vanilla-test/index.js",
+            "ansi-colors-es6": "/node_modules/ansi-colors-es6/index.js",
+            "strong-type": "/node_modules/strong-type/index.js"
+        }
+    }
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;p data-status&gt;Running…&lt;/p&gt;
+    &lt;script type="module"&gt;
+        import run from './shared-test.js';
+        const result = await run();
+        document.querySelector('[data-status]').textContent =
+            result.ok ? 'Passed' : 'Failed';
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+                    <p>The coverage CLI supplies package import defaults for its own harness. Use <code>chrome.imports</code> only for additional specifiers or deliberate overrides.</p>
+                    <div class="actions">
+                        <a class="button" href="../example/">Run the deployed example</a>
+                        <a class="button button--secondary" href="../test/">Run the shared browser verification</a>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Add native coverage</h2>
+                    <p>Once the shared entry runs in both hosts, point <code>vanilla-test.config.json</code> at it and choose the project-owned files to measure. Node and Chrome reports remain independent.</p>
+                    <div class="code-block"><pre><code>npx vanilla-test coverage all</code></pre></div>
+                    <div class="link-panel">
+                        <p>Configuration is strict: unknown keys, missing files, escaping paths, empty include scopes, and invalid thresholds fail before a collector runs.</p>
+                        <a class="button button--secondary" href="../cli/">Configure the CLI</a>
+                    </div>
+                </section>
+            </article>
+
+            <aside class="page-aside" aria-label="Guide outcome">
+                <strong>By the end</strong>
+                <ul>
+                    <li>One shared ES module</li>
+                    <li>A Node exit adapter</li>
+                    <li>A browser import map</li>
+                    <li>A result both hosts understand</li>
+                </ul>
+                <p>Next: use the <a href="../api/">API reference</a> for lifecycle and error behavior.</p>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-shell site-footer__inner">
+            <p>vanilla-test <span data-status-version>v2</span> · MIT licensed</p>
+            <nav aria-label="Project links">
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/MIGRATION.md">Migration</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/CHANGELOG.md">Changelog</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test">GitHub</a>
+                <a href="https://www.npmjs.com/package/vanilla-test">npm</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/licence">License</a>
+            </nav>
+        </div>
+    </footer>
+    <script type="module" src="../assets/site.js"></script>
+</body>
+</html>
