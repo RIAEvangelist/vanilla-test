@@ -432,21 +432,64 @@ test('Node coverage parent watchdog terminates a synchronous entry', async (cont
     assert.match(errors.join('\n'), /timed out after 25 ms/);
 });
 
-test('README and Pages documentation cover the public API, CLI, config, reports, and console cues', async () => {
-    const [readme, home, api, cli, coverage, testing, example, browserVerification, harness] = await Promise.all([
+test('README and Pages documentation cover the public API, CLI, config, reports, playground, and console cues', async () => {
+    const [readme, home, guide, api, cli, coverage, testing, example, playground, playgroundScript, siteCss, browserVerification, harness] = await Promise.all([
         fs.readFile(path.join(projectRoot, 'readme.md'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'guide', 'index.html'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'api', 'index.html'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'cli', 'index.html'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'coverage', 'index.html'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'testing', 'index.html'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'example', 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'playground', 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'playground', 'playground.js'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'assets', 'site.css'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'test', 'index.html'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'lib', 'coverage', 'harness.js'), 'utf8')
     ]);
     const apiDocumentation = `${readme}\n${api}`;
     const cliDocumentation = `${readme}\n${cli}`;
-    const site = `${home}\n${api}\n${cli}\n${coverage}\n${testing}`;
+    const site = `${home}\n${guide}\n${example}\n${api}\n${playground}\n${cli}\n${testing}\n${coverage}`;
+    const navigationPages = [
+        { page: home, current: 'Overview', rootPage: true },
+        { page: guide, current: 'Guide' },
+        { page: example, current: 'Examples' },
+        { page: api, current: 'API' },
+        { page: playground, current: 'Playground' },
+        { page: cli, current: 'CLI' },
+        { page: testing, current: 'Testing' },
+        { page: coverage, current: 'Coverage' },
+        { page: browserVerification, current: 'Testing' }
+    ];
+    const navigationRoutes = [
+        ['', 'Overview'],
+        ['guide/', 'Guide'],
+        ['example/', 'Examples'],
+        ['api/', 'API'],
+        ['playground/', 'Playground'],
+        ['cli/', 'CLI'],
+        ['testing/', 'Testing'],
+        ['coverage/', 'Coverage']
+    ];
+
+    for (const { page, current, rootPage = false } of navigationPages) {
+        const navigation = page.match(/<nav class="site-nav"[\s\S]*?<\/nav>/)?.[0];
+        assert.ok(navigation, 'A documentation page is missing primary navigation.');
+        const actual = [...navigation.matchAll(/<a href="([^"]+)"( aria-current="page")?>([^<]+)<\/a>/g)]
+            .map((match) => ({
+                href: match[1],
+                label: match[3],
+                current: Boolean(match[2])
+            }));
+        const prefix = rootPage ? './' : '../';
+        const expected = navigationRoutes.map(([route, label]) => ({
+            href: `${prefix}${route}`,
+            label,
+            current: label === current
+        }));
+        assert.deepEqual(actual, expected, `${current} page has inconsistent primary navigation.`);
+    }
 
     for (const apiName of [
         'new VanillaTest()',
@@ -461,6 +504,9 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
         'test.report()',
         'test.onComplete(listener, options)',
         'test.delay(iterations = 1000)',
+        'addEventListener()',
+        'removeEventListener()',
+        'dispatchEvent()',
         'VANILLA_TEST_COMPLETE_EVENT'
     ]) {
         assert.ok(apiDocumentation.includes(apiName), `Missing API documentation for ${apiName}`);
@@ -475,6 +521,10 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
     }
 
     assert.match(cliDocumentation, /vanilla-test coverage \[all\|node\|chrome\] \[options\]/);
+    for (const alias of ['vanilla-test all', 'vanilla-test node', 'vanilla-test chrome']) {
+        assert.ok(cli.includes(alias), `Dedicated CLI page is missing ${alias}.`);
+    }
+    assert.match(cli, /no arguments prints help and exits with status <code>0<\/code>/);
     assert.match(cliDocumentation, /"executablePath": null/);
     assert.match(cliDocumentation, /CHROME_PATH/);
     for (const script of ['test', 'test:core', 'test:tooling', 'coverage', 'coverage:node', 'coverage:chrome', 'site:status', 'screenshots', 'start']) {
@@ -509,9 +559,46 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
 
     assert.match(site, /Native V8|native V8/);
     assert.doesNotMatch(site, /\b(?:c8|Playwright|Monocart|Istanbul)\b/i);
+    assert.match(home, /Badge information/);
+    for (const badge of ['quality.json', 'node-coverage.json', 'chrome-coverage.json']) {
+        assert.ok(home.includes(badge), `Homepage is missing badge information for ${badge}.`);
+    }
     assert.match(example, /type="importmap"/);
     assert.match(example, /No build step/);
+    assert.match(example, /Check the console or DevTools/i);
+    assert.match(example, /Check the terminal/i);
+    assert.match(playground, /sandbox="allow-scripts"/);
+    assert.doesNotMatch(playground, /allow-same-origin/);
+    assert.match(playground, /Check the console or DevTools/i);
+    assert.match(playground, /role="log"/);
+    assert.match(playgroundScript, /event\.source !== frame\.contentWindow/);
+    assert.match(playgroundScript, /event\.origin !== 'null'/);
+    assert.match(playgroundScript, /event\.source !== parent/);
+    assert.match(playgroundScript, /event\.origin !== parentOrigin/);
+    assert.match(playgroundScript, /default-src 'none'/);
+    assert.match(playgroundScript, /connect-src 'none'/);
+    assert.match(playgroundScript, /sourceBundlePromise = null/);
+    assert.match(playgroundScript, /MAX_OUTPUT_CHARACTERS = 100_000/);
+    assert.match(playgroundScript, /MAX_OUTPUT_LINE_CHARACTERS = 4_000/);
+    assert.match(playgroundScript, /MAX_OUTPUT_LINES = 300/);
+    assert.match(playgroundScript, /RUN_TIMEOUT_MS = 15_000/);
+    assert.doesNotMatch(playgroundScript, /event\.key === ['"]Tab['"]/);
+    assert.doesNotMatch(siteCss, /min-width:\s*20rem/);
+    for (const engineeringContract of [
+        'Execution model',
+        'Precondition',
+        'Returns',
+        'Throws',
+        'Console',
+        'Result contract',
+        'Error matrix',
+        'All 66 type-helper methods',
+        'Method catalogue'
+    ]) {
+        assert.ok(api.includes(engineeringContract), `API reference is missing ${engineeringContract}.`);
+    }
     assert.match(browserVerification, /Chrome console/);
+    assert.match(browserVerification, /Check the console or DevTools/);
     assert.match(browserVerification, /visible panel mirrors messages/);
     assert.match(browserVerification, /consoleOutput\.append/);
     assert.match(harness, /Check the console or DevTools/);

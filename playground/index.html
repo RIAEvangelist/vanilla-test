@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Run editable vanilla-test ES modules in an isolated browser playground and inspect the mirrored console output.">
+    <meta name="color-scheme" content="dark">
+    <meta property="og:title" content="Playground · vanilla-test">
+    <meta property="og:description" content="Run editable vanilla-test ES modules in an isolated browser playground and inspect the mirrored console output.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://riaevangelist.github.io/vanilla-test/playground/">
+    <meta property="og:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <meta property="og:image:alt" content="vanilla-test — native JavaScript testing for Node.js and browsers">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Playground · vanilla-test">
+    <meta name="twitter:description" content="Run editable vanilla-test ES modules in an isolated browser playground and inspect the mirrored console output.">
+    <meta name="twitter:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <link rel="canonical" href="https://riaevangelist.github.io/vanilla-test/playground/">
+    <link rel="stylesheet" href="../assets/site.css">
+    <title>Playground · vanilla-test</title>
+</head>
+<body data-status-url="../data/status.json">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+        <div class="site-shell site-header__inner">
+            <a class="brand" href="../" aria-label="vanilla-test documentation home"><span class="brand__mark" aria-hidden="true">VT</span><span>vanilla-test</span></a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../">Overview</a></li>
+                    <li><a href="../guide/">Guide</a></li>
+                    <li><a href="../example/">Examples</a></li>
+                    <li><a href="../api/">API</a></li>
+                    <li><a href="../playground/" aria-current="page">Playground</a></li>
+                    <li><a href="../cli/">CLI</a></li>
+                    <li><a href="../testing/">Testing</a></li>
+                    <li><a href="../coverage/">Coverage</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <header class="site-shell hero--single">
+            <p class="eyebrow">Browser playground</p>
+            <h1>Edit, run, inspect, repeat.</h1>
+            <p class="lede">Run a real ES module against the deployed package source. Every run starts in a fresh opaque-origin sandbox that cannot read this page's origin, storage, or cookies.</p>
+        </header>
+
+        <div class="site-shell playground-shell">
+            <div class="callout">
+                <strong>Check the console or DevTools.</strong>
+                <p>Console output is mirrored into the panel below and remains available in your browser's developer tools.</p>
+            </div>
+
+            <div class="playground-grid">
+                <section class="playground-panel" aria-labelledby="editor-title">
+                    <div class="playground-panel__header">
+                        <h2 id="editor-title">ES module</h2>
+                        <div class="playground-controls">
+                            <button class="playground-button" type="button" data-playground-run>Run module</button>
+                            <button class="playground-button playground-button--secondary" type="button" data-playground-reset>Reset example</button>
+                        </div>
+                    </div>
+                    <label class="sr-only" for="playground-code">JavaScript module source</label>
+                    <textarea class="playground-editor" id="playground-code" spellcheck="false" autocapitalize="off" autocomplete="off">import VanillaTest from 'vanilla-test';
+
+const test = new VanillaTest();
+
+function check(description, assertion) {
+    test.expects(description);
+
+    try {
+        assertion();
+        test.pass();
+    } catch (error) {
+        console.error(error);
+        test.fail();
+    }
+
+    test.done();
+}
+
+check('addition preserves the total', () =&gt; {
+    test.compare(1 + 2, 3);
+});
+
+check('the result is a number', () =&gt; {
+    test.is.number(1 + 2);
+});
+
+const result = test.report();
+
+console.log('Summary', {
+    ok: result.ok,
+    total: result.total,
+    failures: result.failureCount
+});
+
+export default result;</textarea>
+                </section>
+
+                <section class="playground-panel" aria-labelledby="playground-console-title">
+                    <div class="playground-panel__header">
+                        <h2 id="playground-console-title">Console</h2>
+                        <span class="runtime-badge">Fresh sandbox</span>
+                    </div>
+                    <div class="playground-console" role="log" aria-live="polite" aria-labelledby="playground-console-title" data-playground-console>
+                        <p class="console-empty">Preparing the isolated runtime…</p>
+                    </div>
+                </section>
+            </div>
+
+            <p class="playground-status" role="status" aria-live="polite" data-playground-status data-state="running">Loading package source…</p>
+
+            <div class="grid grid--two playground-help">
+                <article class="card">
+                    <span class="card__label">Run faster</span>
+                    <h2>Keyboard shortcut</h2>
+                    <p>Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> or <kbd>⌘</kbd> + <kbd>Enter</kbd> to run. Tab remains normal keyboard navigation.</p>
+                </article>
+                <article class="card">
+                    <span class="card__label">Execution boundary</span>
+                    <h2>What the sandbox does</h2>
+                    <p>It runs one module with the <code>vanilla-test</code> package specifier available. A restrictive sandbox policy blocks ordinary network requests, a 15-second watchdog resets stalled runs, and mirrored output is bounded.</p>
+                </article>
+            </div>
+
+            <div class="link-panel">
+                <p>Need a production-ready pattern? Start from a complete adapter, then use the API contracts to handle results and events.</p>
+                <div class="actions">
+                    <a class="button button--secondary" href="../example/">Browse examples</a>
+                    <a class="button button--secondary" href="../api/">Open the API reference</a>
+                </div>
+            </div>
+
+            <iframe class="playground-frame" title="Isolated playground runtime" sandbox="allow-scripts" tabindex="-1" aria-hidden="true" data-playground-frame></iframe>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-shell site-footer__inner">
+            <p>vanilla-test <span data-status-version>v2</span> · MIT licensed</p>
+            <nav aria-label="Project links">
+                <a href="../example/">Examples</a>
+                <a href="../api/">API</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test">GitHub</a>
+                <a href="https://www.npmjs.com/package/vanilla-test">npm</a>
+            </nav>
+        </div>
+    </footer>
+    <script type="module" src="./playground.js"></script>
+    <script type="module" src="../assets/site.js"></script>
+</body>
+</html>

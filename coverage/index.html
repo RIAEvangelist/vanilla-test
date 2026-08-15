@@ -27,11 +27,13 @@
             <nav class="site-nav" aria-label="Primary navigation">
                 <ul>
                     <li><a href="../">Overview</a></li>
-                    <li><a href="../guide/">Get started</a></li>
+                    <li><a href="../guide/">Guide</a></li>
+                    <li><a href="../example/">Examples</a></li>
                     <li><a href="../api/">API</a></li>
+                    <li><a href="../playground/">Playground</a></li>
+                    <li><a href="../cli/">CLI</a></li>
                     <li><a href="../testing/">Testing</a></li>
                     <li><a href="../coverage/" aria-current="page">Coverage</a></li>
-                    <li><a href="../cli/">CLI</a></li>
                 </ul>
             </nav>
         </div>
@@ -156,6 +158,10 @@
 <span class="code-comment"># collectors can also run independently</span>
 npm run coverage:node
 npm run coverage:chrome</code></pre></div>
+                    <div class="callout">
+                        <strong>Check the terminal.</strong>
+                        <p>The suite report and any collector errors appear there. Open the generated runtime directory for the coverage metrics and HTML report.</p>
+                    </div>
                     <div class="link-panel">
                         <p>Use configuration to choose the entry, include scope, threshold, report directory, browser imports, Chrome executable, and timeout.</p>
                         <a class="button button--secondary" href="../cli/">Read the CLI contract</a>

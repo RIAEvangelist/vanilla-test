@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented here.
 
+## Unreleased
+
+### Added
+
+- A complete Examples page with runnable browser, Node, async, failure, type-check, CLI, and npm patterns.
+- An editable browser Playground with a fresh opaque-origin sandbox, mirrored console output, run watchdog, and reset controls.
+- A real-Chrome Playground smoke covering the default run, reset, timeout recovery, route base, and 320px reflow.
+- Project badge explanations and direct links to package, test, workflow, and runtime-specific coverage evidence.
+
+### Changed
+
+- Expanded the API page into an engineer-focused reference for state transitions, method contracts, results, events, errors, all type helpers, and host adapters.
+- Made Guide, Examples, API, Playground, CLI, Testing, and Coverage distinct destinations in the shared navigation.
+- Added visible console, DevTools, and terminal reminders beside runnable examples and commands.
+
+### Security
+
+- Playground code runs without same-origin access to the documentation page, storage, or cookies; parent/child messages validate their source and origin.
+- The workspace server permits blob modules only for local documentation while the coverage server retains its stricter script policy.
+
 ## [2.1.0] - 2026-08-14
 
 ### Added

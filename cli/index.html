@@ -27,11 +27,13 @@
             <nav class="site-nav" aria-label="Primary navigation">
                 <ul>
                     <li><a href="../">Overview</a></li>
-                    <li><a href="../guide/">Get started</a></li>
+                    <li><a href="../guide/">Guide</a></li>
+                    <li><a href="../example/">Examples</a></li>
                     <li><a href="../api/">API</a></li>
+                    <li><a href="../playground/">Playground</a></li>
+                    <li><a href="../cli/" aria-current="page">CLI</a></li>
                     <li><a href="../testing/">Testing</a></li>
                     <li><a href="../coverage/">Coverage</a></li>
-                    <li><a href="../cli/" aria-current="page">CLI</a></li>
                 </ul>
             </nav>
         </div>
@@ -48,11 +50,23 @@
             <article class="prose">
                 <section>
                     <h2>Commands</h2>
-                    <div class="code-block"><pre><code>vanilla-test coverage
+                    <div class="code-block"><pre><code>vanilla-test coverage [all|node|chrome] [options]
+
+vanilla-test coverage
 vanilla-test coverage all
 vanilla-test coverage node
-vanilla-test coverage chrome</code></pre></div>
-                    <p><code>coverage</code> and <code>coverage all</code> run Node first, then Chrome. An ordinary assertion or threshold failure in Node does not discard its report or prevent the Chrome collector from producing its own report.</p>
+vanilla-test coverage chrome
+
+# equivalent short aliases
+vanilla-test all
+vanilla-test node
+vanilla-test chrome</code></pre></div>
+                    <div class="callout">
+                        <strong>Check the terminal.</strong>
+                        <p>The suite report and any collector errors appear there. Use the process exit status for automation and the generated report directory for coverage details.</p>
+                    </div>
+                    <p><code>coverage</code>, <code>coverage all</code>, and the <code>all</code> alias run Node first, then Chrome. The <code>node</code> and <code>chrome</code> aliases select one collector. Running <code>vanilla-test</code> with no arguments prints help and exits with status <code>0</code>.</p>
+                    <p>An ordinary assertion or threshold failure in Node does not discard its report or prevent the Chrome collector from producing its own report.</p>
                     <p>Repository contributors can use the npm scripts below. Run a script exactly as shown; append CLI options after <code>--</code>.</p>
                     <div class="table-wrap">
                         <table>
@@ -65,7 +79,7 @@ vanilla-test coverage chrome</code></pre></div>
                                 <tr><td><code>npm run coverage:node</code></td><td><code>node ./bin/vanilla-test.js coverage node</code></td><td>Run only Node coverage.</td></tr>
                                 <tr><td><code>npm run coverage:chrome</code></td><td><code>node ./bin/vanilla-test.js coverage chrome</code></td><td>Run only Chrome coverage.</td></tr>
                                 <tr><td><code>npm run site:status</code></td><td><code>node ./scripts/build-site-status.js --run-tooling</code></td><td>Refresh site status data and Shields badges from current artifacts.</td></tr>
-                                <tr><td><code>npm run screenshots</code></td><td><code>node ./scripts/screenshots.js</code></td><td>Regenerate the Chrome test and native-report screenshots after coverage.</td></tr>
+                                <tr><td><code>npm run screenshots</code></td><td><code>node ./scripts/screenshots.js</code></td><td>Smoke-test the playground in Chrome, then regenerate the browser and native-report screenshots after coverage.</td></tr>
                                 <tr><td><code>npm start</code></td><td><code>node ./scripts/serve.js</code></td><td>Serve the repository and documentation locally.</td></tr>
                             </tbody>
                         </table>
@@ -73,6 +87,10 @@ vanilla-test coverage chrome</code></pre></div>
                     <div class="code-block"><pre><code>npm run coverage -- --timeout-ms 60000
 npm run coverage:chrome -- --headed
 npm run coverage:chrome -- --chrome-path "/opt/google/chrome/google-chrome"</code></pre></div>
+                    <div class="callout">
+                        <strong>Check the terminal after every npm command.</strong>
+                        <p>Test output and failures appear there. Coverage metrics are written to the configured <code>reportsDirectory</code>.</p>
+                    </div>
                 </section>
 
                 <section>
@@ -82,7 +100,7 @@ npm run coverage:chrome -- --chrome-path "/opt/google/chrome/google-chrome"</cod
                             <thead><tr><th>Option</th><th>Behavior</th></tr></thead>
                             <tbody>
                                 <tr><td><code>--config &lt;path&gt;</code></td><td>Use a JSON configuration file. Default: <code>vanilla-test.config.json</code> in the current directory.</td></tr>
-                                <tr><td><code>--chrome-path &lt;path&gt;</code></td><td>Launch an explicit Google Chrome executable. The resolved target must be a file.</td></tr>
+                                <tr><td><code>--chrome-path &lt;path&gt;</code></td><td>Launch an explicit Google Chrome executable. The resolved target must be an executable file.</td></tr>
                                 <tr><td><code>--headed</code></td><td>Show Chrome during the browser run, overriding <code>chrome.headless</code>.</td></tr>
                                 <tr><td><code>--timeout-ms &lt;ms&gt;</code></td><td>Override <code>timeoutMs</code> with a positive integer up to 3,600,000.</td></tr>
                                 <tr><td><code>--help</code></td><td>Print command usage.</td></tr>
@@ -166,10 +184,14 @@ npm run coverage:chrome -- --chrome-path 'D:\Browsers\Chrome\chrome.exe'
 # macOS or Linux shell
 CHROME_PATH=/usr/bin/google-chrome-stable npm run coverage:chrome
 npm run coverage:chrome -- --chrome-path "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"</code></pre></div>
+                    <div class="callout">
+                        <strong>Check the terminal.</strong>
+                        <p>A missing, non-file, or non-executable Chrome path is reported as a harness error with exit status <code>2</code>.</p>
+                    </div>
                     <p>Keep Chrome's sandbox enabled by default. On an isolated Linux CI runner that cannot provide a usable Chrome sandbox, opt out for that job only:</p>
                     <div class="code-block"><pre><code>VANILLA_TEST_CHROME_NO_SANDBOX=1 npm run coverage</code></pre></div>
                     <div class="callout">
-                        <strong>CI escape hatch, not a normal default.</strong>
+                        <strong>Check the terminal. This is a CI escape hatch, not a normal default.</strong>
                         <p>The variable accepts only <code>0</code>, <code>1</code>, an empty value, or an unset value; empty and unset both preserve the sandbox. <code>1</code> adds Chrome's <code>--no-sandbox</code> flag and reduces browser isolation; do not use it on a general-purpose workstation or an untrusted shared runner.</p>
                     </div>
                     <div class="table-wrap">
@@ -261,6 +283,7 @@ npm run coverage:chrome -- --chrome-path "/Applications/Google Chrome.app/Conten
                     <div class="code-block"><pre><code>- run: npm ci
 - run: npm test
 - run: npm run coverage -- --chrome-path "$CHROME_PATH"</code></pre></div>
+                    <div class="callout"><strong>Check the CI terminal log.</strong><p>Keep the exit status and uploaded runtime reports as separate evidence for each gate.</p></div>
                     <p>Install Google Chrome Stable explicitly in CI and log the exact Node and Chrome versions beside the artifacts. Treat the Node test matrix, coverage collectors, and packed-artifact smoke as separate required gates before publishing quality data.</p>
                     <div class="actions">
                         <a class="button" href="https://github.com/RIAEvangelist/vanilla-test/blob/main/.github/workflows/ci.yml">Inspect this repository's workflow</a>

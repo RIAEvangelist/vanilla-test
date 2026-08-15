@@ -3,17 +3,17 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="vanilla-test API reference: runner lifecycle, assertions, immutable reports, completion events, strict behavior, and errors.">
+    <meta name="description" content="Engineer-focused vanilla-test API reference with exact lifecycle contracts, result invariants, errors, type helpers, and runnable Node and browser examples.">
     <meta name="color-scheme" content="dark">
     <meta property="og:title" content="API reference · vanilla-test">
-    <meta property="og:description" content="vanilla-test API reference: runner lifecycle, assertions, immutable reports, completion events, strict behavior, and errors.">
+    <meta property="og:description" content="Exact vanilla-test exports, state transitions, methods, results, events, errors, type helpers, and host integration patterns.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://riaevangelist.github.io/vanilla-test/api/">
     <meta property="og:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
     <meta property="og:image:alt" content="vanilla-test — native JavaScript testing for Node.js and browsers">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="API reference · vanilla-test">
-    <meta name="twitter:description" content="vanilla-test API reference: runner lifecycle, assertions, immutable reports, completion events, strict behavior, and errors.">
+    <meta name="twitter:description" content="Exact vanilla-test exports, state transitions, methods, results, events, errors, type helpers, and host integration patterns.">
     <meta name="twitter:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
     <link rel="canonical" href="https://riaevangelist.github.io/vanilla-test/api/">
     <link rel="stylesheet" href="../assets/site.css">
@@ -23,15 +23,20 @@
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header">
         <div class="site-shell site-header__inner">
-            <a class="brand" href="../" aria-label="vanilla-test documentation home"><span class="brand__mark" aria-hidden="true">VT</span><span>vanilla-test</span></a>
+            <a class="brand" href="../" aria-label="vanilla-test documentation home">
+                <span class="brand__mark" aria-hidden="true">VT</span>
+                <span>vanilla-test</span>
+            </a>
             <nav class="site-nav" aria-label="Primary navigation">
                 <ul>
                     <li><a href="../">Overview</a></li>
-                    <li><a href="../guide/">Get started</a></li>
+                    <li><a href="../guide/">Guide</a></li>
+                    <li><a href="../example/">Examples</a></li>
                     <li><a href="../api/" aria-current="page">API</a></li>
+                    <li><a href="../playground/">Playground</a></li>
+                    <li><a href="../cli/">CLI</a></li>
                     <li><a href="../testing/">Testing</a></li>
                     <li><a href="../coverage/">Coverage</a></li>
-                    <li><a href="../cli/">CLI</a></li>
                 </ul>
             </nav>
         </div>
@@ -39,139 +44,625 @@
 
     <main id="main-content">
         <header class="site-shell hero--single">
-            <p class="eyebrow">API reference</p>
-            <h1>A small stateful runner with explicit completion.</h1>
-            <p class="lede">Each instance owns its active test, descriptions, results, and type helper. A reported runner is final and returns the same frozen snapshot on every later report.</p>
+            <p class="eyebrow">Engineer API reference</p>
+            <h1>Small surface. Explicit state.</h1>
+            <p class="lede">This reference documents the observable contract: exact exports, legal state transitions, return values, exceptions, console effects, event timing, immutable results, and host integration.</p>
+            <div class="actions">
+                <a class="button" href="#runnable-suite">Use the complete example</a>
+                <a class="button button--secondary" href="../playground/">Open the playground</a>
+            </div>
         </header>
 
         <div class="site-shell page-layout">
             <article class="prose">
-                <section>
-                    <h2>Imports and lifecycle</h2>
+                <section id="exports">
+                    <p class="eyebrow">Module surface</p>
+                    <h2>Exports</h2>
                     <div class="code-block"><pre><code><span class="code-keyword">import</span> VanillaTest, {
     VanillaTest <span class="code-keyword">as</span> NamedVanillaTest,
     VANILLA_TEST_COMPLETE_EVENT
 } <span class="code-keyword">from</span> <span class="code-string">'vanilla-test'</span>;</code></pre></div>
-                    <p>The default and named class exports are the same value. <code>VanillaTest</code> extends <code>EventTarget</code>; completion uses the exported <code>vanilla-test:complete</code> event name.</p>
                     <div class="table-wrap">
                         <table>
-                            <thead><tr><th>State</th><th>Allowed operation</th><th>Transition</th></tr></thead>
+                            <thead>
+                                <tr><th>Export</th><th>Value</th><th>Contract</th></tr>
+                            </thead>
                             <tbody>
-                                <tr><td>Idle</td><td><code>expects(description)</code> or <code>report()</code></td><td><code>expects()</code> creates one active test.</td></tr>
-                                <tr><td>Active</td><td><code>pass()</code>, <code>fail()</code>, then <code>done()</code></td><td><code>done()</code> returns the runner to idle.</td></tr>
-                                <tr><td>Reported</td><td><code>report()</code> and non-lifecycle helpers</td><td>The same immutable snapshot is returned; <code>expects()</code> cannot start a new test.</td></tr>
+                                <tr>
+                                    <td><code>default</code></td>
+                                    <td><code>VanillaTest</code> class</td>
+                                    <td>Exactly the same class object as the named export.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>VanillaTest</code></td>
+                                    <td>Named class export</td>
+                                    <td>Extends the host's native <code>EventTarget</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>VANILLA_TEST_COMPLETE_EVENT</code></td>
+                                    <td><code>'vanilla-test:complete'</code></td>
+                                    <td>The event type dispatched after the first successful call to <code>report()</code>.</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
+                    <p>The shared API depends only on Web-standard JavaScript. It does not import Node test APIs, inspect <code>process</code>, launch a browser, or terminate a host.</p>
                 </section>
 
-                <section>
-                    <h2>Runner methods</h2>
+                <section id="execution-model">
+                    <p class="eyebrow">State model</p>
+                    <h2>Execution model</h2>
+                    <p>A runner has one active-test slot. Tests inside one instance are sequential; separate instances own separate state and can progress independently.</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Current state</th><th>Legal operation</th><th>Next state</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Idle, unreported</td>
+                                    <td><code>expects(description)</code></td>
+                                    <td>Active, undecided</td>
+                                </tr>
+                                <tr>
+                                    <td>Active, undecided</td>
+                                    <td><code>pass()</code> or <code>fail()</code></td>
+                                    <td>Active, decided</td>
+                                </tr>
+                                <tr>
+                                    <td>Active, undecided or decided</td>
+                                    <td><code>done()</code></td>
+                                    <td>Idle, unreported. An undecided test is failed first.</td>
+                                </tr>
+                                <tr>
+                                    <td>Idle, unreported</td>
+                                    <td><code>report()</code></td>
+                                    <td>Reported and sealed</td>
+                                </tr>
+                                <tr>
+                                    <td>Reported and sealed</td>
+                                    <td><code>report()</code></td>
+                                    <td>Unchanged; returns the cached snapshot.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="callout">
+                        <strong>Core lifecycle</strong>
+                        <p><code>expects() → pass() | fail() → done()</code>, repeated for each case, then exactly one effective <code>report()</code>. Calling <code>done()</code> without a decision is valid but records a failure.</p>
+                    </div>
+                    <ul>
+                        <li>Only one test can be active on an instance.</li>
+                        <li>Raw descriptions must be unique within an instance.</li>
+                        <li>A report seals the suite; no later test can start.</li>
+                        <li>An empty suite reports successfully with a total of zero.</li>
+                        <li>Instance state, strict mode, listeners, descriptions, and results are isolated.</li>
+                    </ul>
+                </section>
+
+                <section id="constructor-properties">
+                    <p class="eyebrow">Instance surface</p>
+                    <h2>Constructor and properties</h2>
                     <div class="method-list">
-                        <article class="method">
+                        <article class="method" id="constructor">
                             <h3>new VanillaTest()</h3>
-                            <p>Creates an isolated runner. Instances do not share descriptions, strict state, listeners, or results.</p>
-                            <dl><dt>Returns</dt><dd>A new <code>VanillaTest</code> instance.</dd></dl>
+                            <p>Creates an idle runner with no descriptions, decisions, listeners, or result snapshot.</p>
+                            <dl>
+                                <dt>Arguments</dt><dd>None.</dd>
+                                <dt>Returns</dt><dd>A new <code>VanillaTest</code> instance that is also an <code>EventTarget</code>.</dd>
+                                <dt>Throws</dt><dd>Nothing from the constructor contract.</dd>
+                                <dt>Console</dt><dd>No output.</dd>
+                            </dl>
                         </article>
-                        <article class="method">
-                            <h3>test.expects(description)</h3>
-                            <p>Starts one test and logs its numbered description. The raw description must be a unique string within this runner.</p>
-                            <dl><dt>Returns</dt><dd>The numbered test description.</dd><dt>Throws</dt><dd><code>TypeError</code> for a non-string; <code>ReferenceError</code> for an active test, duplicate description, or reported runner.</dd></dl>
+
+                        <article class="method" id="property-is">
+                            <h3>test.is</h3>
+                            <p>Read-only access to the instance-owned <code>strong-type</code> helper. The same helper object is returned on every read.</p>
+                            <dl>
+                                <dt>Value</dt><dd>A <code>strong-type</code> instance with the 66 methods catalogued below.</dd>
+                                <dt>Throws</dt><dd>Nothing when read. Individual helper calls can throw on mismatches.</dd>
+                                <dt>Console</dt><dd>No output.</dd>
+                            </dl>
                         </article>
-                        <article class="method">
-                            <h3>test.pass(strict = false)</h3>
-                            <p>Records the active test as passed. A repeated decision returns the existing description unless this call's <code>strict</code> argument is <code>true</code>.</p>
-                            <dl><dt>Returns</dt><dd>The active numbered description.</dd><dt>Throws</dt><dd><code>TypeError</code> for a non-boolean argument; <code>ReferenceError</code> when no test is active or a strict repeated decision occurs.</dd></dl>
+
+                        <article class="method" id="property-compare">
+                            <h3>test.compare</h3>
+                            <p>A direct reference to <code>test.is.compare</code>. It accepts <code>(value, targetValue)</code>, uses loose equality, returns <code>true</code> on a match, and otherwise throws an <code>Error</code> in strict mode or returns <code>false</code>.</p>
+                            <dl>
+                                <dt>Identity</dt><dd><code>test.compare === test.is.compare</code>.</dd>
+                                <dt>Binding</dt><dd>Call it as <code>test.compare(...)</code>; do not detach a method that relies on its receiver.</dd>
+                                <dt>Console</dt><dd>No output.</dd>
+                            </dl>
                         </article>
-                        <article class="method">
-                            <h3>test.fail(strict = false)</h3>
-                            <p>Records the active test as failed. Repeated-decision behavior matches <code>pass()</code>.</p>
-                            <dl><dt>Returns</dt><dd>The active numbered description.</dd><dt>Throws</dt><dd>The same argument, active-test, and strict-repeat errors as <code>pass()</code>.</dd></dl>
+
+                        <article class="method" id="property-throw">
+                            <h3>test.throw</h3>
+                            <p>A direct reference to <code>test.is.throw</code>. It accepts <code>(valueType, expectedType)</code> and is the mismatch path used by the type helper.</p>
+                            <dl>
+                                <dt>Identity</dt><dd><code>test.throw === test.is.throw</code>.</dd>
+                                <dt>Returns</dt><dd><code>false</code> when <code>test.strict</code> is <code>false</code>.</dd>
+                                <dt>Throws</dt><dd><code>TypeError</code> with expected and received type details when strict mode is enabled.</dd>
+                                <dt>Console</dt><dd>No output.</dd>
+                            </dl>
                         </article>
-                        <article class="method">
-                            <h3>test.done()</h3>
-                            <p>Finishes the active test. If neither decision method ran, <code>done()</code> records the test as failed before clearing it.</p>
-                            <dl><dt>Returns</dt><dd>The finished numbered description.</dd><dt>Throws</dt><dd><code>ReferenceError</code> when there is no active test.</dd></dl>
+
+                        <article class="method" id="property-strict">
+                            <h3>test.strict</h3>
+                            <p>A readable and writable boolean that controls type-helper mismatch behavior. It defaults to <code>true</code>.</p>
+                            <dl>
+                                <dt>Set</dt><dd>Assign <code>true</code> to throw on mismatches; assign <code>false</code> to return <code>false</code>.</dd>
+                                <dt>Throws</dt><dd><code>TypeError</code> when assigned a non-boolean.</dd>
+                                <dt>Scope</dt><dd>Does not relax runner argument validation and is independent of <code>pass(true)</code> or <code>fail(true)</code>.</dd>
+                                <dt>Console</dt><dd>No output.</dd>
+                            </dl>
                         </article>
-                        <article class="method">
-                            <h3>test.report()</h3>
-                            <p>Prints the report once, freezes the result and its arrays, schedules the completion event in a microtask, and returns the result. An empty suite is a successful report.</p>
-                            <dl><dt>Returns</dt><dd>The same frozen result object for every call.</dd><dt>Throws</dt><dd><code>ReferenceError</code> if an active test has not been finished.</dd></dl>
-                        </article>
-                        <article class="method">
-                            <h3>test.onComplete(listener, options)</h3>
-                            <p>Subscribes to the completion event and returns an idempotent unsubscribe function. The frozen result is available at <code>event.detail</code>.</p>
-                            <dl><dt>Returns</dt><dd>A zero-argument unsubscribe function.</dd><dt>Throws</dt><dd><code>TypeError</code> when <code>listener</code> is not a function.</dd></dl>
-                        </article>
-                        <article class="method">
-                            <h3>test.delay(iterations = 1000)</h3>
-                            <p>Runs a synchronous loop and returns the runner for chaining. It is retained as a small host-neutral delay primitive, not an asynchronous timer.</p>
-                            <dl><dt>Returns</dt><dd>The runner instance.</dd><dt>Throws</dt><dd><code>TypeError</code> unless the value is a nonnegative safe integer.</dd></dl>
-                        </article>
+                    </div>
+
+                    <h3>Strict helper behavior</h3>
+                    <div class="code-block"><pre><code><span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+
+test.strict = false;
+console.log(test.is.number(<span class="code-string">'42'</span>)); <span class="code-comment">// false</span>
+console.log(test.compare(1, <span class="code-string">'1'</span>)); <span class="code-comment">// true: loose equality</span>
+
+test.strict = true;
+test.is.number(<span class="code-string">'42'</span>); <span class="code-comment">// throws TypeError</span></code></pre></div>
+                    <div class="callout">
+                        <strong>Inspect the example output</strong>
+                        <p>Browser: check the console or DevTools. Node: check the terminal.</p>
                     </div>
                 </section>
 
-                <section>
+                <section id="lifecycle-methods">
+                    <p class="eyebrow">Runner contract</p>
+                    <h2>Lifecycle methods</h2>
+                    <div class="method-list">
+                        <article class="method" id="expects">
+                            <h3>test.expects(description)</h3>
+                            <p>Starts the next test and writes its numbered description.</p>
+                            <dl>
+                                <dt>Signature</dt><dd><code>expects(description)</code></dd>
+                                <dt>Precondition</dt><dd>The runner is unreported and has no active test. <code>description</code> is a unique string for this instance.</dd>
+                                <dt>Returns</dt><dd>A string shaped like <code>"1) .expects addition works"</code>.</dd>
+                                <dt>Throws</dt><dd><code>TypeError</code> for a non-string. <code>ReferenceError</code> for an active test, duplicate description, or sealed runner.</dd>
+                                <dt>Console</dt><dd>Logs the numbered description once.</dd>
+                            </dl>
+                        </article>
+
+                        <article class="method" id="pass">
+                            <h3>test.pass(strict = false)</h3>
+                            <p>Stores the active test in the passed list and logs the decision.</p>
+                            <dl>
+                                <dt>Signature</dt><dd><code>pass(strict = false)</code></dd>
+                                <dt>Precondition</dt><dd>A test is active. <code>strict</code> is a boolean.</dd>
+                                <dt>Returns</dt><dd>The active numbered description.</dd>
+                                <dt>Repeated call</dt><dd>Returns the existing description without changing state or logging. With this call's <code>strict</code> set to <code>true</code>, throws instead.</dd>
+                                <dt>Throws</dt><dd><code>TypeError</code> for a non-boolean. <code>ReferenceError</code> with no active test or after a strict repeated decision.</dd>
+                                <dt>Console</dt><dd>Logs <code>pass</code> only for the first decision.</dd>
+                            </dl>
+                        </article>
+
+                        <article class="method" id="fail">
+                            <h3>test.fail(strict = false)</h3>
+                            <p>Stores the active test in the failed list and logs the decision.</p>
+                            <dl>
+                                <dt>Signature</dt><dd><code>fail(strict = false)</code></dd>
+                                <dt>Precondition</dt><dd>A test is active. <code>strict</code> is a boolean.</dd>
+                                <dt>Returns</dt><dd>The active numbered description.</dd>
+                                <dt>Repeated call</dt><dd>Returns the existing description without changing state or logging. With this call's <code>strict</code> set to <code>true</code>, throws instead.</dd>
+                                <dt>Throws</dt><dd><code>TypeError</code> for a non-boolean. <code>ReferenceError</code> with no active test or after a strict repeated decision.</dd>
+                                <dt>Console</dt><dd>Logs <code>fail</code> only for the first decision.</dd>
+                            </dl>
+                        </article>
+
+                        <article class="method" id="done">
+                            <h3>test.done()</h3>
+                            <p>Closes the active test and clears the active slot. If no decision exists, it first records a failure.</p>
+                            <dl>
+                                <dt>Signature</dt><dd><code>done()</code></dd>
+                                <dt>Precondition</dt><dd>A test is active.</dd>
+                                <dt>Returns</dt><dd>The completed numbered description.</dd>
+                                <dt>Throws</dt><dd><code>ReferenceError</code> when no test is active.</dd>
+                                <dt>Console</dt><dd>No output after an explicit decision. Logs <code>fail</code> when it auto-fails an undecided test.</dd>
+                            </dl>
+                        </article>
+
+                        <article class="method" id="report">
+                            <h3>test.report()</h3>
+                            <p>Builds the final result, freezes it, logs the rendered report, schedules one completion event, and seals the suite.</p>
+                            <dl>
+                                <dt>Signature</dt><dd><code>report()</code></dd>
+                                <dt>Precondition</dt><dd>No test is active.</dd>
+                                <dt>Returns</dt><dd>A frozen result snapshot. Later calls return the exact same object.</dd>
+                                <dt>Throws</dt><dd><code>ReferenceError</code> when a test is still active.</dd>
+                                <dt>First call</dt><dd>Logs once and queues one event microtask.</dd>
+                                <dt>Later calls</dt><dd>No log and no new event.</dd>
+                            </dl>
+                        </article>
+
+                        <article class="method" id="on-complete">
+                            <h3>test.onComplete(listener, options)</h3>
+                            <p>Subscribes a function to <code>vanilla-test:complete</code>. The optional second argument passes through to native <code>addEventListener()</code>.</p>
+                            <dl>
+                                <dt>Signature</dt><dd><code>onComplete(listener, options)</code></dd>
+                                <dt>Precondition</dt><dd><code>listener</code> is a function. Subscribe before the first effective <code>report()</code>; events are not replayed.</dd>
+                                <dt>Returns</dt><dd>An idempotent zero-argument unsubscribe function.</dd>
+                                <dt>Throws</dt><dd><code>TypeError</code> for a non-function listener.</dd>
+                                <dt>Console</dt><dd>No output from subscription or unsubscription.</dd>
+                            </dl>
+                        </article>
+
+                        <article class="method" id="delay">
+                            <h3>test.delay(iterations = 1000)</h3>
+                            <p>Performs a synchronous busy loop. This is a host-neutral compatibility primitive, not a timer and not a promise.</p>
+                            <dl>
+                                <dt>Signature</dt><dd><code>delay(iterations = 1000)</code></dd>
+                                <dt>Precondition</dt><dd><code>iterations</code> is a nonnegative safe integer.</dd>
+                                <dt>Returns</dt><dd>The same runner instance, so <code>test.delay(10).expects(...)</code> is valid.</dd>
+                                <dt>Throws</dt><dd><code>TypeError</code> for negative, fractional, infinite, unsafe, or non-number values.</dd>
+                                <dt>Console</dt><dd>No output.</dd>
+                            </dl>
+                        </article>
+                    </div>
+
+                    <h3>One complete lifecycle</h3>
+                    <div class="code-block"><pre><code><span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+
+test.expects(<span class="code-string">'addition preserves the total'</span>);
+<span class="code-keyword">try</span> {
+    test.compare(1 + 2, 3);
+    test.pass();
+} <span class="code-keyword">catch</span> (error) {
+    console.error(error);
+    test.fail();
+} <span class="code-keyword">finally</span> {
+    test.done();
+}
+
+<span class="code-keyword">const</span> result = test.report();
+console.log(result.ok); <span class="code-comment">// true</span></code></pre></div>
+                    <div class="callout">
+                        <strong>Inspect the lifecycle output</strong>
+                        <p>Browser: check the console or DevTools. Node: check the terminal.</p>
+                    </div>
+                </section>
+
+                <section id="completion-events">
+                    <p class="eyebrow">EventTarget integration</p>
+                    <h2>Completion event timing</h2>
+                    <p>Every instance inherits native <code>addEventListener()</code>, <code>removeEventListener()</code>, and <code>dispatchEvent()</code>. Use <code>onComplete()</code> when you want the typed completion name plus an idempotent unsubscribe function; use the inherited methods for ordinary <code>EventTarget</code> integration.</p>
+                    <ol>
+                        <li><code>report()</code> creates and freezes the snapshot.</li>
+                        <li>It logs the rendered report.</li>
+                        <li>It queues a microtask that dispatches a native <code>CustomEvent</code>.</li>
+                        <li><code>report()</code> returns the snapshot before the listener runs.</li>
+                        <li>The event's <code>detail</code> is the exact returned snapshot object.</li>
+                    </ol>
+                    <div class="code-block"><pre><code><span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+<span class="code-keyword">let</span> phase = <span class="code-string">'before report'</span>;
+
+<span class="code-keyword">const</span> unsubscribe = test.onComplete((event) =&gt; {
+    console.log(event.type);          <span class="code-comment">// vanilla-test:complete</span>
+    console.log(event.detail.ok);     <span class="code-comment">// true</span>
+    console.log(phase);               <span class="code-comment">// after report</span>
+}, { once: true });
+
+test.expects(<span class="code-string">'event delivery is asynchronous'</span>);
+test.pass();
+test.done();
+
+<span class="code-keyword">const</span> result = test.report();
+phase = <span class="code-string">'after report'</span>;
+console.log(result.ok);               <span class="code-comment">// true, before event listener</span>
+
+<span class="code-keyword">await</span> Promise.resolve();            <span class="code-comment">// let the queued event run</span>
+unsubscribe();                        <span class="code-comment">// safe after a once-only listener ran</span></code></pre></div>
+                    <div class="callout">
+                        <strong>Inspect the event order</strong>
+                        <p>Browser: check the console or DevTools. Node: check the terminal.</p>
+                    </div>
+                    <p>There is no replay buffer. A listener added after the first effective <code>report()</code> does not receive the already-dispatched event. Repeated <code>report()</code> calls also do not dispatch again.</p>
+                </section>
+
+                <section id="result-contract">
+                    <p class="eyebrow">Stable consumer boundary</p>
                     <h2>Result contract</h2>
-                    <p>Consumers should branch on <code>ok</code> or <code>failureCount</code>, not parse the rendered console string.</p>
+                    <p>Use the structured fields for automation. The <code>report</code> string is human-facing ANSI output and should not be parsed.</p>
                     <div class="code-block"><pre><code>{
     passed: [<span class="code-string">'1) .expects addition preserves the total'</span>],
     failed: [],
     total: 1,
     failureCount: 0,
     ok: true,
-    report: <span class="code-string">'rendered console report'</span>
+    report: <span class="code-string">'ANSI-rendered console report'</span>
 }</code></pre></div>
-                    <ul>
-                        <li>The object and both arrays are frozen.</li>
-                        <li><code>ok</code> is true exactly when <code>failureCount</code> is zero.</li>
-                        <li><code>report()</code> never calls <code>process.exit()</code> or sets <code>process.exitCode</code>.</li>
-                        <li>The completion event fires after <code>report()</code> returns, in a microtask, and only once.</li>
-                    </ul>
-                </section>
-
-                <section>
-                    <h2>Type helpers and strict state</h2>
-                    <p>Each runner owns one <a href="https://github.com/RIAEvangelist/strong-type"><code>strong-type</code></a> instance:</p>
                     <div class="table-wrap">
                         <table>
-                            <thead><tr><th>Member</th><th>Behavior</th></tr></thead>
+                            <thead>
+                                <tr><th>Field</th><th>Value shape</th><th>Invariant</th></tr>
+                            </thead>
                             <tbody>
-                                <tr><td><code>test.is</code></td><td>The complete strong-type instance for predicate and assertion helpers.</td></tr>
-                                <tr><td><code>test.compare</code></td><td>A direct reference to <code>test.is.compare</code>.</td></tr>
-                                <tr><td><code>test.throw</code></td><td>A direct reference to <code>test.is.throw</code>.</td></tr>
-                                <tr><td><code>test.strict</code></td><td>Reads or writes the helper's boolean strict setting. This is separate from the per-call strict argument on <code>pass()</code> and <code>fail()</code>.</td></tr>
+                                <tr><td><code>passed</code></td><td>Frozen array of numbered description strings</td><td>One item for each first <code>pass()</code> decision.</td></tr>
+                                <tr><td><code>failed</code></td><td>Frozen array of numbered description strings</td><td>One item for each first <code>fail()</code> decision, including automatic failures from <code>done()</code>.</td></tr>
+                                <tr><td><code>total</code></td><td>Nonnegative integer</td><td><code>passed.length + failed.length</code>.</td></tr>
+                                <tr><td><code>failureCount</code></td><td>Nonnegative integer</td><td><code>failed.length</code>.</td></tr>
+                                <tr><td><code>ok</code></td><td>Boolean</td><td><code>true</code> exactly when <code>failureCount === 0</code>.</td></tr>
+                                <tr><td><code>report</code></td><td>String</td><td>The rendered status, totals, failed list, and passed list with ANSI styling.</td></tr>
                             </tbody>
                         </table>
                     </div>
+                    <ul>
+                        <li>The result object, <code>passed</code>, and <code>failed</code> are frozen.</li>
+                        <li>The first report result is cached by identity: <code>test.report() === test.report()</code>.</li>
+                        <li><code>report()</code> never calls <code>process.exit()</code> and never assigns <code>process.exitCode</code>.</li>
+                        <li>A host adapter decides how an unsuccessful result affects a shell, page, worker, or CI job.</li>
+                    </ul>
                 </section>
 
-                <section>
-                    <h2>Completion events</h2>
-                    <div class="code-block"><pre><code><span class="code-keyword">const</span> unsubscribe = test.onComplete((event) =&gt; {
-    console.log(event.detail.ok);
-    unsubscribe();
-}, { once: true });
+                <section id="type-helpers">
+                    <p class="eyebrow">strong-type delegation</p>
+                    <h2>All 66 type-helper methods</h2>
+                    <p><code>test.is</code> exposes the complete helper surface. Matching calls return <code>true</code>. Most mismatches throw <code>TypeError</code> while <code>test.strict</code> is <code>true</code>, or return <code>false</code> while it is <code>false</code>. <code>compare()</code> and the compare-backed <code>null()</code>, <code>globalThis()</code>, and <code>infinity()</code> helpers throw a general <code>Error</code> on strict mismatch.</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Signature family</th><th>Use</th><th>Success / mismatch</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>test.is.&lt;predicate&gt;(value)</code></td><td>Named value, function, error, typed-array, buffer, Intl, and weak-reference predicates below, except the compare-backed helpers called out separately.</td><td><code>true</code> / strict <code>TypeError</code> or non-strict <code>false</code>.</td></tr>
+                                <tr><td><code>test.is.typeCheck(value, type)</code></td><td>Compare <code>typeof value</code> with a type string.</td><td><code>true</code> / helper mismatch behavior.</td></tr>
+                                <tr><td><code>test.is.instanceCheck(value, constructor)</code></td><td>Apply <code>value instanceof constructor</code>.</td><td><code>true</code> / helper mismatch behavior.</td></tr>
+                                <tr><td><code>test.is.symbolStringCheck(value, tag)</code></td><td>Compare the native <code>Object.prototype.toString</code> tag.</td><td><code>true</code> / helper mismatch behavior.</td></tr>
+                                <tr><td><code>test.is.union(value, typesString)</code></td><td>Try exact helper names from a pipe-delimited string such as <code>'string|number'</code>.</td><td><code>true</code> / helper mismatch behavior; an unknown helper name is also a mismatch.</td></tr>
+                                <tr><td><code>test.is.compare(value, targetValue)</code></td><td>Loose-equality comparison; identical to <code>test.compare</code>.</td><td><code>true</code> / strict <code>Error</code> or non-strict <code>false</code>.</td></tr>
+                                <tr><td><code>test.is.null(value)</code>, <code>globalThis(value)</code>, <code>infinity(value)</code></td><td>Loose-equality predicates implemented through <code>compare()</code>.</td><td><code>true</code> / strict <code>Error</code> or non-strict <code>false</code>.</td></tr>
+                                <tr><td><code>test.is.throw(valueType, expectedType)</code></td><td>Invoke the helper mismatch path directly; identical to <code>test.throw</code>.</td><td>Strict <code>TypeError</code> or non-strict <code>false</code>.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="callout callout--warning">
+                        <strong>Native coercion can fail before helper mismatch handling.</strong>
+                        <p><code>finite(value)</code> delegates to global <code>isFinite()</code>. Values that native operation cannot coerce, including symbols and bigints, throw a native <code>TypeError</code> even when <code>test.strict</code> is <code>false</code>.</p>
+                    </div>
+                    <h3>How helpers decide</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Mechanism</th><th>Used by</th><th>Important detail</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code>typeof</code></td><td>Primitive helpers and <code>object</code></td><td><code>object(null)</code> is true because JavaScript reports <code>typeof null</code> as <code>'object'</code>.</td></tr>
+                                <tr><td><code>instanceof</code></td><td>Arrays, dates, collections, promises, errors, typed arrays, buffers, Intl objects, and weak-reference objects</td><td>The value must belong to the supplied host constructor.</td></tr>
+                                <tr><td><code>Object.prototype.toString</code></td><td>Generator values and async/function variants</td><td>The helper compares the native symbol tag.</td></tr>
+                                <tr><td>Loose equality</td><td><code>compare</code>, <code>null</code>, <code>globalThis</code>, and <code>infinity</code></td><td><code>compare(1, '1')</code> is true, and <code>null(undefined)</code> is also true.</td></tr>
+                                <tr><td>Global numeric predicates</td><td><code>finite</code> and <code>NaN</code></td><td><code>finite</code> follows global <code>isFinite()</code> coercion; <code>NaN</code> first requires a number.</td></tr>
+                                <tr><td>Alias behavior</td><td><code>defined</code>, <code>any</code>, and <code>exists</code></td><td>All three mean “not <code>undefined</code>.”</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h3>Method catalogue</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Group</th><th>Methods</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Core</td>
+                                    <td><code>throw</code>, <code>typeCheck</code>, <code>instanceCheck</code>, <code>symbolStringCheck</code>, <code>compare</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Presence and union</td>
+                                    <td><code>defined</code>, <code>any</code>, <code>exists</code>, <code>union</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Special values</td>
+                                    <td><code>finite</code>, <code>NaN</code>, <code>null</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Common values</td>
+                                    <td><code>array</code>, <code>boolean</code>, <code>bigInt</code>, <code>date</code>, <code>generator</code>, <code>asyncGenerator</code>, <code>globalThis</code>, <code>infinity</code>, <code>map</code>, <code>weakMap</code>, <code>number</code>, <code>object</code>, <code>promise</code>, <code>regExp</code>, <code>undefined</code>, <code>set</code>, <code>weakSet</code>, <code>string</code>, <code>symbol</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Functions</td>
+                                    <td><code>function</code>, <code>asyncFunction</code>, <code>generatorFunction</code>, <code>asyncGeneratorFunction</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Errors</td>
+                                    <td><code>error</code>, <code>evalError</code>, <code>rangeError</code>, <code>referenceError</code>, <code>syntaxError</code>, <code>typeError</code>, <code>URIError</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Typed arrays</td>
+                                    <td><code>bigInt64Array</code>, <code>bigUint64Array</code>, <code>float32Array</code>, <code>float64Array</code>, <code>int8Array</code>, <code>int16Array</code>, <code>int32Array</code>, <code>uint8Array</code>, <code>uint8ClampedArray</code>, <code>uint16Array</code>, <code>uint32Array</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Buffers and views</td>
+                                    <td><code>arrayBuffer</code>, <code>dataView</code>, <code>sharedArrayBuffer</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Internationalization</td>
+                                    <td><code>intlDateTimeFormat</code>, <code>intlCollator</code>, <code>intlDisplayNames</code>, <code>intlListFormat</code>, <code>intlLocale</code>, <code>intlNumberFormat</code>, <code>intlPluralRules</code>, <code>intlRelativeTimeFormat</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Weak references</td>
+                                    <td><code>finalizationRegistry</code>, <code>weakRef</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-<span class="code-keyword">const</span> result = test.report();
-<span class="code-comment">// event dispatch occurs in the next microtask</span></code></pre></div>
+                    <h3>Predicates, unions, and comparisons</h3>
+                    <div class="code-block"><pre><code><span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+
+console.log(test.is.array([]));                 <span class="code-comment">// true</span>
+console.log(test.is.date(<span class="code-keyword">new</span> Date()));           <span class="code-comment">// true</span>
+console.log(test.is.union(42, <span class="code-string">'string|number'</span>)); <span class="code-comment">// true</span>
+console.log(test.compare(1, <span class="code-string">'1'</span>));              <span class="code-comment">// true</span>
+
+test.strict = false;
+console.log(test.is.promise({}));               <span class="code-comment">// false</span></code></pre></div>
                     <div class="callout">
-                        <strong>Subscribe before reporting.</strong>
-                        <p>A runner dispatches completion once. Calling <code>report()</code> again returns the cached result but does not log or dispatch again.</p>
+                        <strong>Inspect the helper results</strong>
+                        <p>Browser: check the console or DevTools. Node: check the terminal.</p>
+                    </div>
+                    <p><code>union(value, typesString)</code> splits a pipe-delimited list and calls helpers by their exact method names. Use names from the catalogue above, such as <code>'string|number|null'</code>.</p>
+                </section>
+
+                <section id="errors">
+                    <p class="eyebrow">Failure modes</p>
+                    <h2>Error matrix</h2>
+                    <p>Runner contract errors are always enforced, even when <code>test.strict</code> is <code>false</code>.</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Operation</th><th>Condition</th><th>Error</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code>test.strict = value</code></td><td><code>value</code> is not boolean</td><td><code>TypeError</code></td></tr>
+                                <tr><td><code>expects(description)</code></td><td><code>description</code> is not a string</td><td><code>TypeError</code></td></tr>
+                                <tr><td><code>expects(description)</code></td><td>Another test is active</td><td><code>ReferenceError</code></td></tr>
+                                <tr><td><code>expects(description)</code></td><td>The raw description already ran on this instance</td><td><code>ReferenceError</code></td></tr>
+                                <tr><td><code>expects(description)</code></td><td>The runner already reported</td><td><code>ReferenceError</code></td></tr>
+                                <tr><td><code>pass(strict)</code> or <code>fail(strict)</code></td><td><code>strict</code> is not boolean</td><td><code>TypeError</code></td></tr>
+                                <tr><td><code>pass()</code> or <code>fail()</code></td><td>No test is active</td><td><code>ReferenceError</code></td></tr>
+                                <tr><td><code>pass(true)</code> or <code>fail(true)</code></td><td>The active test already has either decision</td><td><code>ReferenceError</code></td></tr>
+                                <tr><td><code>done()</code></td><td>No test is active</td><td><code>ReferenceError</code></td></tr>
+                                <tr><td><code>report()</code></td><td>A test is still active</td><td><code>ReferenceError</code></td></tr>
+                                <tr><td><code>onComplete(listener)</code></td><td><code>listener</code> is not a function</td><td><code>TypeError</code></td></tr>
+                                <tr><td><code>delay(iterations)</code></td><td>Value is not a nonnegative safe integer</td><td><code>TypeError</code></td></tr>
+                                <tr><td><code>test.is.*(...)</code></td><td>Value does not match while helper strict mode is enabled</td><td>Usually <code>TypeError</code>; <code>compare()</code>, <code>null()</code>, <code>globalThis()</code>, and <code>infinity()</code> throw <code>Error</code></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="callout callout--warning">
+                        <strong>Do not use strict mode as input coercion.</strong>
+                        <p><code>test.strict = false</code> changes only helper mismatch behavior. It does not make invalid lifecycle arguments, descriptions, listeners, or delays acceptable.</p>
+                    </div>
+                </section>
+
+                <section id="runnable-suite">
+                    <p class="eyebrow">Complete integration</p>
+                    <h2>Runnable shared suite</h2>
+                    <p>Keep the test logic host-neutral and return the structured result. Each adapter decides how to expose success or failure.</p>
+                    <h3><code>test/shared-test.js</code></h3>
+                    <div class="code-block"><pre><code><span class="code-keyword">import</span> VanillaTest <span class="code-keyword">from</span> <span class="code-string">'vanilla-test'</span>;
+
+<span class="code-keyword">export default async function</span> run() {
+    <span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+
+    test.expects(<span class="code-string">'addition preserves the total'</span>);
+    <span class="code-keyword">try</span> {
+        test.compare(1 + 2, 3);
+        test.pass();
+    } <span class="code-keyword">catch</span> (error) {
+        console.error(error);
+        test.fail();
+    } <span class="code-keyword">finally</span> {
+        test.done();
+    }
+
+    test.expects(<span class="code-string">'async values keep their shape'</span>);
+    <span class="code-keyword">try</span> {
+        <span class="code-keyword">const</span> value = <span class="code-keyword">await</span> Promise.resolve({ ready: true });
+        test.is.object(value);
+        test.is.boolean(value.ready);
+        test.pass();
+    } <span class="code-keyword">catch</span> (error) {
+        console.error(error);
+        test.fail();
+    } <span class="code-keyword">finally</span> {
+        test.done();
+    }
+
+    <span class="code-keyword">return</span> test.report();
+}</code></pre></div>
+                    <div class="callout">
+                        <strong>This suite writes progress and its final report.</strong>
+                        <p>Browser: check the console or DevTools. Node: check the terminal.</p>
+                    </div>
+
+                    <h3 id="node-adapter">Node adapter</h3>
+                    <p>Translate <code>result.ok</code> into a process exit code without changing the shared suite.</p>
+                    <div class="code-block"><pre><code><span class="code-comment">// test/node.js</span>
+<span class="code-keyword">import</span> run <span class="code-keyword">from</span> <span class="code-string">'./shared-test.js'</span>;
+
+<span class="code-keyword">const</span> result = <span class="code-keyword">await</span> run();
+process.exitCode = result.ok ? 0 : 1;</code></pre></div>
+                    <div class="code-block"><pre><code>node ./test/node.js</code></pre></div>
+                    <div class="callout">
+                        <strong>Check the terminal.</strong>
+                        <p>The runner prints each decision and the final report. The adapter exits with code <code>0</code> for success or <code>1</code> for failure.</p>
+                    </div>
+
+                    <h3 id="browser-adapter">Browser adapter</h3>
+                    <p>Map package specifiers to served ES modules, import the same suite, and render a small page-level status for non-console users.</p>
+                    <div class="code-block"><pre><code>&lt;!doctype html&gt;
+&lt;html lang=<span class="code-string">"en"</span>&gt;
+&lt;head&gt;
+    &lt;meta charset=<span class="code-string">"utf-8"</span>&gt;
+    &lt;script type=<span class="code-string">"importmap"</span>&gt;
+    {
+        "imports": {
+            "vanilla-test": "/node_modules/vanilla-test/index.js",
+            "ansi-colors-es6": "/node_modules/ansi-colors-es6/index.js",
+            "strong-type": "/node_modules/strong-type/index.js"
+        }
+    }
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;p data-status&gt;Running…&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;Check the console or DevTools.&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;script type=<span class="code-string">"module"</span>&gt;
+        <span class="code-keyword">import</span> run <span class="code-keyword">from</span> <span class="code-string">'./shared-test.js'</span>;
+
+        <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> run();
+        document.querySelector(<span class="code-string">'[data-status]'</span>).textContent =
+            result.ok
+                ? <span class="code-string">`Passed ${result.total} tests`</span>
+                : <span class="code-string">`Failed ${result.failureCount} of ${result.total} tests`</span>;
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+                    <div class="callout">
+                        <strong>Check the console or DevTools.</strong>
+                        <p>Serve the page over HTTP. The browser console contains the detailed runner output; the page text contains the structured summary.</p>
+                    </div>
+                </section>
+
+                <section id="next-steps">
+                    <p class="eyebrow">Apply the contract</p>
+                    <h2>Next steps</h2>
+                    <div class="grid grid--two">
+                        <article class="card">
+                            <span class="card__label">Experiment</span>
+                            <h3>Run code without setup</h3>
+                            <p>Edit a complete suite, execute it in an isolated browser frame, and inspect the mirrored output.</p>
+                            <a class="card__link" href="../playground/">Open the playground →</a>
+                        </article>
+                        <article class="card">
+                            <span class="card__label">Integrate</span>
+                            <h3>Use focused recipes</h3>
+                            <p>Start with passing, failing, asynchronous, event-driven, Node, and browser patterns.</p>
+                            <a class="card__link" href="../example/">Browse examples →</a>
+                        </article>
                     </div>
                 </section>
             </article>
 
-            <aside class="page-aside" aria-label="API invariants">
-                <strong>Core invariants</strong>
+            <aside class="page-aside" aria-label="API section navigation">
+                <strong>On this page</strong>
                 <ul>
-                    <li>One active test at a time</li>
-                    <li>Unique descriptions per runner</li>
-                    <li>Undecided means failed</li>
-                    <li>Reported means sealed</li>
-                    <li>Results are deeply immutable</li>
+                    <li><a href="#exports">Exports</a></li>
+                    <li><a href="#execution-model">Execution model</a></li>
+                    <li><a href="#constructor-properties">Constructor and properties</a></li>
+                    <li><a href="#lifecycle-methods">Lifecycle methods</a></li>
+                    <li><a href="#completion-events">Completion events</a></li>
+                    <li><a href="#result-contract">Result contract</a></li>
+                    <li><a href="#type-helpers">Type helpers</a></li>
+                    <li><a href="#errors">Error matrix</a></li>
+                    <li><a href="#runnable-suite">Runnable suite</a></li>
                 </ul>
-                <p>See the <a href="../testing/">test strategy</a> for the checks that enforce these behaviors.</p>
+                <p>Need CLI flags and configuration? Use the <a href="../cli/">CLI reference</a>.</p>
             </aside>
         </div>
     </main>

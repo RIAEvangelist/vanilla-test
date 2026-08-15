@@ -20,9 +20,22 @@ const TYPES = new Map([
     ['.svg', 'image/svg+xml; charset=utf-8']
 ]);
 
+// The documentation playground executes user-authored modules from opaque
+// sandbox blob URLs. Keep this exception on the local workspace server; the
+// coverage harness retains the stricter shared header set.
+const WORKSPACE_SECURITY_HEADERS = Object.freeze({
+    ...SECURITY_HEADERS,
+    'Content-Security-Policy': SECURITY_HEADERS['Content-Security-Policy']
+        .replace("img-src 'self' data: blob:", "img-src 'self' data: blob: https:")
+        .replace(
+            "script-src 'self' 'unsafe-inline'",
+            "script-src 'self' 'unsafe-inline' blob:"
+        )
+});
+
 function headers(type, extra = {}) {
     return {
-        ...SECURITY_HEADERS,
+        ...WORKSPACE_SECURITY_HEADERS,
         'Content-Type': type,
         ...extra
     };
@@ -63,8 +76,10 @@ export async function startWorkspaceServer({
         }
 
         let pathname;
+        let requestUrl;
         try {
-            pathname = decodeURIComponent(new URL(request.url ?? '/', `http://${expectedHost}`).pathname);
+            requestUrl = new URL(request.url ?? '/', `http://${expectedHost}`);
+            pathname = decodeURIComponent(requestUrl.pathname);
         } catch {
             send(response, 400, 'Bad request');
             return;
@@ -90,6 +105,16 @@ export async function startWorkspaceServer({
         try {
             metadata = await stat(file);
             if (metadata.isDirectory()) {
+                if (!pathname.endsWith('/')) {
+                    send(
+                        response,
+                        308,
+                        request.method === 'HEAD' ? '' : 'Permanent redirect',
+                        'text/plain; charset=utf-8',
+                        { Location: `${requestUrl.pathname}/${requestUrl.search}` }
+                    );
+                    return;
+                }
                 file = resolve(file, 'index.html');
             }
             if (!isPathInside(resolvedRoot, file)) {

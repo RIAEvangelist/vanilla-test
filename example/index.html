@@ -3,9 +3,20 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="A live vanilla-test example using one native ES module, a browser import map, and an immutable test result.">
+    <meta name="description" content="Complete, copy-ready vanilla-test examples for basic, async, failure, type, Node.js, browser, CLI, and npm workflows.">
     <meta name="color-scheme" content="dark">
-    <title>Browser example · vanilla-test</title>
+    <meta property="og:title" content="Examples · vanilla-test">
+    <meta property="og:description" content="Run a live browser suite and copy complete vanilla-test examples for Node.js, Chrome, async code, type checks, CLI coverage, and npm scripts.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://riaevangelist.github.io/vanilla-test/example/">
+    <meta property="og:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <meta property="og:image:alt" content="vanilla-test — native JavaScript testing for Node.js and browsers">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Examples · vanilla-test">
+    <meta name="twitter:description" content="Run a live browser suite and copy complete vanilla-test examples for Node.js, Chrome, async code, type checks, CLI coverage, and npm scripts.">
+    <meta name="twitter:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <link rel="canonical" href="https://riaevangelist.github.io/vanilla-test/example/">
+    <title>Examples · vanilla-test</title>
     <script type="importmap">
     {
         "imports": {
@@ -25,58 +36,130 @@
             <nav class="site-nav" aria-label="Primary navigation">
                 <ul>
                     <li><a href="../">Overview</a></li>
-                    <li><a href="../guide/" aria-current="page">Get started</a></li>
+                    <li><a href="../guide/">Guide</a></li>
+                    <li><a href="../example/" aria-current="page">Examples</a></li>
                     <li><a href="../api/">API</a></li>
+                    <li><a href="../playground/">Playground</a></li>
+                    <li><a href="../cli/">CLI</a></li>
                     <li><a href="../testing/">Testing</a></li>
                     <li><a href="../coverage/">Coverage</a></li>
-                    <li><a href="../cli/">CLI</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <main id="main-content" class="site-shell live-shell">
-        <header class="live-header">
-            <div>
-                <p class="eyebrow">Runnable example</p>
-                <h1>Native browser suite</h1>
-                <p class="lede">The browser resolves the package with an import map, executes <code>basic.js</code> directly, and renders the frozen result below.</p>
+    <main id="main-content">
+        <header class="site-shell hero--single">
+            <p class="eyebrow">Examples</p>
+            <h1>Complete files you can run.</h1>
+            <p class="lede">Start with the live browser suite, then copy full examples for assertions, async work, type checks, host adapters, coverage, and npm scripts.</p>
+            <div class="actions">
+                <a class="button" href="../playground/">Edit code in the playground</a>
+                <a class="button button--secondary" href="../guide/">Follow the guided setup</a>
             </div>
-            <span class="runtime-badge">No build step</span>
         </header>
 
-        <div class="example-grid">
-            <section class="result-panel" aria-labelledby="example-result-title">
-                <div role="status" aria-live="polite" aria-atomic="true">
-                    <p class="eyebrow">Current run</p>
-                    <h2 id="example-result-title" data-status>Running example tests…</h2>
-                    <p data-details>Waiting for the suite result.</p>
-                </div>
-                <ul class="check-list check-list--neutral" aria-label="Example test cases">
-                    <li>1 + 2 equals 3</li>
-                    <li>The result is a number</li>
-                    <li>Invalid boolean input throws TypeError</li>
-                </ul>
-            </section>
+        <div class="site-shell page-layout">
+            <article class="prose">
+                <section id="live-example">
+                    <div class="live-header">
+                        <div>
+                            <p class="eyebrow">Running now</p>
+                            <h2>Native browser suite</h2>
+                            <p>The import map above resolves local ES modules and <code>basic.js</code> executes directly—without a bundle or transform.</p>
+                        </div>
+                        <span class="runtime-badge">No build step</span>
+                    </div>
 
-            <aside class="card">
-                <span class="card__label">What this demonstrates</span>
-                <h2>Package imports without bundling</h2>
-                <p>The import map points <code>vanilla-test</code> and its runtime dependencies at local ES modules. The test source uses the same package specifier a Node suite uses.</p>
-                <a class="card__link" href="https://github.com/RIAEvangelist/vanilla-test/blob/main/example/basic.js">Read basic.js →</a>
-            </aside>
-        </div>
+                    <div class="example-grid">
+                        <section class="result-panel" aria-labelledby="example-result-title">
+                            <div role="status" aria-live="polite" aria-atomic="true">
+                                <p class="eyebrow">Current run</p>
+                                <h3 id="example-result-title" data-status>Running example tests…</h3>
+                                <p data-details>Waiting for the suite result.</p>
+                            </div>
+                            <ul class="check-list check-list--neutral" aria-label="Example test cases">
+                                <li>1 + 2 equals 3</li>
+                                <li>The result is a number</li>
+                                <li>Invalid boolean input throws TypeError</li>
+                            </ul>
+                        </section>
 
-        <section class="section">
-            <div class="section-heading">
-                <p class="eyebrow">Core pattern</p>
-                <h2>Catch assertion errors, then close the test.</h2>
-            </div>
-            <div class="code-block"><pre><code><span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+                        <aside class="card">
+                            <span class="card__label">Inspect the real run</span>
+                            <h3>Check the console or DevTools.</h3>
+                            <p>The visible result is a summary. Open DevTools to see every expectation, assertion error, pass/fail decision, and the final report.</p>
+                            <a class="card__link" href="https://github.com/RIAEvangelist/vanilla-test/blob/main/example/basic.js">Read basic.js on GitHub →</a>
+                        </aside>
+                    </div>
+                </section>
 
-test.expects(<span class="code-string">'the result is a number'</span>);
+                <section id="basic">
+                    <h2>Basic assertions</h2>
+                    <p>This is the complete module running at the top of this page. Its small <code>run()</code> helper guarantees that each test is decided and closed.</p>
+                    <div class="code-block"><pre><code><span class="code-comment">// basic.js</span>
+<span class="code-keyword">import</span> VanillaTest <span class="code-keyword">from</span> <span class="code-string">'vanilla-test'</span>;
+
+<span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+
+<span class="code-keyword">function</span> run(description, assertion) {
+    test.expects(description);
+
+    <span class="code-keyword">try</span> {
+        assertion();
+        test.pass();
+    } <span class="code-keyword">catch</span> (error) {
+        console.error(error);
+        test.fail();
+    }
+
+    test.done();
+}
+
+run(<span class="code-string">'1 + 2 equals 3'</span>, () =&gt; test.compare(1 + 2, 3));
+run(<span class="code-string">'the result is a number'</span>, () =&gt; test.is.number(1 + 2));
+run(<span class="code-string">'invalid boolean input throws TypeError'</span>, () =&gt; {
+    <span class="code-keyword">try</span> {
+        test.is.boolean([]);
+    } <span class="code-keyword">catch</span> (error) {
+        test.is.typeError(error);
+        <span class="code-keyword">return</span>;
+    }
+
+    <span class="code-keyword">throw new</span> Error(<span class="code-string">'Expected a TypeError'</span>);
+});
+
+<span class="code-keyword">const</span> result = test.report();
+<span class="code-keyword">const</span> status = document.querySelector(<span class="code-string">'[data-status]'</span>);
+<span class="code-keyword">const</span> details = document.querySelector(<span class="code-string">'[data-details]'</span>);
+
+status.textContent = result.ok ? <span class="code-string">'All example tests passed'</span> : <span class="code-string">'Example tests failed'</span>;
+status.dataset.ok = String(result.ok);
+details.textContent = <span class="code-string">`${result.total} tests · ${result.passed.length} passed · ${result.failureCount} failed`</span>;</code></pre></div>
+                    <div class="callout">
+                        <strong>Check the console or DevTools.</strong>
+                        <p>The page summary comes from the frozen result object. DevTools contains the detailed runtime output.</p>
+                    </div>
+                </section>
+
+                <section id="async">
+                    <h2>Async assertion</h2>
+                    <p>Await application work inside the active test. The lifecycle remains explicit before and after the promise settles.</p>
+                    <div class="code-block"><pre><code><span class="code-comment">// async.js</span>
+<span class="code-keyword">import</span> VanillaTest <span class="code-keyword">from</span> <span class="code-string">'vanilla-test'</span>;
+
+<span class="code-keyword">async function</span> loadUser() {
+    <span class="code-keyword">return</span> Promise.resolve({ id: 7, name: <span class="code-string">'Ada'</span> });
+}
+
+<span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+
+test.expects(<span class="code-string">'loadUser resolves a valid user'</span>);
 <span class="code-keyword">try</span> {
-    test.is.number(1 + 2);
+    <span class="code-keyword">const</span> user = <span class="code-keyword">await</span> loadUser();
+    test.is.object(user);
+    test.is.number(user.id);
+    test.compare(user.name, <span class="code-string">'Ada'</span>);
     test.pass();
 } <span class="code-keyword">catch</span> (error) {
     console.error(error);
@@ -84,21 +167,207 @@ test.expects(<span class="code-string">'the result is a number'</span>);
 }
 test.done();
 
-<span class="code-keyword">const</span> result = test.report();</code></pre></div>
-            <div class="actions">
-                <a class="button" href="../guide/">Build this from scratch</a>
-                <a class="button button--secondary" href="../api/">Review lifecycle guarantees</a>
-            </div>
-        </section>
+<span class="code-keyword">const</span> result = test.report();
+console.log({ ok: result.ok, total: result.total });</code></pre></div>
+                    <div class="callout">
+                        <strong>Check the console or DevTools.</strong>
+                        <p>The final report is created only after the promise resolves and the active test calls <code>done()</code>.</p>
+                    </div>
+                </section>
+
+                <section id="failure">
+                    <h2>Intentional failure</h2>
+                    <p>This complete Node module shows the failure path and intentionally exits with status <code>1</code>.</p>
+                    <div class="code-block"><pre><code><span class="code-comment">// intentional-failure.js</span>
+<span class="code-keyword">import</span> VanillaTest <span class="code-keyword">from</span> <span class="code-string">'vanilla-test'</span>;
+
+<span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+
+test.expects(<span class="code-string">'the API returns HTTP 200'</span>);
+<span class="code-keyword">try</span> {
+    <span class="code-keyword">const</span> response = { status: 503 };
+    test.compare(response.status, 200);
+    test.pass();
+} <span class="code-keyword">catch</span> (error) {
+    console.error(<span class="code-string">'Expected failure:'</span>, error);
+    test.fail();
+}
+test.done();
+
+<span class="code-keyword">const</span> result = test.report();
+console.log({ ok: result.ok, failures: result.failureCount });
+process.exitCode = result.ok ? 0 : 1;</code></pre></div>
+                    <div class="callout callout--warning">
+                        <strong>Check the console or DevTools.</strong>
+                        <p>You should see the comparison error, one failed test, and <code>{ ok: false, failures: 1 }</code>. In Node.js this console is the terminal.</p>
+                    </div>
+                    <div class="code-block"><pre><code>node ./intentional-failure.js</code></pre></div>
+                    <div class="callout callout--warning"><strong>Check the terminal.</strong><p>An exit status of <code>1</code> is expected for this deliberate failure.</p></div>
+                </section>
+
+                <section id="types">
+                    <h2>Type checks</h2>
+                    <p>The <code>is</code> helpers throw on mismatch while strict mode is enabled. Catch the error and fail the active test.</p>
+                    <div class="code-block"><pre><code><span class="code-comment">// types.js</span>
+<span class="code-keyword">import</span> VanillaTest <span class="code-keyword">from</span> <span class="code-string">'vanilla-test'</span>;
+
+<span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+<span class="code-keyword">const</span> payload = {
+    tags: [<span class="code-string">'docs'</span>, <span class="code-string">'esm'</span>],
+    publish: () =&gt; true
+};
+
+test.expects(<span class="code-string">'payload has the required shapes'</span>);
+<span class="code-keyword">try</span> {
+    test.is.object(payload);
+    test.is.array(payload.tags);
+    test.is.function(payload.publish);
+    test.is.string(payload.tags[0]);
+    test.pass();
+} <span class="code-keyword">catch</span> (error) {
+    console.error(error);
+    test.fail();
+}
+test.done();
+
+<span class="code-keyword">const</span> result = test.report();
+process.exitCode = result.ok ? 0 : 1;</code></pre></div>
+                    <div class="callout">
+                        <strong>Check the console or DevTools.</strong>
+                        <p>The example passes. Change <code>payload.tags</code> to a string to inspect a strict type mismatch and failed result.</p>
+                    </div>
+                    <div class="code-block"><pre><code>node ./types.js</code></pre></div>
+                    <div class="callout"><strong>Check the terminal.</strong><p>The terminal shows the expectation, decision, and final report.</p></div>
+                </section>
+
+                <section id="shared-runners">
+                    <h2>One suite in Node and Chrome</h2>
+                    <p>These three complete files form a minimal cross-runtime project. The shared suite avoids host-specific globals.</p>
+
+                    <h3><code>shared-suite.js</code></h3>
+                    <div class="code-block"><pre><code><span class="code-keyword">import</span> VanillaTest <span class="code-keyword">from</span> <span class="code-string">'vanilla-test'</span>;
+
+<span class="code-keyword">export default async function</span> run() {
+    <span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
+
+    test.expects(<span class="code-string">'Web-standard values behave consistently'</span>);
+    <span class="code-keyword">try</span> {
+        <span class="code-keyword">const</span> value = <span class="code-keyword">await</span> Promise.resolve(<span class="code-string">'ready'</span>);
+        test.is.string(value);
+        test.compare(value, <span class="code-string">'ready'</span>);
+        test.pass();
+    } <span class="code-keyword">catch</span> (error) {
+        console.error(error);
+        test.fail();
+    }
+    test.done();
+
+    <span class="code-keyword">return</span> test.report();
+}</code></pre></div>
+                    <div class="callout"><strong>Check the console or DevTools.</strong><p>Both adapters below display this suite's native console output.</p></div>
+
+                    <h3><code>node-runner.js</code></h3>
+                    <div class="code-block"><pre><code><span class="code-keyword">import</span> run <span class="code-keyword">from</span> <span class="code-string">'./shared-suite.js'</span>;
+
+<span class="code-keyword">const</span> result = <span class="code-keyword">await</span> run();
+console.log(<span class="code-string">`${result.passed.length}/${result.total} passed`</span>);
+process.exitCode = result.ok ? 0 : 1;</code></pre></div>
+                    <div class="callout"><strong>Check the console or DevTools.</strong><p>In Node.js, console output appears in the terminal along with the summary.</p></div>
+                    <div class="code-block"><pre><code>node ./node-runner.js</code></pre></div>
+                    <div class="callout"><strong>Check the terminal.</strong><p>The Node adapter prints the report and sets a CI-friendly exit status.</p></div>
+
+                    <h3><code>browser-runner.html</code></h3>
+                    <div class="code-block"><pre><code>&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+    &lt;title&gt;vanilla-test browser example&lt;/title&gt;
+    &lt;script type="importmap"&gt;
+    {
+        "imports": {
+            "vanilla-test": "/node_modules/vanilla-test/index.js",
+            "ansi-colors-es6": "/node_modules/ansi-colors-es6/index.js",
+            "strong-type": "/node_modules/strong-type/index.js"
+        }
+    }
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Browser test&lt;/h1&gt;
+    &lt;p data-run-status aria-live="polite"&gt;Running…&lt;/p&gt;
+    &lt;script type="module"&gt;
+        import run from './shared-suite.js';
+
+        const result = await run();
+        const status = document.querySelector('[data-run-status]');
+        status.textContent = result.ok
+            ? `${result.total} tests passed`
+            : `${result.failureCount} tests failed`;
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+                    <div class="callout"><strong>Check the console or DevTools.</strong><p>Open DevTools after loading the served page to see the expectation and full report.</p></div>
+                    <div class="code-block"><pre><code>npx serve .</code></pre></div>
+                    <div class="callout"><strong>Check the terminal.</strong><p>Open the local HTTP URL printed by the server. Do not open the HTML as a <code>file:</code> URL.</p></div>
+                </section>
+
+                <section id="cli">
+                    <h2>CLI and npm commands</h2>
+                    <p>Run both collectors, one collector, or supply a machine-specific Chrome path without changing committed configuration.</p>
+                    <div class="code-block"><pre><code>npx vanilla-test coverage all
+npx vanilla-test coverage node
+npx vanilla-test coverage chrome
+npx vanilla-test coverage chrome --chrome-path "/opt/google/chrome/google-chrome"</code></pre></div>
+                    <div class="callout"><strong>Check the terminal.</strong><p>The suite report and collector errors appear there. Use the exit status for automation and open the configured report directory for coverage details.</p></div>
+
+                    <p>The repository's npm scripts provide shorter commands for common work:</p>
+                    <div class="code-block"><pre><code>npm test
+npm run test:core
+npm run test:tooling
+npm run coverage
+npm run coverage:node
+npm run coverage:chrome
+npm start</code></pre></div>
+                    <div class="callout"><strong>Check the terminal.</strong><p><code>npm start</code> prints the documentation URL. Test and coverage scripts print results and exit nonzero when a required gate fails.</p></div>
+
+                    <p>Append CLI options to an npm script after <code>--</code>:</p>
+                    <div class="code-block"><pre><code>npm run coverage -- --timeout-ms 60000
+npm run coverage:chrome -- --headed
+npm run coverage:chrome -- --chrome-path "C:\Program Files\Google\Chrome\Application\chrome.exe"</code></pre></div>
+                    <div class="callout"><strong>Check the terminal.</strong><p>Confirm the suite result and final exit status, then inspect the configured report directory for the runtime's coverage files.</p></div>
+                    <div class="actions">
+                        <a class="button" href="../cli/">Full CLI and JSON config reference</a>
+                        <a class="button button--secondary" href="../api/">Engineer API reference</a>
+                    </div>
+                </section>
+            </article>
+
+            <aside class="page-aside" aria-label="Example index">
+                <strong>Examples</strong>
+                <ul>
+                    <li><a href="#live-example">Live browser run</a></li>
+                    <li><a href="#basic">Basic assertions</a></li>
+                    <li><a href="#async">Async assertion</a></li>
+                    <li><a href="#failure">Intentional failure</a></li>
+                    <li><a href="#types">Type checks</a></li>
+                    <li><a href="#shared-runners">Node + Chrome</a></li>
+                    <li><a href="#cli">CLI + npm</a></li>
+                </ul>
+                <p>Prefer to edit before copying? Use the <a href="../playground/">playground</a>.</p>
+            </aside>
+        </div>
     </main>
 
     <footer class="site-footer">
         <div class="site-shell site-footer__inner">
-            <p>Live browser example · Native ESM · import maps</p>
+            <p>vanilla-test <span data-status-version>v2</span> · MIT licensed</p>
             <nav aria-label="Project links">
-                <a href="../guide/">Getting started</a>
-                <a href="../test/">Shared browser verification</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/MIGRATION.md">Migration</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/CHANGELOG.md">Changelog</a>
                 <a href="https://github.com/RIAEvangelist/vanilla-test">GitHub</a>
+                <a href="https://www.npmjs.com/package/vanilla-test">npm</a>
+                <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/licence">License</a>
             </nav>
         </div>
     </footer>

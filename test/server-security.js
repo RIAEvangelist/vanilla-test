@@ -74,6 +74,7 @@ test('coverage server requires its exact Host and protects project files', async
     assert.equal(harness.status, 200);
     assert.match(harness.body, /Harness/);
     assertSecurityHeaders(harness);
+    assert.doesNotMatch(harness.headers['content-security-policy'], /script-src[^;]*blob:/);
 
     const module = await request(server.origin, '/module.js');
     assert.equal(module.status, 200);
@@ -107,6 +108,8 @@ test('workspace server preserves valid site routes while enforcing the same boun
     const root = await temporaryDirectory(context);
     await fs.writeFile(path.join(root, 'index.html'), '<!doctype html><title>Workspace</title>');
     await fs.writeFile(path.join(root, 'module.mjs'), 'export const ready = true;\n');
+    await fs.mkdir(path.join(root, 'playground'), { recursive: true });
+    await fs.writeFile(path.join(root, 'playground', 'index.html'), '<!doctype html><title>Playground</title>');
     await fs.mkdir(path.join(root, 'coverage', 'node'), { recursive: true });
     await fs.writeFile(path.join(root, 'coverage', 'node', 'index.html'), '<!doctype html><title>Node report</title>');
     await writeSensitiveFixtures(root);
@@ -118,6 +121,15 @@ test('workspace server preserves valid site routes while enforcing the same boun
     assert.equal(index.status, 200);
     assert.match(index.body, /Workspace/);
     assertSecurityHeaders(index);
+    assert.match(index.headers['content-security-policy'], /img-src[^;]*https:/);
+    assert.match(index.headers['content-security-policy'], /script-src[^;]*blob:/);
+
+    const directoryRedirect = await request(server.origin, '/playground?source=nav');
+    assert.equal(directoryRedirect.status, 308);
+    assert.equal(directoryRedirect.headers.location, '/playground/?source=nav');
+    const playground = await request(server.origin, directoryRedirect.headers.location);
+    assert.equal(playground.status, 200);
+    assert.match(playground.body, /Playground/);
 
     const module = await request(server.origin, '/module.mjs');
     assert.equal(module.status, 200);

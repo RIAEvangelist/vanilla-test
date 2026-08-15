@@ -2,7 +2,7 @@
 
 [![vanilla-test — native JavaScript testing for Node.js and browsers](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/assets/vanilla-test-header.png)](https://riaevangelist.github.io/vanilla-test/)
 
-[Website](https://riaevangelist.github.io/vanilla-test/) · [Get started](https://riaevangelist.github.io/vanilla-test/guide/) · [API](https://riaevangelist.github.io/vanilla-test/api/) · [Testing](https://riaevangelist.github.io/vanilla-test/testing/) · [Coverage](https://riaevangelist.github.io/vanilla-test/coverage/) · [CLI](https://riaevangelist.github.io/vanilla-test/cli/)
+[Website](https://riaevangelist.github.io/vanilla-test/) · [Guide](https://riaevangelist.github.io/vanilla-test/guide/) · [Examples](https://riaevangelist.github.io/vanilla-test/example/) · [API](https://riaevangelist.github.io/vanilla-test/api/) · [Playground](https://riaevangelist.github.io/vanilla-test/playground/) · [CLI](https://riaevangelist.github.io/vanilla-test/cli/) · [Testing](https://riaevangelist.github.io/vanilla-test/testing/) · [Coverage](https://riaevangelist.github.io/vanilla-test/coverage/)
 
 [![CI](https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml/badge.svg)](https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/vanilla-test.svg)](https://www.npmjs.com/package/vanilla-test)
@@ -342,7 +342,7 @@ These scripts are included in this repository:
 | `npm run coverage:node` | `node ./bin/vanilla-test.js coverage node` | Runs only Node coverage. |
 | `npm run coverage:chrome` | `node ./bin/vanilla-test.js coverage chrome` | Runs only Chrome coverage. |
 | `npm run site:status` | `node ./scripts/build-site-status.js --run-tooling` | Rebuilds the documentation site's status data and Shields badges from the current reports, while refreshing the tooling-test result. |
-| `npm run screenshots` | `node ./scripts/screenshots.js` | Regenerates the browser-run and native-report images. Run coverage first so both report pages exist. |
+| `npm run screenshots` | `node ./scripts/screenshots.js` | Smoke-tests the playground in Chrome, then regenerates the browser-run and native-report images. Run coverage first so both report pages exist. |
 | `npm start` | `node ./scripts/serve.js` | Serves the repository locally and prints its URL. |
 
 Pass CLI options through an npm script after `--`:
@@ -352,6 +352,8 @@ npm run coverage -- --timeout-ms 60000
 npm run coverage:chrome -- --headed
 npm run coverage:chrome -- --chrome-path "/opt/google/chrome/google-chrome"
 ```
+
+Check the terminal after every npm command. Test output and failures appear there; coverage metrics are written to the configured reports directory.
 
 ### Complete coverage setup
 
@@ -487,11 +489,15 @@ CHROME_PATH=/usr/bin/google-chrome-stable npm run coverage:chrome
 npm run coverage:chrome -- --chrome-path "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ```
 
+Check the terminal for the suite result, Chrome-path errors, and the final exit status. Inspect the configured reports directory for coverage details.
+
 Keep Chrome's sandbox enabled for normal local runs. If an isolated Linux CI runner cannot provide a usable Chrome sandbox, opt out explicitly for that job only:
 
 ```sh
 VANILLA_TEST_CHROME_NO_SANDBOX=1 npm run coverage
 ```
+
+Check the terminal and CI log for the suite result and final exit status.
 
 The variable accepts only `0`, `1`, an empty value, or an unset value; empty and unset both preserve the sandbox. `1` adds Chrome's `--no-sandbox` launch flag and reduces browser isolation, so do not set it on a general-purpose workstation or an untrusted shared runner.
 

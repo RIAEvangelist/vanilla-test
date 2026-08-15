@@ -3,21 +3,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Build a vanilla-test suite that runs unchanged in Node.js and Google Chrome using native ES modules and browser import maps.">
+    <meta name="description" content="A concise guide to running one vanilla-test suite in Node.js and Chrome, then adding native coverage.">
     <meta name="color-scheme" content="dark">
-    <meta property="og:title" content="Get started · vanilla-test">
-    <meta property="og:description" content="Build a vanilla-test suite that runs unchanged in Node.js and Google Chrome using native ES modules and browser import maps.">
+    <meta property="og:title" content="Guide · vanilla-test">
+    <meta property="og:description" content="Install vanilla-test, write one shared suite, run it in Node and Chrome, and add native coverage.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://riaevangelist.github.io/vanilla-test/guide/">
     <meta property="og:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
     <meta property="og:image:alt" content="vanilla-test — native JavaScript testing for Node.js and browsers">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Get started · vanilla-test">
-    <meta name="twitter:description" content="Build a vanilla-test suite that runs unchanged in Node.js and Google Chrome using native ES modules and browser import maps.">
+    <meta name="twitter:title" content="Guide · vanilla-test">
+    <meta name="twitter:description" content="Install vanilla-test, write one shared suite, run it in Node and Chrome, and add native coverage.">
     <meta name="twitter:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
     <link rel="canonical" href="https://riaevangelist.github.io/vanilla-test/guide/">
     <link rel="stylesheet" href="../assets/site.css">
-    <title>Get started · vanilla-test</title>
+    <title>Guide · vanilla-test</title>
 </head>
 <body data-status-url="../data/status.json">
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -27,11 +27,13 @@
             <nav class="site-nav" aria-label="Primary navigation">
                 <ul>
                     <li><a href="../">Overview</a></li>
-                    <li><a href="../guide/" aria-current="page">Get started</a></li>
+                    <li><a href="../guide/" aria-current="page">Guide</a></li>
+                    <li><a href="../example/">Examples</a></li>
                     <li><a href="../api/">API</a></li>
+                    <li><a href="../playground/">Playground</a></li>
+                    <li><a href="../cli/">CLI</a></li>
                     <li><a href="../testing/">Testing</a></li>
                     <li><a href="../coverage/">Coverage</a></li>
-                    <li><a href="../cli/">CLI</a></li>
                 </ul>
             </nav>
         </div>
@@ -39,31 +41,45 @@
 
     <main id="main-content">
         <header class="site-shell hero--single">
-            <p class="eyebrow">Get started</p>
-            <h1>One suite. Two runtime adapters.</h1>
-            <p class="lede">Keep assertions in a host-neutral module. Node and the browser each import that same module and decide what a failed result means for their environment.</p>
+            <p class="eyebrow">Guide</p>
+            <h1>From install to two real runtimes.</h1>
+            <p class="lede">Write one standards-only ES module, load it unchanged in Node.js and Chrome, then add independent native coverage for both hosts.</p>
+            <div class="actions">
+                <a class="button" href="../playground/">Try the playground</a>
+                <a class="button button--secondary" href="../example/">Browse complete examples</a>
+            </div>
         </header>
 
         <div class="site-shell page-layout">
             <article class="prose">
-                <section>
-                    <h2>Install and confirm the runtime</h2>
-                    <p>vanilla-test v2 requires Node.js 22.12 or newer and uses native ES modules. Install it as a project dependency:</p>
+                <section id="install">
+                    <h2>1. Install</h2>
+                    <p>Use Node.js 22.12 or newer and native ES modules. Install the package in your project:</p>
                     <div class="code-block"><pre><code>npm install vanilla-test</code></pre></div>
-                    <p>If your project does not already use ESM, add <code>"type": "module"</code> to its <code>package.json</code>. No compiler or test-specific file transform is required.</p>
+                    <div class="callout">
+                        <strong>Check the terminal.</strong>
+                        <p>A successful install exits with status <code>0</code>. Add <code>"type": "module"</code> to <code>package.json</code> if the project does not already use ESM.</p>
+                    </div>
                 </section>
 
-                <section>
-                    <h2>Create the shared suite</h2>
-                    <p>Export a default or named <code>run()</code> function. Return the result from <code>report()</code> so any host can determine success without reading console output.</p>
-                    <div class="code-block"><pre><code><span class="code-keyword">import</span> VanillaTest <span class="code-keyword">from</span> <span class="code-string">'vanilla-test'</span>;
+                <section id="shared-suite">
+                    <h2>2. Write the shared suite</h2>
+                    <p>Start with one application module:</p>
+                    <div class="code-block"><pre><code><span class="code-comment">// src/add.js</span>
+<span class="code-keyword">export function</span> add(left, right) {
+    <span class="code-keyword">return</span> left + right;
+}</code></pre></div>
+                    <p>Put its assertions in one host-neutral suite. Export a function and return the immutable result from <code>report()</code>.</p>
+                    <div class="code-block"><pre><code><span class="code-comment">// test/shared-suite.js</span>
+<span class="code-keyword">import</span> VanillaTest <span class="code-keyword">from</span> <span class="code-string">'vanilla-test'</span>;
+<span class="code-keyword">import</span> { add } <span class="code-keyword">from</span> <span class="code-string">'../src/add.js'</span>;
 
 <span class="code-keyword">export default async function</span> run() {
     <span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
 
     test.expects(<span class="code-string">'addition preserves the total'</span>);
     <span class="code-keyword">try</span> {
-        test.compare(1 + 2, 3);
+        test.compare(add(1, 2), 3);
         test.pass();
     } <span class="code-keyword">catch</span> (error) {
         console.error(error);
@@ -74,28 +90,36 @@
     <span class="code-keyword">return</span> test.report();
 }</code></pre></div>
                     <div class="callout">
-                        <strong>Lifecycle invariant</strong>
-                        <p>Every <code>expects()</code> begins one active test. Decide it with <code>pass()</code> or <code>fail()</code>, then call <code>done()</code> before starting another test or reporting.</p>
+                        <strong>Check the console or DevTools.</strong>
+                        <p><code>expects()</code>, <code>pass()</code>, <code>fail()</code>, and <code>report()</code> write progress and results. The returned object—not parsed console text—is the programmatic result.</p>
                     </div>
+                    <p>Each <code>expects()</code> opens one test. Call <code>pass()</code> or <code>fail()</code>, then <code>done()</code>. Call <code>report()</code> only after every active test is done.</p>
                 </section>
 
-                <section>
-                    <h2>Add the Node adapter</h2>
-                    <p>The shared core does not set a process exit code. A thin Node entry translates the frozen result into the convention used by shells and CI:</p>
-                    <div class="code-block"><pre><code><span class="code-keyword">import</span> run <span class="code-keyword">from</span> <span class="code-string">'./shared-test.js'</span>;
+                <section id="node-runner">
+                    <h2>3. Run it in Node.js</h2>
+                    <p>A small adapter maps <code>result.ok</code> to the process exit status expected by shells and CI.</p>
+                    <div class="code-block"><pre><code><span class="code-comment">// test/node.js</span>
+<span class="code-keyword">import</span> run <span class="code-keyword">from</span> <span class="code-string">'./shared-suite.js'</span>;
 
 <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> run();
 process.exitCode = result.ok ? 0 : 1;</code></pre></div>
                     <div class="code-block"><pre><code>node ./test/node.js</code></pre></div>
+                    <div class="callout">
+                        <strong>Check the terminal.</strong>
+                        <p>The full report prints there. Exit status <code>0</code> means the suite passed; <code>1</code> means at least one test failed.</p>
+                    </div>
                 </section>
 
-                <section>
-                    <h2>Add the browser adapter</h2>
-                    <p>Browsers resolve package specifiers with an import map. Serve the project over HTTP; a <code>file:</code> URL is not an equivalent Web origin.</p>
-                    <div class="code-block"><pre><code>&lt;!doctype html&gt;
+                <section id="browser-runner">
+                    <h2>4. Run it in Chrome</h2>
+                    <p>Map package specifiers to browser-loadable files, import the same suite, and render the result. Serve this page over HTTP rather than opening it as a <code>file:</code> URL.</p>
+                    <div class="code-block"><pre><code><span class="code-comment">&lt;!-- test/browser.html --&gt;</span>
+&lt;!doctype html&gt;
 &lt;html lang="en"&gt;
 &lt;head&gt;
     &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Browser tests&lt;/title&gt;
     &lt;script type="importmap"&gt;
     {
         "imports": {
@@ -109,40 +133,85 @@ process.exitCode = result.ok ? 0 : 1;</code></pre></div>
 &lt;body&gt;
     &lt;p data-status&gt;Running…&lt;/p&gt;
     &lt;script type="module"&gt;
-        import run from './shared-test.js';
+        import run from './shared-suite.js';
+
         const result = await run();
         document.querySelector('[data-status]').textContent =
             result.ok ? 'Passed' : 'Failed';
     &lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre></div>
-                    <p>The coverage CLI supplies package import defaults for its own harness. Use <code>chrome.imports</code> only for additional specifiers or deliberate overrides.</p>
-                    <div class="actions">
-                        <a class="button" href="../example/">Run the deployed example</a>
-                        <a class="button button--secondary" href="../test/">Run the shared browser verification</a>
+                    <div class="code-block"><pre><code>npx serve .</code></pre></div>
+                    <div class="callout">
+                        <strong>Check the terminal, then check the console or DevTools.</strong>
+                        <p>The terminal shows the local URL. Open the page there, then open DevTools to see vanilla-test progress, assertion errors, and the final report.</p>
                     </div>
                 </section>
 
-                <section>
-                    <h2>Add native coverage</h2>
-                    <p>Once the shared entry runs in both hosts, point <code>vanilla-test.config.json</code> at it and choose the project-owned files to measure. Node and Chrome reports remain independent.</p>
+                <section id="coverage">
+                    <h2>5. Add CLI coverage</h2>
+                    <p>Create <code>vanilla-test.config.json</code> at the project root. The entry is the shared module; each runtime gets its own include scope.</p>
+                    <div class="code-block"><pre><code>{
+    "entry": "./test/shared-suite.js",
+    "reportsDirectory": "./coverage",
+    "thresholds": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+    },
+    "timeoutMs": 30000,
+    "node": {
+        "include": ["src/**/*.js"]
+    },
+    "chrome": {
+        "include": ["src/**/*.js"],
+        "imports": {},
+        "headless": true,
+        "executablePath": null
+    }
+}</code></pre></div>
+                    <p><code>"executablePath": null</code> enables portable Chrome discovery: vanilla-test checks <code>CHROME_PATH</code>, standard Chrome Stable locations, then executable names on <code>PATH</code>. Use a string only for a known custom installation.</p>
                     <div class="code-block"><pre><code>npx vanilla-test coverage all</code></pre></div>
-                    <div class="link-panel">
-                        <p>Configuration is strict: unknown keys, missing files, escaping paths, empty include scopes, and invalid thresholds fail before a collector runs.</p>
-                        <a class="button button--secondary" href="../cli/">Configure the CLI</a>
+                    <div class="callout">
+                        <strong>Check the terminal.</strong>
+                        <p>Node and Chrome run independently and write separate reports below <code>coverage/</code>. Use the terminal exit status in CI.</p>
+                    </div>
+                    <div class="actions">
+                        <a class="button" href="../cli/">Read the full CLI and config reference</a>
+                        <a class="button button--secondary" href="../coverage/">Inspect published coverage</a>
+                    </div>
+                </section>
+
+                <section id="next">
+                    <h2>Next steps</h2>
+                    <div class="grid grid--two">
+                        <article class="card">
+                            <span class="card__label">Learn</span>
+                            <h3>Understand every API contract</h3>
+                            <p>Review lifecycle guards, return values, immutable snapshots, completion events, and error behavior.</p>
+                            <a class="card__link" href="../api/">Open the API reference →</a>
+                        </article>
+                        <article class="card">
+                            <span class="card__label">Experiment</span>
+                            <h3>Edit and run immediately</h3>
+                            <p>Try a suite safely in the browser and inspect its mirrored output.</p>
+                            <a class="card__link" href="../playground/">Open the playground →</a>
+                        </article>
                     </div>
                 </section>
             </article>
 
-            <aside class="page-aside" aria-label="Guide outcome">
-                <strong>By the end</strong>
-                <ul>
-                    <li>One shared ES module</li>
-                    <li>A Node exit adapter</li>
-                    <li>A browser import map</li>
-                    <li>A result both hosts understand</li>
-                </ul>
-                <p>Next: use the <a href="../api/">API reference</a> for lifecycle and error behavior.</p>
+            <aside class="page-aside" aria-label="Guide checklist">
+                <strong>Five-step path</strong>
+                <ol>
+                    <li><a href="#install">Install</a></li>
+                    <li><a href="#shared-suite">Write one suite</a></li>
+                    <li><a href="#node-runner">Run in Node</a></li>
+                    <li><a href="#browser-runner">Run in Chrome</a></li>
+                    <li><a href="#coverage">Add coverage</a></li>
+                </ol>
+                <p>Want copy-ready files? Go to <a href="../example/">Examples</a>.</p>
             </aside>
         </div>
     </main>

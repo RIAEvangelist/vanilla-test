@@ -30,11 +30,13 @@
             <nav class="site-nav" aria-label="Primary navigation">
                 <ul>
                     <li><a href="./" aria-current="page">Overview</a></li>
-                    <li><a href="./guide/">Get started</a></li>
+                    <li><a href="./guide/">Guide</a></li>
+                    <li><a href="./example/">Examples</a></li>
                     <li><a href="./api/">API</a></li>
+                    <li><a href="./playground/">Playground</a></li>
+                    <li><a href="./cli/">CLI</a></li>
                     <li><a href="./testing/">Testing</a></li>
                     <li><a href="./coverage/">Coverage</a></li>
-                    <li><a href="./cli/">CLI</a></li>
                 </ul>
             </nav>
         </div>
@@ -54,7 +56,7 @@
                 </ul>
                 <div class="actions">
                     <a class="button" href="./guide/">Build your first suite</a>
-                    <a class="button button--secondary" href="./testing/">Inspect the test strategy</a>
+                    <a class="button button--secondary" href="./playground/">Open the playground</a>
                 </div>
             </div>
 
@@ -76,6 +78,7 @@ test.expects(<span class="code-string">'addition preserves the total'</span>);
 
 test.done();
 <span class="code-keyword">const</span> result = test.report();</code></pre>
+                <p class="terminal-card__note"><strong>Check the console or DevTools</strong> for expectations, decisions, errors, and the final report.</p>
             </div>
         </section>
 
@@ -109,6 +112,31 @@ test.done();
             </div>
         </section>
 
+        <section class="section section--bordered" id="badges">
+            <div class="site-shell">
+                <div class="section-heading">
+                    <p class="eyebrow">Badge information</p>
+                    <h2>What each badge proves.</h2>
+                    <p>Badges are compact links to package metadata or build evidence. Use the testing and coverage pages when you need the scope, commit, timestamp, and raw reports behind them.</p>
+                </div>
+                <div class="badge-ribbon" aria-label="Project badges">
+                    <a href="https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml"><img alt="CI workflow status" src="https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml/badge.svg"></a>
+                    <a href="https://www.npmjs.com/package/vanilla-test"><img alt="npm package version" src="https://img.shields.io/npm/v/vanilla-test.svg"></a>
+                    <a href="https://www.npmjs.com/package/vanilla-test"><img alt="monthly npm downloads" src="https://img.shields.io/npm/dm/vanilla-test.svg"></a>
+                    <a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/licence"><img alt="MIT license" src="https://img.shields.io/github/license/RIAEvangelist/vanilla-test.svg"></a>
+                    <a href="./testing/"><img alt="published quality gates" src="https://img.shields.io/endpoint?url=https%3A%2F%2Friaevangelist.github.io%2Fvanilla-test%2Fbadges%2Fquality.json"></a>
+                    <a href="./coverage/"><img alt="published Node core coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Friaevangelist.github.io%2Fvanilla-test%2Fbadges%2Fnode-coverage.json"></a>
+                    <a href="./coverage/"><img alt="published Chrome core coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Friaevangelist.github.io%2Fvanilla-test%2Fbadges%2Fchrome-coverage.json"></a>
+                </div>
+                <div class="grid grid--two badge-details">
+                    <article class="card"><span class="card__label">CI</span><h3>Required repository gates</h3><p>Links to the workflow that runs the Node matrix, real Chrome coverage, package smoke test, site build, and Pages deployment.</p></article>
+                    <article class="card"><span class="card__label">npm</span><h3>Published package metadata</h3><p>Version and download badges come from npm. The license badge reflects the repository's MIT license.</p></article>
+                    <article class="card"><span class="card__label">Quality</span><h3>Test results with provenance</h3><p>The quality endpoint is generated from the successful main build. The Testing page shows each gate separately.</p></article>
+                    <article class="card"><span class="card__label">Coverage</span><h3>Runtime-specific evidence</h3><p>Node and Chrome badges stay separate because each runtime collects and enforces its own native V8 coverage.</p></article>
+                </div>
+            </div>
+        </section>
+
         <section class="section section--bordered">
             <div class="site-shell">
                 <div class="section-heading">
@@ -116,12 +144,18 @@ test.done();
                     <h2>Start with the problem you have.</h2>
                     <p>The documentation is split into focused pages so you can move between implementation, API behavior, test evidence, and coverage without navigating one oversized document.</p>
                 </div>
-                <div class="grid">
+                <div class="grid grid--two">
                     <article class="card">
                         <span class="card__label">Implement</span>
                         <h3>Run one suite in two hosts</h3>
                         <p>Create the shared entry, add the Node adapter, and configure a browser import map.</p>
                         <a class="card__link" href="./guide/">Read the getting-started guide →</a>
+                    </article>
+                    <article class="card">
+                        <span class="card__label">Learn by example</span>
+                        <h3>Copy complete working patterns</h3>
+                        <p>Start from runnable browser, Node, async, failure, and type-check examples.</p>
+                        <a class="card__link" href="./example/">Browse the examples →</a>
                     </article>
                     <article class="card">
                         <span class="card__label">Integrate</span>
@@ -130,10 +164,10 @@ test.done();
                         <a class="card__link" href="./api/">Open the API reference →</a>
                     </article>
                     <article class="card">
-                        <span class="card__label">Verify</span>
-                        <h3>Audit the evidence</h3>
-                        <p>See exactly what CI tests, what the coverage percentages include, and which runtime produced each result.</p>
-                        <a class="card__link" href="./coverage/">Review coverage evidence →</a>
+                        <span class="card__label">Experiment</span>
+                        <h3>Run code in the playground</h3>
+                        <p>Edit a real ES module, inspect its mirrored console output, and reset the isolated runtime between runs.</p>
+                        <a class="card__link" href="./playground/">Launch the playground →</a>
                     </article>
                 </div>
             </div>
@@ -148,6 +182,7 @@ test.done();
                 </div>
                 <div>
                     <div class="code-block"><pre><code>npm install vanilla-test</code></pre></div>
+                    <div class="callout"><strong>Check the terminal.</strong><p>A successful install exits with status <code>0</code>.</p></div>
                     <div class="actions">
                         <a class="button" href="https://www.npmjs.com/package/vanilla-test">View on npm</a>
                         <a class="button button--secondary" href="./cli/">Configure native coverage</a>
