@@ -86,9 +86,10 @@ export async function run() {
             equal(test.throw, test.is.throw);
             equal(test.strict, true);
             equal(test.is.number(42), true);
-            equal(test.compare(1, '1'), true);
+            equal(test.compare(1, 1), true);
 
             test.strict = false;
+            equal(test.compare(1, '1'), false);
             equal(test.strict, false);
             equal(test.is.string(42), false);
             test.strict = true;

@@ -1,6 +1,6 @@
 {
   "name": "vanilla-test",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Zero-build, Web-standard JavaScript testing for Node and browsers",
   "main": "index.js",
   "type": "module",
@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "ansi-colors-es6": "^5.0.0",
-    "strong-type": "^1.1.0"
+    "strong-type": "^2.0.0"
   },
   "bugs": {
     "url": "https://github.com/RIAEvangelist/vanilla-test/issues"

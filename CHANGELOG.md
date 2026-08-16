@@ -4,6 +4,11 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+### Changed
+
+- Updated the runtime dependency to `strong-type` v2 and retained bound helper access through `test.compare` and `test.throw`.
+- Documented strong-type v2's exact-identity comparison behavior.
+
 ### Added
 
 - A complete Examples page with runnable browser, Node, async, failure, type-check, CLI, and npm patterns.

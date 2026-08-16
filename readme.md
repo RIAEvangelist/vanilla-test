@@ -215,7 +215,7 @@ The exact `strong-type` checker names exposed through `test.is` are:
 | Internationalization | `intlDateTimeFormat`, `intlCollator`, `intlDisplayNames`, `intlListFormat`, `intlLocale`, `intlNumberFormat`, `intlPluralRules`, `intlRelativeTimeFormat` | Check supported `Intl` objects. |
 | Garbage collection | `finalizationRegistry`, `weakRef` | Check `FinalizationRegistry` and `WeakRef` instances. |
 
-See [`strong-type`](https://github.com/RIAEvangelist/strong-type) for the dependency's detailed checker semantics. Some helpers intentionally follow JavaScript primitives—for example, `object` uses `typeof`, `finite` uses the global coercive `isFinite()`, and `compare` uses `==`.
+See [`strong-type`](https://github.com/RIAEvangelist/strong-type) for the dependency's detailed checker semantics. This release uses strong-type v2, including its exact-identity `compare` behavior (`Object.is`). Some helpers intentionally follow JavaScript primitives—for example, `object` uses `typeof`.
 
 ### Result object
 

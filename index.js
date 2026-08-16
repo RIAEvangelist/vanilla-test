@@ -6,6 +6,8 @@ const VANILLA_TEST_COMPLETE_EVENT = 'vanilla-test:complete';
 class VanillaTest extends EventTarget {
     constructor() {
         super();
+        this.#is.compare = this.#is.compare.bind(this.#is);
+        this.#is.throw = this.#is.throw.bind(this.#is);
     }
 
     get is() {

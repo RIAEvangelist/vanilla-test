@@ -167,7 +167,7 @@
 
                         <article class="method" id="property-compare">
                             <h3>test.compare</h3>
-                            <p>A direct reference to <code>test.is.compare</code>. It accepts <code>(value, targetValue)</code>, uses loose equality, returns <code>true</code> on a match, and otherwise throws an <code>Error</code> in strict mode or returns <code>false</code>.</p>
+                            <p>A direct reference to <code>test.is.compare</code>. It accepts <code>(value, targetValue)</code>, uses exact identity via <code>Object.is</code>, returns <code>true</code> on a match, and otherwise throws a <code>TypeError</code> in strict mode or returns <code>false</code>.</p>
                             <dl>
                                 <dt>Identity</dt><dd><code>test.compare === test.is.compare</code>.</dd>
                                 <dt>Binding</dt><dd>Call it as <code>test.compare(...)</code>; do not detach a method that relies on its receiver.</dd>
@@ -203,7 +203,7 @@
 
 test.strict = false;
 console.log(test.is.number(<span class="code-string">'42'</span>)); <span class="code-comment">// false</span>
-console.log(test.compare(1, <span class="code-string">'1'</span>)); <span class="code-comment">// true: loose equality</span>
+console.log(test.compare(1, <span class="code-string">'1'</span>)); <span class="code-comment">// throws in strict mode: not identical</span>
 
 test.strict = true;
 test.is.number(<span class="code-string">'42'</span>); <span class="code-comment">// throws TypeError</span></code></pre></div>
@@ -412,7 +412,7 @@ unsubscribe();                        <span class="code-comment">// safe after a
                                 <tr><td><code>test.is.instanceCheck(value, constructor)</code></td><td>Apply <code>value instanceof constructor</code>.</td><td><code>true</code> / helper mismatch behavior.</td></tr>
                                 <tr><td><code>test.is.symbolStringCheck(value, tag)</code></td><td>Compare the native <code>Object.prototype.toString</code> tag.</td><td><code>true</code> / helper mismatch behavior.</td></tr>
                                 <tr><td><code>test.is.union(value, typesString)</code></td><td>Try exact helper names from a pipe-delimited string such as <code>'string|number'</code>.</td><td><code>true</code> / helper mismatch behavior; an unknown helper name is also a mismatch.</td></tr>
-                                <tr><td><code>test.is.compare(value, targetValue)</code></td><td>Loose-equality comparison; identical to <code>test.compare</code>.</td><td><code>true</code> / strict <code>Error</code> or non-strict <code>false</code>.</td></tr>
+                                <tr><td><code>test.is.compare(value, targetValue)</code></td><td>Exact-identity comparison via <code>Object.is</code>; identical to <code>test.compare</code>.</td><td><code>true</code> / strict <code>TypeError</code> or non-strict <code>false</code>.</td></tr>
                                 <tr><td><code>test.is.null(value)</code>, <code>globalThis(value)</code>, <code>infinity(value)</code></td><td>Loose-equality predicates implemented through <code>compare()</code>.</td><td><code>true</code> / strict <code>Error</code> or non-strict <code>false</code>.</td></tr>
                                 <tr><td><code>test.is.throw(valueType, expectedType)</code></td><td>Invoke the helper mismatch path directly; identical to <code>test.throw</code>.</td><td>Strict <code>TypeError</code> or non-strict <code>false</code>.</td></tr>
                             </tbody>
@@ -432,7 +432,7 @@ unsubscribe();                        <span class="code-comment">// safe after a
                                 <tr><td><code>typeof</code></td><td>Primitive helpers and <code>object</code></td><td><code>object(null)</code> is true because JavaScript reports <code>typeof null</code> as <code>'object'</code>.</td></tr>
                                 <tr><td><code>instanceof</code></td><td>Arrays, dates, collections, promises, errors, typed arrays, buffers, Intl objects, and weak-reference objects</td><td>The value must belong to the supplied host constructor.</td></tr>
                                 <tr><td><code>Object.prototype.toString</code></td><td>Generator values and async/function variants</td><td>The helper compares the native symbol tag.</td></tr>
-                                <tr><td>Loose equality</td><td><code>compare</code>, <code>null</code>, <code>globalThis</code>, and <code>infinity</code></td><td><code>compare(1, '1')</code> is true, and <code>null(undefined)</code> is also true.</td></tr>
+                                <tr><td>Exact identity</td><td><code>compare</code> and compare-backed helpers</td><td><code>compare(1, '1')</code> is false in non-strict mode; strict mode throws.</td></tr>
                                 <tr><td>Global numeric predicates</td><td><code>finite</code> and <code>NaN</code></td><td><code>finite</code> follows global <code>isFinite()</code> coercion; <code>NaN</code> first requires a number.</td></tr>
                                 <tr><td>Alias behavior</td><td><code>defined</code>, <code>any</code>, and <code>exists</code></td><td>All three mean “not <code>undefined</code>.”</td></tr>
                             </tbody>
@@ -495,7 +495,7 @@ unsubscribe();                        <span class="code-comment">// safe after a
 console.log(test.is.array([]));                 <span class="code-comment">// true</span>
 console.log(test.is.date(<span class="code-keyword">new</span> Date()));           <span class="code-comment">// true</span>
 console.log(test.is.union(42, <span class="code-string">'string|number'</span>)); <span class="code-comment">// true</span>
-console.log(test.compare(1, <span class="code-string">'1'</span>));              <span class="code-comment">// true</span>
+console.log(test.compare(1, <span class="code-string">'1'</span>));              <span class="code-comment">// throws in strict mode</span>
 
 test.strict = false;
 console.log(test.is.promise({}));               <span class="code-comment">// false</span></code></pre></div>
