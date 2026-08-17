@@ -1,3 +1,5 @@
+import { appendAnsiText } from '../assets/ansi-console.js';
+
 const editor = document.querySelector('[data-playground-run]')
     ? document.querySelector('#playground-code')
     : null;
@@ -55,7 +57,7 @@ function appendConsoleLine(level, text, count = true) {
     line.className = 'console-line';
     line.dataset.level = ['warn', 'error'].includes(level) ? level : 'log';
     const value = document.createElement('span');
-    value.textContent = text;
+    appendAnsiText(value, text);
     line.append(value);
     output.append(line);
     if (count) {
@@ -135,6 +137,7 @@ function sandboxRuntime(parentOrigin, ownSessionToken) {
 
     const channel = 'vanilla-test-playground';
     const ansiPattern = /\u001b\[[0-?]*[ -/]*[@-~]/g;
+    const sgrPattern = /^\u001b\[(?:[0-9]+(?:;[0-9]+)*)?m$/;
     const maxOutputCharacters = 100_000;
     const maxOutputLineCharacters = 4_000;
     const maxOutputLines = 300;
@@ -153,15 +156,18 @@ function sandboxRuntime(parentOrigin, ownSessionToken) {
         }, parentOrigin);
     }
 
-    function stripAnsi(value) {
-        return String(value).replace(ansiPattern, '');
+    function sanitizeAnsi(value) {
+        return String(value).replace(
+            ansiPattern,
+            (sequence) => sgrPattern.test(sequence) ? sequence : ''
+        );
     }
 
     function format(value) {
         if (value instanceof Error) {
-            return stripAnsi(value.stack || `${value.name}: ${value.message}`);
+            return sanitizeAnsi(value.stack || `${value.name}: ${value.message}`);
         }
-        if (typeof value === 'string') return stripAnsi(value);
+        if (typeof value === 'string') return sanitizeAnsi(value);
         if (typeof value === 'bigint') return `${value}n`;
         if (typeof value === 'function' || typeof value === 'symbol') return String(value);
         if (value === undefined) return 'undefined';
@@ -169,13 +175,13 @@ function sandboxRuntime(parentOrigin, ownSessionToken) {
         const seen = new WeakSet();
         try {
             const serialized = JSON.stringify(value, (_key, item) => {
-                if (typeof item === 'string') return stripAnsi(item);
+                if (typeof item === 'string') return sanitizeAnsi(item);
                 if (typeof item === 'bigint') return `${item}n`;
                 if (item instanceof Error) {
                     return {
                         name: item.name,
-                        message: stripAnsi(item.message),
-                        stack: stripAnsi(item.stack || '')
+                        message: sanitizeAnsi(item.message),
+                        stack: sanitizeAnsi(item.stack || '')
                     };
                 }
                 if (item && typeof item === 'object') {
@@ -186,7 +192,7 @@ function sandboxRuntime(parentOrigin, ownSessionToken) {
             }, 2);
             return serialized === undefined ? String(value) : serialized;
         } catch {
-            return stripAnsi(String(value));
+            return sanitizeAnsi(String(value));
         }
     }
 

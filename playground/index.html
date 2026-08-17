@@ -33,6 +33,7 @@
                     <li><a href="../playground/" aria-current="page">Playground</a></li>
                     <li><a href="../cli/">CLI</a></li>
                     <li><a href="../testing/">Testing</a></li>
+                    <li><a href="../benchmark/">Benchmarks</a></li>
                     <li><a href="../coverage/">Coverage</a></li>
                 </ul>
             </nav>
@@ -49,7 +50,7 @@
         <div class="site-shell playground-shell">
             <div class="callout">
                 <strong>Check the console or DevTools.</strong>
-                <p>Console output is mirrored into the panel below and remains available in your browser's developer tools.</p>
+                <p>Console output is mirrored into the panel below, including recognized <code>ansi-colors-es6</code> styling, and remains available in your browser's developer tools.</p>
             </div>
 
             <div class="playground-grid">
@@ -62,9 +63,12 @@
                         </div>
                     </div>
                     <label class="sr-only" for="playground-code">JavaScript module source</label>
-                    <textarea class="playground-editor" id="playground-code" spellcheck="false" autocapitalize="off" autocomplete="off">import VanillaTest from 'vanilla-test';
+                    <textarea class="playground-editor" id="playground-code" spellcheck="false" autocapitalize="off" autocomplete="off">import ansi from 'ansi-colors-es6';
+import VanillaTest from 'vanilla-test';
 
 const test = new VanillaTest();
+
+console.log(ansi.bgBlueBright.black.bold(' FUNCTIONAL PLAYGROUND '));
 
 function check(description, assertion) {
     test.expects(description);
@@ -90,7 +94,7 @@ check('the result is a number', () =&gt; {
 
 const result = test.report();
 
-console.log('Summary', {
+console.log(ansi.bold.cyan('Summary'), {
     ok: result.ok,
     total: result.total,
     failures: result.failureCount

@@ -5,4 +5,5 @@ node_modules/
 /coverage/*
 !/coverage/index.html
 /.coverage-shared/
+/benchmark/.work/
 *.tgz

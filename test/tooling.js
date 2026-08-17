@@ -7,6 +7,7 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { parseAnsi } from '../assets/ansi-console.js';
 import { HELP, main, parseArguments } from '../lib/coverage/cli.js';
 import {
     buildChromeLaunchArguments,
@@ -24,6 +25,28 @@ import { mergeV8ScriptCoverage } from '../lib/coverage/v8-merge.js';
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const entryRunner = path.join(projectRoot, 'lib', 'coverage', 'entry-runner.js');
 const packageVersion = JSON.parse(await fs.readFile(path.join(projectRoot, 'package.json'), 'utf8')).version;
+
+test('ANSI console parser preserves plain text without wrapper classes', () => {
+    assert.deepEqual(parseAnsi('plain output'), [{ text: 'plain output', classes: [] }]);
+});
+
+test('ANSI console parser maps foreground color and reset boundaries', () => {
+    assert.deepEqual(parseAnsi('\u001b[92mpass\u001b[39m plain'), [
+        { text: 'pass', classes: ['ansi-fg-green-bright'] },
+        { text: ' plain', classes: [] }
+    ]);
+});
+
+test('ANSI console parser composes package modifiers and backgrounds', () => {
+    assert.deepEqual(parseAnsi('\u001b[104m\u001b[30m\u001b[1m UNIT \u001b[22m\u001b[39m\u001b[49m'), [{
+        text: ' UNIT ',
+        classes: ['ansi-fg-black', 'ansi-bg-blue-bright', 'ansi-mod-bold']
+    }]);
+});
+
+test('ANSI console parser drops unsupported terminal and text controls', () => {
+    assert.deepEqual(parseAnsi('\u001b[2Jclean\u0007 text'), [{ text: 'clean text', classes: [] }]);
+});
 
 async function temporaryDirectory(context) {
     const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'vanilla-test-tooling-'));
@@ -432,8 +455,8 @@ test('Node coverage parent watchdog terminates a synchronous entry', async (cont
     assert.match(errors.join('\n'), /timed out after 25 ms/);
 });
 
-test('README and Pages documentation cover the public API, CLI, config, reports, playground, and console cues', async () => {
-    const [readme, home, guide, api, cli, coverage, testing, example, playground, playgroundScript, siteCss, browserVerification, harness] = await Promise.all([
+test('README and Pages documentation cover the public API, CLI, config, reports, benchmarks, playground, and console cues', async () => {
+    const [readme, home, guide, api, cli, coverage, testing, benchmark, benchmarkScript, example, playground, playgroundScript, siteCss, browserVerification, harness] = await Promise.all([
         fs.readFile(path.join(projectRoot, 'readme.md'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'index.html'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'guide', 'index.html'), 'utf8'),
@@ -441,6 +464,8 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
         fs.readFile(path.join(projectRoot, 'cli', 'index.html'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'coverage', 'index.html'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'testing', 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'benchmark', 'index.html'), 'utf8'),
+        fs.readFile(path.join(projectRoot, 'benchmark', 'site.js'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'example', 'index.html'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'playground', 'index.html'), 'utf8'),
         fs.readFile(path.join(projectRoot, 'playground', 'playground.js'), 'utf8'),
@@ -450,7 +475,7 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
     ]);
     const apiDocumentation = `${readme}\n${api}`;
     const cliDocumentation = `${readme}\n${cli}`;
-    const site = `${home}\n${guide}\n${example}\n${api}\n${playground}\n${cli}\n${testing}\n${coverage}`;
+    const site = `${home}\n${guide}\n${example}\n${api}\n${playground}\n${cli}\n${testing}\n${benchmark}\n${coverage}`;
     const navigationPages = [
         { page: home, current: 'Overview', rootPage: true },
         { page: guide, current: 'Guide' },
@@ -459,6 +484,7 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
         { page: playground, current: 'Playground' },
         { page: cli, current: 'CLI' },
         { page: testing, current: 'Testing' },
+        { page: benchmark, current: 'Benchmarks' },
         { page: coverage, current: 'Coverage' },
         { page: browserVerification, current: 'Testing' }
     ];
@@ -470,6 +496,7 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
         ['playground/', 'Playground'],
         ['cli/', 'CLI'],
         ['testing/', 'Testing'],
+        ['benchmark/', 'Benchmarks'],
         ['coverage/', 'Coverage']
     ];
 
@@ -527,7 +554,23 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
     assert.match(cli, /no arguments prints help and exits with status <code>0<\/code>/);
     assert.match(cliDocumentation, /"executablePath": null/);
     assert.match(cliDocumentation, /CHROME_PATH/);
-    for (const script of ['test', 'test:core', 'test:tooling', 'coverage', 'coverage:node', 'coverage:chrome', 'site:status', 'screenshots', 'start']) {
+    for (const script of [
+        'test',
+        'test:core',
+        'test:unit',
+        'test:functional',
+        'test:integration',
+        'test:regression',
+        'test:tooling',
+        'benchmark',
+        'benchmark:smoke',
+        'coverage',
+        'coverage:node',
+        'coverage:chrome',
+        'site:status',
+        'screenshots',
+        'start'
+    ]) {
         const aliases = script === 'test'
             ? ['npm test', 'npm run test']
             : script === 'start'
@@ -541,8 +584,18 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
     assert.match(readme, /test-results\.json/);
     assert.match(readme, /\.vanilla-test-coverage\.json/);
     assert.match(coverage, /screenshot-gallery/);
+    assert.match(benchmark, /One million real cases/);
+    assert.match(benchmark, /node:test/);
+    assert.match(benchmark, /Mocha/);
+    assert.match(benchmark, /Download raw benchmark JSON/);
+    assert.match(benchmark, /data-source-dialog/);
+    assert.match(benchmarkScript, /showModal/);
+    assert.match(benchmarkScript, /textContent = currentSource/);
+    assert.doesNotMatch(benchmarkScript, /innerHTML/);
     const images = [
         'vanilla-test-chrome-v2.png',
+        'vanilla-test-playground-v2.png',
+        'vanilla-test-benchmark-v2.png',
         'vanilla-test-chrome-coverage-v2.png',
         'vanilla-test-node-coverage-v2.png'
     ];
@@ -582,6 +635,8 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
     assert.match(playgroundScript, /MAX_OUTPUT_LINE_CHARACTERS = 4_000/);
     assert.match(playgroundScript, /MAX_OUTPUT_LINES = 300/);
     assert.match(playgroundScript, /RUN_TIMEOUT_MS = 15_000/);
+    assert.match(playgroundScript, /appendAnsiText/);
+    assert.doesNotMatch(playgroundScript, /function stripAnsi/);
     assert.doesNotMatch(playgroundScript, /event\.key === ['"]Tab['"]/);
     assert.doesNotMatch(siteCss, /min-width:\s*20rem/);
     for (const engineeringContract of [
@@ -599,7 +654,7 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
     }
     assert.match(browserVerification, /Chrome console/);
     assert.match(browserVerification, /Check the console or DevTools/);
-    assert.match(browserVerification, /visible panel mirrors messages/);
+    assert.match(browserVerification, /visible panel safely renders/);
     assert.match(browserVerification, /consoleOutput\.append/);
     assert.match(harness, /Check the console or DevTools/);
 });

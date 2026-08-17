@@ -30,6 +30,7 @@
                     <li><a href="../playground/">Playground</a></li>
                     <li><a href="../cli/">CLI</a></li>
                     <li><a href="../testing/" aria-current="page">Testing</a></li>
+                    <li><a href="../benchmark/">Benchmarks</a></li>
                     <li><a href="../coverage/">Coverage</a></li>
                 </ul>
             </nav>
@@ -65,8 +66,11 @@
                 <div class="live-metric"><span>Failed</span><strong id="failed">—</strong></div>
             </div>
             <div>
-                <h2>Shared API verification</h2>
-                <ul class="check-list" id="checks"><li class="pending">Waiting for results</li></ul>
+                <h2>Unique shared cases by set</h2>
+                <p>Each behavior appears once; Node and Chrome are separate executions of this same inventory.</p>
+                <div class="test-category-grid" id="checks">
+                    <article class="test-category"><ul class="check-list"><li class="pending">Waiting for results</li></ul></article>
+                </div>
             </div>
         </section>
 
@@ -84,7 +88,7 @@
         </section>
 
         <div class="link-panel">
-            <p><strong>Check the console or DevTools.</strong> The visible panel mirrors messages to the real DevTools console. Coverage runs this same module while independently collecting native V8 execution data for the configured shared-core scope.</p>
+            <p><strong>Check the console or DevTools.</strong> The visible panel safely renders the same <code>ansi-colors-es6</code> messages forwarded to the real DevTools console. Coverage runs this same module while independently collecting native V8 execution data for the configured shared-core scope.</p>
             <a class="button button--secondary" href="../coverage/">Review published coverage</a>
         </div>
     </main>
@@ -101,6 +105,7 @@
     </footer>
 
     <script type="module">
+        import { appendAnsiText } from '../assets/ansi-console.js';
         import run from './CI.js';
 
         const status = document.querySelector('[data-vanilla-test-status]');
@@ -144,9 +149,10 @@
             line.className = 'console-line';
             line.dataset.level = level;
             const message = document.createElement('span');
-            message.textContent = values.map(formatConsoleValue).join(' ');
+            appendAnsiText(message, values.map(formatConsoleValue).join(' '));
             line.append(message);
             consoleOutput.append(line);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
         }
 
         for (const level of ['log', 'warn', 'error']) {
@@ -164,6 +170,7 @@
                 total: result.total,
                 passed: result.passed.length,
                 failed: result.failed.length,
+                categories: result.categories.map((category) => `${category.name} ${category.passedCount}/${category.total}`),
                 frameworkLogCount: result.frameworkLogCount
             });
             globalThis.__VANILLA_TEST_RESULT__ = result;
@@ -179,17 +186,39 @@
             document.querySelector('#failed').textContent = result.failureCount;
             checks.replaceChildren();
 
-            for (const name of result.passed) {
-                const item = document.createElement('li');
-                item.textContent = name;
-                checks.append(item);
-            }
+            for (const category of result.categories) {
+                const panel = document.createElement('article');
+                panel.className = 'test-category';
+                const header = document.createElement('div');
+                header.className = 'test-category__header';
+                const copy = document.createElement('div');
+                const heading = document.createElement('h3');
+                heading.textContent = category.name;
+                const description = document.createElement('p');
+                description.textContent = category.description;
+                const count = document.createElement('span');
+                count.className = 'test-category__count';
+                count.textContent = `${category.passedCount}/${category.total}`;
+                copy.append(heading, description);
+                header.append(copy, count);
+                const list = document.createElement('ul');
+                list.className = 'check-list';
 
-            for (const detail of result.failed) {
-                const item = document.createElement('li');
-                item.className = 'failure';
-                item.textContent = detail;
-                checks.append(item);
+                for (const name of category.passed) {
+                    const item = document.createElement('li');
+                    item.textContent = name;
+                    list.append(item);
+                }
+
+                for (const detail of category.failed) {
+                    const item = document.createElement('li');
+                    item.className = 'failure';
+                    item.textContent = detail;
+                    list.append(item);
+                }
+
+                panel.append(header, list);
+                checks.append(panel);
             }
         } catch (error) {
             console.error('run() rejected', error);

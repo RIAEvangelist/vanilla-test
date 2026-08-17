@@ -33,6 +33,7 @@
                     <li><a href="../playground/">Playground</a></li>
                     <li><a href="../cli/">CLI</a></li>
                     <li><a href="../testing/" aria-current="page">Testing</a></li>
+                    <li><a href="../benchmark/">Benchmarks</a></li>
                     <li><a href="../coverage/">Coverage</a></li>
                 </ul>
             </nav>
@@ -79,11 +80,12 @@
 
                 <section>
                     <h2>Suite topology</h2>
+                    <p>The shared inventory contains 42 unique, narrowly scoped cases: 15 Unit, 10 Functional, 8 Integration, and 9 Regression. That inventory is executed unchanged in both Node and Chrome.</p>
                     <div class="table-wrap">
                         <table>
                             <thead><tr><th>Gate</th><th>Runtime</th><th>Evidence</th><th>Failure means</th></tr></thead>
                             <tbody>
-                                <tr><td>Shared-core verification</td><td>Node 22.12, Node 24, Chrome Stable</td><td>Exports, typed arguments, state guards, decisions, immutable reports, events, isolation, delay</td><td>The public Web-standard API does not behave consistently.</td></tr>
+                                <tr><td>Shared categorized inventory</td><td>Node 22.12, Node 24, Chrome Stable</td><td>42 unique Unit, Functional, Integration, and Regression cases from the same source modules</td><td>The public Web-standard API does not behave consistently.</td></tr>
                                 <tr><td>Node tooling integration</td><td>Node 22.12 and Node 24</td><td>Argument parsing, exit codes, result validation, glob matching, configuration, local server safety, timeouts and leaked handles</td><td>The developer-facing CLI or harness boundary is broken.</td></tr>
                                 <tr><td>Native coverage gates</td><td>Node 24 and Chrome Stable</td><td>Independent executable-range, block-range, function-range, and executable-line measurements of <code>index.js</code></td><td>One runtime did not exercise the complete configured core scope.</td></tr>
                                 <tr><td>Packed npm artifact</td><td>Clean Node 24 project</td><td><code>npm pack</code>, install the tarball, import package name, run and validate one result</td><td>The repository may pass while the published file set is unusable.</td></tr>
@@ -91,8 +93,8 @@
                         </table>
                     </div>
                     <div class="callout">
-                        <strong>Do not combine these into one “test count.”</strong>
-                        <p>The shared checks, Node integration cases, coverage gates, and package smoke have different units and scopes. Report each gate independently.</p>
+                        <strong>Count unique cases separately from runtime executions.</strong>
+                        <p>The four category totals are one 42-case inventory. Node and Chrome execute that same inventory; they are evidence from different hosts, not 84 different cases. Tooling, coverage gates, and package smoke retain their own scopes.</p>
                     </div>
                 </section>
 
@@ -100,7 +102,11 @@
                     <h2>Run tests locally</h2>
                     <div class="code-block"><pre><code>npm ci
 npm test</code></pre></div>
-                    <p><code>npm test</code> first executes <code>test/CI.js</code> through the thin <code>test/node.js</code> adapter, then runs <code>test/tooling.js</code>, <code>test/output.js</code>, <code>test/server-security.js</code>, and <code>test/status-builder.js</code> with Node's built-in test runner.</p>
+                    <p><code>npm test</code> executes all four shared sets through the thin <code>test/node.js</code> adapter, then runs the Node-only CLI, output, server-security, and status-builder tests. Run one shared set directly when narrowing a failure:</p>
+                    <div class="code-block"><pre><code>npm run test:unit
+npm run test:functional
+npm run test:integration
+npm run test:regression</code></pre></div>
                     <div class="code-block"><pre><code>npm run coverage
 <span class="code-comment"># or isolate one collector</span>
 npm run coverage:node
@@ -113,27 +119,27 @@ npm run coverage:chrome</code></pre></div>
                 </section>
 
                 <section>
-                    <h2>What the shared suite checks</h2>
+                    <h2>What the four shared sets check</h2>
                     <div class="grid grid--two">
                         <article class="card">
-                            <span class="card__label">Surface</span>
-                            <h3>Exports and type helpers</h3>
-                            <p>Default/named class identity, event name, EventTarget inheritance, strong-type delegates, strict state, and typed public arguments.</p>
+                            <span class="card__label">Unit · 15 cases</span>
+                            <h3>Small contracts in isolation</h3>
+                            <p>Exports, EventTarget inheritance, strong-type delegates, strict state, typed public arguments, and delay boundaries.</p>
                         </article>
                         <article class="card">
-                            <span class="card__label">Lifecycle</span>
-                            <h3>State transition guards</h3>
-                            <p>Active-test requirements, duplicate descriptions, one active test, undecided failure, and post-report sealing.</p>
+                            <span class="card__label">Functional · 10 cases</span>
+                            <h3>Public lifecycle outcomes</h3>
+                            <p>Numbered expectations, pass/fail recording, active-test guards, undecided failure, reporting preconditions, and the empty suite.</p>
                         </article>
                         <article class="card">
-                            <span class="card__label">Results</span>
-                            <h3>Snapshots and isolation</h3>
-                            <p>Deeply frozen arrays, failure accounting, empty suites, idempotent reporting, and isolated instances.</p>
+                            <span class="card__label">Integration · 8 cases</span>
+                            <h3>Contracts working together</h3>
+                            <p>Mixed reports, immutable snapshots, rendered output, completion events, listener cleanup, and isolated instances.</p>
                         </article>
                         <article class="card">
-                            <span class="card__label">Events</span>
-                            <h3>Host-neutral completion</h3>
-                            <p>Microtask timing, event detail identity, one-time dispatch, and idempotent unsubscribe behavior.</p>
+                            <span class="card__label">Regression · 9 cases</span>
+                            <h3>Earlier fixes stay fixed</h3>
+                            <p>Duplicate state integrity, lenient and strict repeat decisions, report identity, log/event deduplication, and post-report sealing.</p>
                         </article>
                     </div>
                     <div class="actions">
@@ -153,12 +159,27 @@ npm run coverage:chrome</code></pre></div>
                 </section>
 
                 <section>
+                    <h2>Benchmark the complete native pipeline</h2>
+                    <p>The benchmark is a separate, auditable performance workload—not an inflated correctness-test count. It executes 1,000,000 uniquely named real cases as 1,000 bounded suites of 1,000 in independent Node and real-Chrome lanes, then includes native V8 coverage, validation, JSON, LCOV and standalone HTML report generation, and teardown in the cold-wall result.</p>
+                    <div class="code-block"><pre><code>npm ci --prefix benchmark
+npm run benchmark
+
+<span class="code-comment"># quick end-to-end harness verification</span>
+npm run benchmark:smoke</code></pre></div>
+                    <p>Only the richer built-in <code>node:test</code> runner and pinned Mocha appear as competitors. Raw loops and less capable micro-runners do not enter the visible ranking.</p>
+                    <div class="actions"><a class="button" href="../benchmark/">Open benchmarks and machine specs</a><a class="button button--secondary" href="https://github.com/RIAEvangelist/vanilla-test/tree/main/benchmark">Inspect the complete harness</a></div>
+                </section>
+
+                <section>
                     <h2>Add the right kind of test</h2>
                     <div class="table-wrap">
                         <table>
                             <thead><tr><th>Change</th><th>Put the test here</th><th>Reason</th></tr></thead>
                             <tbody>
-                                <tr><td>Public core API or lifecycle</td><td><code>test/CI.js</code></td><td>It must run unchanged in Node and Chrome.</td></tr>
+                                <tr><td>Isolated export, type, delegate, or boundary contract</td><td><code>test/shared/unit.js</code></td><td>One small contract should fail for one focused reason.</td></tr>
+                                <tr><td>Public lifecycle outcome</td><td><code>test/shared/functional.js</code></td><td>Exercise behavior through the consumer-facing sequence.</td></tr>
+                                <tr><td>Multiple public contracts working together</td><td><code>test/shared/integration.js</code></td><td>Keep cross-contract behavior separate from isolated units.</td></tr>
+                                <tr><td>A previously fixed state or idempotence edge</td><td><code>test/shared/regression.js</code></td><td>Name the protected behavior without copying it into another set.</td></tr>
                                 <tr><td>CLI, config, filesystem, process, or server behavior</td><td><code>test/tooling.js</code></td><td>These are intentionally Node-specific host concerns.</td></tr>
                                 <tr><td>Published-file boundary</td><td>Package smoke step</td><td>Repository-relative imports can hide packaging defects.</td></tr>
                             </tbody>
@@ -173,6 +194,7 @@ npm run coverage:chrome</code></pre></div>
                 <ul>
                     <li>Same source, real hosts</li>
                     <li>Independent oracle</li>
+                    <li>One primary category per case</li>
                     <li>Host tooling tested separately</li>
                     <li>Published artifact smoke-tested</li>
                     <li>Every status carries provenance</li>

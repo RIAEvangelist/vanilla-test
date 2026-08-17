@@ -1,0 +1,17 @@
+{
+  "id": "million-sync-pass-native-coverage-v1",
+  "caseCount": 1000000,
+  "batchSize": 1000,
+  "warmups": 1,
+  "measuredSamples": 5,
+  "sampleTimeoutMs": 300000,
+  "nodeHeapCapMiB": 16384,
+  "orderSeed": 1448363350,
+  "coverageScope": "benchmark/workload.js",
+  "reportFormats": [
+    "test-results.json",
+    "coverage-summary.json",
+    "lcov.info",
+    "index.html"
+  ]
+}

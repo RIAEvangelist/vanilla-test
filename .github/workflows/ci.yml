@@ -75,6 +75,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install pinned benchmark competitors
+        run: npm ci --prefix benchmark --ignore-scripts
+
+      - name: Verify benchmark dependency audit
+        run: npm audit --prefix benchmark
+
+      - name: Smoke-test Node and real-Chrome benchmark pipelines
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: npm run benchmark:smoke
+
       - name: Run Node and Chrome coverage
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
@@ -112,6 +123,8 @@ jobs:
           name: coverage-screenshots
           path: |
             example/img/vanilla-test-chrome-v2.png
+            example/img/vanilla-test-playground-v2.png
+            example/img/vanilla-test-benchmark-v2.png
             example/img/vanilla-test-chrome-coverage-v2.png
             example/img/vanilla-test-node-coverage-v2.png
           if-no-files-found: error
@@ -174,9 +187,9 @@ jobs:
             grep --fixed-strings --line-regexp --quiet -- "$REQUIRED_FILE" "$PACK_FILE_LIST"
           done
 
-          if grep --extended-regexp --quiet '^package/(assets|badges|coverage|data|example|scripts|test|\.github)/' "$PACK_FILE_LIST"; then
+          if grep --extended-regexp --quiet '^package/(assets|badges|benchmark|coverage|data|example|scripts|test|\.github)/' "$PACK_FILE_LIST"; then
             echo "Packed artifact contains repository-only site or test files."
-            grep --extended-regexp '^package/(assets|badges|coverage|data|example|scripts|test|\.github)/' "$PACK_FILE_LIST"
+            grep --extended-regexp '^package/(assets|badges|benchmark|coverage|data|example|scripts|test|\.github)/' "$PACK_FILE_LIST"
             exit 1
           fi
 
@@ -256,6 +269,7 @@ jobs:
             _site/guide \
             _site/api \
             _site/testing \
+            _site/benchmark/runners \
             _site/coverage \
             _site/cli \
             _site/playground \
@@ -272,14 +286,17 @@ jobs:
           cp guide/index.html _site/guide/
           cp api/index.html _site/api/
           cp testing/index.html _site/testing/
+          cp benchmark/index.html benchmark/site.js benchmark/README.md benchmark/run.js benchmark/workload.js _site/benchmark/
+          cp benchmark/runners/*.js _site/benchmark/runners/
           cp coverage/index.html _site/coverage/
           cp cli/index.html _site/cli/
           cp playground/index.html playground/playground.js _site/playground/
           cp test/index.html test/CI.js _site/test/
+          cp --recursive test/shared _site/test/
           cp example/index.html example/basic.js _site/example/
           cp example/img/vanilla-test-*-v2.png _site/example/img/
-          cp assets/site.css assets/site.js assets/og.png _site/assets/
-          cp data/status.json _site/data/
+          cp assets/ansi-console.js assets/site.css assets/site.js assets/og.png _site/assets/
+          cp data/status.json data/benchmarks.json _site/data/
           cp badges/*.json _site/badges/
           cp index.js _site/
           cp node_modules/ansi-colors-es6/index.js _site/node_modules/ansi-colors-es6/
@@ -291,15 +308,23 @@ jobs:
           test -f _site/guide/index.html
           test -f _site/api/index.html
           test -f _site/testing/index.html
+          test -f _site/benchmark/index.html
+          test -f _site/benchmark/site.js
+          test -f _site/benchmark/runners/node-test.js
           test -f _site/coverage/index.html
           test -f _site/cli/index.html
           test -f _site/playground/index.html
           test -f _site/playground/playground.js
+          test -f _site/test/shared/unit.js
+          test -f _site/assets/ansi-console.js
           test -f _site/assets/og.png
           test -f _site/data/status.json
+          test -f _site/data/benchmarks.json
           test -f _site/example/index.html
           test -f _site/example/basic.js
           test -f _site/example/img/vanilla-test-chrome-v2.png
+          test -f _site/example/img/vanilla-test-playground-v2.png
+          test -f _site/example/img/vanilla-test-benchmark-v2.png
           test -f _site/example/img/vanilla-test-chrome-coverage-v2.png
           test -f _site/example/img/vanilla-test-node-coverage-v2.png
           test -f _site/reports/node/index.html

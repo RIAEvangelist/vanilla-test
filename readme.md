@@ -336,8 +336,14 @@ These scripts are included in this repository:
 | npm command | Underlying command | What it is for |
 | --- | --- | --- |
 | `npm test` | `npm run test:core && npm run test:tooling` | Runs every core and tooling test in sequence. This is the normal local verification command. |
-| `npm run test:core` | `node ./test/node.js` | Runs the shared vanilla-test suite directly in Node.js. |
-| `npm run test:tooling` | `node --test ./test/tooling.js ./test/output.js ./test/server-security.js ./test/status-builder.js` | Runs CLI, reporting, output-transaction, local-server security, and site-status tests. |
+| `npm run test:core` | `node ./test/node.js` | Runs all 42 unique shared cases across the Unit, Functional, Integration, and Regression sets directly in Node.js. |
+| `npm run test:unit` | `node ./test/node.js unit` | Runs the 15 isolated export, type, delegate, strict-state, and delay cases. |
+| `npm run test:functional` | `node ./test/node.js functional` | Runs the 10 public lifecycle and reporting-outcome cases. |
+| `npm run test:integration` | `node ./test/node.js integration` | Runs the 8 report, event, listener, and instance-composition cases. |
+| `npm run test:regression` | `node ./test/node.js regression` | Runs the 9 state-integrity and idempotence cases. |
+| `npm run test:tooling` | `node --test ./test/tooling.js ./test/output.js ./test/server-security.js ./test/status-builder.js ./test/benchmark.js` | Runs CLI, reporting, output-transaction, local-server security, benchmark-harness, and site-status tests. |
+| `npm run benchmark` | `node ./benchmark/run.js` | Runs the auditable one-million-case Node and real-Chrome pipelines with native coverage and report generation. Install the private pinned competitors first with `npm ci --prefix benchmark`. |
+| `npm run benchmark:smoke` | `node ./benchmark/run.js --cases 101 ...` | Runs the same complete benchmark paths with 101 cases and one measured sample for harness verification. |
 | `npm run coverage` | `node ./bin/vanilla-test.js coverage` | Runs both native coverage collectors. |
 | `npm run coverage:node` | `node ./bin/vanilla-test.js coverage node` | Runs only Node coverage. |
 | `npm run coverage:chrome` | `node ./bin/vanilla-test.js coverage chrome` | Runs only Chrome coverage. |
@@ -538,6 +544,23 @@ The selected runtime is written to a temporary staging directory first. After a 
 | `coverage/chrome/.vanilla-test-coverage.json` | Ownership marker that permits later vanilla-test runs to replace this exact Chrome report safely. An unmarked or differently owned directory is refused. |
 | `coverage/chrome/vanilla-test-chrome.png` | Successful Chrome harness screenshot. |
 
+## Reproducible one-million-case benchmarks
+
+The [benchmark dashboard](https://riaevangelist.github.io/vanilla-test/benchmark/) keeps Node and real-Chrome results in separate lanes and compares vanilla-test only with comparable or richer runners: the exact runtime's built-in `node:test` and pinned Mocha. The workload is exactly 1,000,000 uniquely named real cases in 1,000 bounded suites of 1,000—not a raw loop and not a claimed monolithic suite.
+
+Every cold-wall sample includes host startup, framework lifecycle, detailed report materialization into a silent sink, native V8 coverage, exact-count and checksum validation, test JSON, coverage JSON, LCOV and standalone HTML writes, and teardown. The dashboard publishes all samples, distribution statistics, package integrity, commit provenance, and the benchmark machine's CPU, cores, RAM, OS, Node, V8, Chrome, power plan, and affinity policy.
+
+```sh
+npm ci --prefix benchmark
+npm run benchmark
+
+# isolate one native host
+node benchmark/run.js --runtime node
+node benchmark/run.js --runtime browser
+```
+
+The complete source stays in [`benchmark/`](benchmark/README.md), and the dashboard exposes each runner adapter in a focused source dialog instead of crowding the result tables. Raw published data is available at [`data/benchmarks.json`](data/benchmarks.json).
+
 ## Reports and screenshots
 
 The same source is exercised untransformed in real Chrome and Node.js.
@@ -546,7 +569,19 @@ The same source is exercised untransformed in real Chrome and Node.js.
 
 ![vanilla-test running in Google Chrome](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-chrome-v2.png)
 
-The captured page includes a visible Chrome-console panel while still forwarding every message to the real DevTools console.
+The captured page groups 42 unique cases into Unit, Functional, Integration, and Regression sets. Its visible Chrome-console panel renders the same `ansi-colors-es6` test output forwarded to the real DevTools console.
+
+### Browser playground
+
+![vanilla-test browser playground with ANSI test output](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-playground-v2.png)
+
+The default sandboxed module shows its ANSI-colored expectations, pass markers, and summary in the on-page console while preserving the DevTools output.
+
+### One-million-case native pipeline benchmark
+
+![vanilla-test one-million-case Node and Chrome benchmark](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-benchmark-v2.png)
+
+The benchmark view publishes separate Node and real-Chrome rankings alongside the machine, runtime, methodology, exact commit, lock integrity, and downloadable raw samples.
 
 ### Chrome native V8 coverage
 

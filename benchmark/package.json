@@ -1,0 +1,13 @@
+{
+  "name": "vanilla-test-benchmark",
+  "private": true,
+  "type": "module",
+  "description": "Pinned, non-production dependencies for the vanilla-test benchmark",
+  "devDependencies": {
+    "mocha": "11.8.0"
+  },
+  "overrides": {
+    "diff": "8.0.3",
+    "serialize-javascript": "7.0.5"
+  }
+}

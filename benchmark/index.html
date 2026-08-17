@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Reproducible one-million-case Node and real-Chrome benchmarks for vanilla-test, including native V8 coverage and report generation.">
+    <meta name="color-scheme" content="dark">
+    <meta property="og:title" content="Native pipeline benchmarks · vanilla-test">
+    <meta property="og:description" content="One million real cases, separate Node and Chrome lanes, complete native coverage and report generation, raw samples, and machine specifications.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://riaevangelist.github.io/vanilla-test/benchmark/">
+    <meta property="og:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
+    <meta property="og:image:alt" content="vanilla-test — native JavaScript testing for Node.js and browsers">
+    <link rel="canonical" href="https://riaevangelist.github.io/vanilla-test/benchmark/">
+    <link rel="stylesheet" href="../assets/site.css">
+    <title>Native pipeline benchmarks · vanilla-test</title>
+</head>
+<body data-status-url="../data/status.json">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+        <div class="site-shell site-header__inner">
+            <a class="brand" href="../" aria-label="vanilla-test documentation home"><span class="brand__mark" aria-hidden="true">VT</span><span>vanilla-test</span></a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../">Overview</a></li>
+                    <li><a href="../guide/">Guide</a></li>
+                    <li><a href="../example/">Examples</a></li>
+                    <li><a href="../api/">API</a></li>
+                    <li><a href="../playground/">Playground</a></li>
+                    <li><a href="../cli/">CLI</a></li>
+                    <li><a href="../testing/">Testing</a></li>
+                    <li><a href="../benchmark/" aria-current="page">Benchmarks</a></li>
+                    <li><a href="../coverage/">Coverage</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <header class="site-shell hero--single">
+            <p class="eyebrow">Auditable native pipelines</p>
+            <h1>One million real cases. Nothing hand-waved.</h1>
+            <p class="lede">Separate Node and real-Chrome lanes measure cold startup, runner lifecycle, native V8 coverage, validation, and four report files. Every sample ships with its raw values, exact source, runtime versions, and machine specification.</p>
+            <ul class="pill-row" aria-label="Benchmark protocol summary">
+                <li class="pill">1,000,000 cases</li>
+                <li class="pill">1,000 × 1,000 suites</li>
+                <li class="pill">5 measured samples</li>
+                <li class="pill">coverage + reports</li>
+            </ul>
+        </header>
+
+        <div class="site-shell page-layout">
+            <article class="prose">
+                <section aria-labelledby="result-heading">
+                    <div class="status-band__header">
+                        <h2 id="result-heading">Published result</h2>
+                        <p class="status-provenance" data-benchmark-state aria-live="polite">Loading signed-off benchmark data…</p>
+                    </div>
+                    <div class="benchmark-machine" data-benchmark-machine></div>
+                </section>
+
+                <section aria-labelledby="node-heading">
+                    <div class="benchmark-heading"><div><p class="eyebrow">Native Node only</p><h2 id="node-heading">Node pipeline</h2></div><p>Fresh worker + test child per sample</p></div>
+                    <div class="table-wrap"><table class="benchmark-table">
+                        <caption>One-million-case Node results; lower time is better within this lane only</caption>
+                        <thead><tr><th scope="col">Runner</th><th scope="col">Cold wall</th><th scope="col">Full pipeline</th><th scope="col">Runner phase</th><th scope="col">Cold throughput</th><th scope="col">Peak sampled</th><th scope="col">Verified</th></tr></thead>
+                        <tbody data-benchmark-lane="node"><tr><td colspan="7">Loading Node samples…</td></tr></tbody>
+                    </table></div>
+                </section>
+
+                <section aria-labelledby="browser-heading">
+                    <div class="benchmark-heading"><div><p class="eyebrow">Real browser only</p><h2 id="browser-heading">Google Chrome pipeline</h2></div><p>Fresh isolated Chrome profile per sample</p></div>
+                    <div class="table-wrap"><table class="benchmark-table">
+                        <caption>One-million-case Chrome results; lower time is better within this lane only</caption>
+                        <thead><tr><th scope="col">Runner</th><th scope="col">Cold wall</th><th scope="col">Full pipeline</th><th scope="col">Runner phase</th><th scope="col">Cold throughput</th><th scope="col">Peak sampled</th><th scope="col">Verified</th></tr></thead>
+                        <tbody data-benchmark-lane="browser"><tr><td colspan="7">Loading browser samples…</td></tr></tbody>
+                    </table></div>
+                    <p>Node peak is sampled process RSS; Chrome peak is sampled renderer JavaScript heap. Treat them as host-specific context, not a cross-runtime memory ranking.</p>
+                    <div class="callout"><strong>No cross-runtime leaderboard.</strong><p>Node and Chrome have different startup and host costs. They are independent native lanes, never numbers in one ranking.</p></div>
+                </section>
+
+                <section aria-labelledby="method-heading">
+                    <h2 id="method-heading">What “end to end” means here</h2>
+                    <ol class="benchmark-steps">
+                        <li><strong>Cold host.</strong><span>Start a fresh Node worker and test child, or a fresh isolated Google Chrome process.</span></li>
+                        <li><strong>Real runner cases.</strong><span>Define and complete 1,000,000 uniquely named cases in 1,000 bounded suites. No raw loop is ranked as a competitor.</span></li>
+                        <li><strong>Detailed result work.</strong><span>Materialize each framework's detailed passing report into a silent sink, so terminal spam is removed without deleting report cost.</span></li>
+                        <li><strong>Native coverage.</strong><span>Collect untransformed V8 ranges from the identical shared workload in the selected host.</span></li>
+                        <li><strong>Four files and teardown.</strong><span>Write test JSON, coverage JSON, LCOV, and standalone HTML; validate hashes and exact counts; then close the host.</span></li>
+                    </ol>
+                    <p>Because coverage is enabled intentionally, these are complete pipeline measurements—not claims about isolated assertion nanoseconds. Runner, pipeline, and cold-wall boundaries remain separate in every raw sample.</p>
+                    <div class="actions">
+                        <a class="button" href="../data/benchmarks.json">Download raw benchmark JSON</a>
+                        <a class="button button--secondary" href="./README.md">Read the reproduction protocol</a>
+                    </div>
+                </section>
+
+                <section aria-labelledby="competitor-heading">
+                    <h2 id="competitor-heading">Why these competitors qualify</h2>
+                    <div class="grid grid--two">
+                        <article class="card"><span class="card__label">Node · richer native runner</span><h3>node:test</h3><p>Built into the exact recorded Node runtime, with suites, hooks, mocks, snapshots, reruns, reporters, and coverage.</p><a href="https://nodejs.org/download/release/v24.18.0/docs/api/test.html">Official capability reference</a></article>
+                        <article class="card"><span class="card__label">Node + browser · richer runner</span><h3>Mocha</h3><p>Pinned in the benchmark lockfile, with suites, hooks, async support, filtering, retries, ESM, browser execution, and reporters.</p><a href="https://mochajs.org/running/browsers/">Official browser reference</a></article>
+                    </div>
+                    <p>Lightweight loops and less capable micro-runners are excluded from the visible ranking. This prevents a flattering but mismatched comparison.</p>
+                </section>
+
+                <section aria-labelledby="source-heading">
+                    <h2 id="source-heading">Inspect the exact benchmark code</h2>
+                    <p>The implementation stays available without filling the results page with source. Open any file in a focused native dialog, copy it, or follow its commit-pinned repository link.</p>
+                    <div class="benchmark-source-actions">
+                        <button class="button button--secondary" type="button" data-benchmark-source="run.js">Coordinator</button>
+                        <button class="button button--secondary" type="button" data-benchmark-source="runners/vanilla-node.js">vanilla-test · Node</button>
+                        <button class="button button--secondary" type="button" data-benchmark-source="runners/node-test.js">node:test</button>
+                        <button class="button button--secondary" type="button" data-benchmark-source="runners/mocha-node.js">Mocha · Node</button>
+                        <button class="button button--secondary" type="button" data-benchmark-source="runners/vanilla-browser.js">vanilla-test · Chrome</button>
+                        <button class="button button--secondary" type="button" data-benchmark-source="runners/mocha-browser.js">Mocha · Chrome</button>
+                        <button class="button button--secondary" type="button" data-benchmark-source="workload.js">Shared workload</button>
+                    </div>
+                </section>
+            </article>
+
+            <aside class="page-aside" aria-label="Benchmark controls">
+                <strong>Fairness controls</strong>
+                <ul>
+                    <li>Same unique names and workload</li>
+                    <li>Same 1,000 × 1,000 topology</li>
+                    <li>Same native coverage scope</li>
+                    <li>Same four report formats</li>
+                    <li>Serial, randomized order</li>
+                    <li>Same 16 GiB Node heap ceiling</li>
+                    <li>No outlier deletion</li>
+                    <li>Raw samples published</li>
+                </ul>
+                <p data-benchmark-provenance>Waiting for result provenance…</p>
+            </aside>
+        </div>
+    </main>
+
+    <dialog class="source-dialog" data-source-dialog aria-labelledby="source-dialog-title">
+        <form method="dialog" class="source-dialog__header"><div><p class="eyebrow">Exact benchmark source</p><h2 id="source-dialog-title" data-source-title>Source</h2></div><button class="playground-button playground-button--secondary" value="close">Close</button></form>
+        <div class="source-dialog__actions"><button class="playground-button" type="button" data-source-copy>Copy source</button><a class="button button--secondary" data-source-github href="https://github.com/RIAEvangelist/vanilla-test/tree/main/benchmark">Open pinned source</a><span data-source-status aria-live="polite"></span></div>
+        <pre tabindex="0"><code data-source-code>Choose a source file to load it here.</code></pre>
+    </dialog>
+
+    <footer class="site-footer"><div class="site-shell site-footer__inner"><p>vanilla-test <span data-status-version>v2</span> · MIT licensed</p><nav aria-label="Project links"><a href="https://github.com/RIAEvangelist/vanilla-test">GitHub</a><a href="https://www.npmjs.com/package/vanilla-test">npm</a><a href="https://github.com/RIAEvangelist/vanilla-test/blob/main/licence">License</a></nav></div></footer>
+    <script type="module" src="../assets/site.js"></script>
+    <script type="module" src="./site.js"></script>
+</body>
+</html>
