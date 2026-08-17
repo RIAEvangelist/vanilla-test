@@ -1,0 +1,2389 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-17T16:05:55.293Z",
+  "publishable": true,
+  "source": {
+    "commit": "65a0dfa3b96a59469ee0ac81704bbeb73736fde9",
+    "dirty": false,
+    "packageVersion": "2.1.1",
+    "benchmarkLockSha256": "b464df157a7a476fb6c36fee77d3b32be60ccccdff4e4bbf377b4d54681bd8d0",
+    "dependencies": {
+      "mocha": {
+        "version": "11.8.0",
+        "integrity": "sha512-VyCeUdGN3A9lmCTTgG4yuvY9ixxaDk+xt2R/7/+1AP6EqNG+G9OKkzBwhVtVYoNX8YsxNSgAl8mOv3IAeOpFbw=="
+      },
+      "nodeTest": {
+        "version": "v24.18.0",
+        "source": "built into the recorded Node runtime"
+      }
+    }
+  },
+  "protocol": {
+    "id": "million-sync-pass-native-coverage-v1",
+    "caseCount": 1000000,
+    "batchSize": 1000,
+    "batchCount": 1000,
+    "warmups": 1,
+    "measuredSamples": 5,
+    "orderSeed": 1448363350,
+    "execution": "serial synchronous passing cases; globally unique names; no parallel entrants",
+    "isolation": "fresh Node worker and test child, or fresh Node worker plus isolated Chrome profile, per sample",
+    "timing": "cold wall includes startup, execution, precise V8 coverage, validation, HTML/LCOV/JSON writes, and teardown",
+    "coverageScope": "benchmark/workload.js",
+    "reportFormats": [
+      "test-results.json",
+      "coverage-summary.json",
+      "lcov.info",
+      "index.html"
+    ],
+    "nodeHeapCapMiB": 16384,
+    "comparison": "Node and browser are separate lanes; only comparable or richer runners are ranked"
+  },
+  "machine": {
+    "model": "Alienware 18 Area-51 AA18250",
+    "os": {
+      "platform": "win32",
+      "release": "10.0.26200",
+      "version": "Windows 11 Home",
+      "architecture": "x64"
+    },
+    "cpu": {
+      "model": "Intel(R) Core(TM) Ultra 9 275HX",
+      "logicalCores": 24,
+      "availableParallelism": 24
+    },
+    "memory": {
+      "totalBytes": 68137205760
+    },
+    "node": {
+      "version": "v24.18.0",
+      "architecture": "x64",
+      "v8": "13.6.233.17-node.50"
+    },
+    "npm": "11.16.0",
+    "powerPlan": "Balanced",
+    "affinity": "operating-system default; runners execute serially",
+    "chrome": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/151.0.7922.138",
+      "revision": "@41fa82442390a4d4456c78f2d69a832d5720cb27",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+      "jsVersion": "15.1.206.17"
+    }
+  },
+  "lanes": {
+    "node": {
+      "entries": [
+        {
+          "id": "vanilla-test",
+          "name": "vanilla-test",
+          "kind": "subject",
+          "capabilities": [
+            "Node and real browsers",
+            "native V8 coverage",
+            "HTML, LCOV, and JSON reports"
+          ],
+          "version": "2.1.1",
+          "samples": [
+            {
+              "index": 1,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "vanilla-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 12082.2379,
+              "pipelineMs": 12169.752,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 10713.71389999999,
+                "reporting": 1338.8766000000078
+              },
+              "reportBytes": 86181890,
+              "memory": {
+                "peakRssBytes": 395149312,
+                "peakHeapUsedBytes": 269317824,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 12234.313999999998
+            },
+            {
+              "index": 2,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "vanilla-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 12351.6184,
+              "pipelineMs": 12436.919600000001,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 10952.828200000038,
+                "reporting": 1367.9822999999933
+              },
+              "reportBytes": 86181890,
+              "memory": {
+                "peakRssBytes": 395595776,
+                "peakHeapUsedBytes": 270123872,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 12503.911300000036
+            },
+            {
+              "index": 3,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "vanilla-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 12221.4502,
+              "pipelineMs": 12304.8131,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 10842.697100000016,
+                "reporting": 1349.6247999999766
+              },
+              "reportBytes": 86181890,
+              "memory": {
+                "peakRssBytes": 394551296,
+                "peakHeapUsedBytes": 267430240,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 12367.554100000008
+            },
+            {
+              "index": 4,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "vanilla-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 14437.6144,
+              "pipelineMs": 14527.4473,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 12874.9997,
+                "reporting": 1518.2413999999728
+              },
+              "reportBytes": 86181890,
+              "memory": {
+                "peakRssBytes": 392519680,
+                "peakHeapUsedBytes": 267071408,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 14586.137099999993
+            },
+            {
+              "index": 5,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "vanilla-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 13683.4397,
+              "pipelineMs": 13768.7407,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 12204.717599999982,
+                "reporting": 1439.8415999999731
+              },
+              "reportBytes": 86181890,
+              "memory": {
+                "peakRssBytes": 395165696,
+                "peakHeapUsedBytes": 268100344,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 13828.477100000018
+            }
+          ],
+          "summary": {
+            "verifiedSamples": 5,
+            "runner": {
+              "count": 5,
+              "minimumMs": 12082.2379,
+              "p25Ms": 12221.4502,
+              "medianMs": 12351.6184,
+              "p75Ms": 13683.4397,
+              "maximumMs": 14437.6144,
+              "medianAbsoluteDeviationMs": 269.3804999999993,
+              "median95ConfidenceMs": [
+                12082.2379,
+                14437.6144
+              ],
+              "medianCasesPerSecond": 80961.05041587101
+            },
+            "pipeline": {
+              "count": 5,
+              "minimumMs": 12169.752,
+              "p25Ms": 12304.8131,
+              "medianMs": 12436.919600000001,
+              "p75Ms": 13768.7407,
+              "maximumMs": 14527.4473,
+              "medianAbsoluteDeviationMs": 267.1676000000007,
+              "median95ConfidenceMs": [
+                12169.752,
+                14527.4473
+              ],
+              "medianCasesPerSecond": 80405.76221140803
+            },
+            "coldWall": {
+              "count": 5,
+              "minimumMs": 12234.313999999998,
+              "p25Ms": 12367.554100000008,
+              "medianMs": 12503.911300000036,
+              "p75Ms": 13828.477100000018,
+              "maximumMs": 14586.137099999993,
+              "medianAbsoluteDeviationMs": 269.59730000003765,
+              "median95ConfidenceMs": [
+                12234.313999999998,
+                14586.137099999993
+              ],
+              "medianCasesPerSecond": 79974.97551026271
+            },
+            "peakMemoryBytes": 395595776
+          }
+        },
+        {
+          "id": "node-test",
+          "name": "node:test",
+          "kind": "richer-competitor",
+          "capabilities": [
+            "suites and hooks",
+            "mocks and snapshots",
+            "reporters and native coverage"
+          ],
+          "version": "v24.18.0",
+          "samples": [
+            {
+              "index": 1,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "node-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 55233.75,
+              "pipelineMs": 71110.87460000001,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 55233.75,
+                "reporting": 0
+              },
+              "reportBytes": 0,
+              "memory": {
+                "peakRssBytes": 6734282752,
+                "peakHeapUsedBytes": 6202550608,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 71188.72220000002
+            },
+            {
+              "index": 2,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "node-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 56592.3392,
+              "pipelineMs": 72596.4472,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 56592.3392,
+                "reporting": 0
+              },
+              "reportBytes": 0,
+              "memory": {
+                "peakRssBytes": 6736592896,
+                "peakHeapUsedBytes": 6209324816,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 72662.19630000001
+            },
+            {
+              "index": 3,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "node-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 59412.4418,
+              "pipelineMs": 78100.12670000001,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 59412.4418,
+                "reporting": 0
+              },
+              "reportBytes": 0,
+              "memory": {
+                "peakRssBytes": 6735470592,
+                "peakHeapUsedBytes": 6200505952,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 78159.56160000002
+            },
+            {
+              "index": 4,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "node-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 69254.16309999999,
+              "pipelineMs": 86565.0883,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 69254.16309999999,
+                "reporting": 0
+              },
+              "reportBytes": 0,
+              "memory": {
+                "peakRssBytes": 6722232320,
+                "peakHeapUsedBytes": 6206049952,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 86639.76939999999
+            },
+            {
+              "index": 5,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "node-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 66565.8476,
+              "pipelineMs": 82656.5612,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 66565.8476,
+                "reporting": 0
+              },
+              "reportBytes": 0,
+              "memory": {
+                "peakRssBytes": 6717214720,
+                "peakHeapUsedBytes": 6203913440,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 82724.15609999996
+            }
+          ],
+          "summary": {
+            "verifiedSamples": 5,
+            "runner": {
+              "count": 5,
+              "minimumMs": 55233.75,
+              "p25Ms": 56592.3392,
+              "medianMs": 59412.4418,
+              "p75Ms": 66565.8476,
+              "maximumMs": 69254.16309999999,
+              "medianAbsoluteDeviationMs": 4178.6918000000005,
+              "median95ConfidenceMs": [
+                55233.75,
+                69254.16309999999
+              ],
+              "medianCasesPerSecond": 16831.491345975952
+            },
+            "pipeline": {
+              "count": 5,
+              "minimumMs": 71110.87460000001,
+              "p25Ms": 72596.4472,
+              "medianMs": 78100.12670000001,
+              "p75Ms": 82656.5612,
+              "maximumMs": 86565.0883,
+              "medianAbsoluteDeviationMs": 5503.679500000013,
+              "median95ConfidenceMs": [
+                71110.87460000001,
+                86565.0883
+              ],
+              "medianCasesPerSecond": 12804.076539353424
+            },
+            "coldWall": {
+              "count": 5,
+              "minimumMs": 71188.72220000002,
+              "p25Ms": 72662.19630000001,
+              "medianMs": 78159.56160000002,
+              "p75Ms": 82724.15609999996,
+              "maximumMs": 86639.76939999999,
+              "medianAbsoluteDeviationMs": 5497.365300000005,
+              "median95ConfidenceMs": [
+                71188.72220000002,
+                86639.76939999999
+              ],
+              "medianCasesPerSecond": 12794.33993140514
+            },
+            "peakMemoryBytes": 6736592896
+          }
+        },
+        {
+          "id": "mocha",
+          "name": "Mocha",
+          "kind": "richer-competitor",
+          "capabilities": [
+            "Node and real browsers",
+            "suites and hooks",
+            "filtering, retries, and reporters"
+          ],
+          "version": "11.8.0",
+          "samples": [
+            {
+              "index": 1,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "mocha",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 7163.9664,
+              "pipelineMs": 7400.5206,
+              "phasesMs": {
+                "registration": 1291.9381000000046,
+                "execution": 5836.480899999995,
+                "reporting": 0
+              },
+              "reportBytes": 13912890,
+              "memory": {
+                "peakRssBytes": 2794520576,
+                "peakHeapUsedBytes": 2604927880,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 7456.763999999996
+            },
+            {
+              "index": 2,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "mocha",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 7069.738899999999,
+              "pipelineMs": 7341.9508000000005,
+              "phasesMs": {
+                "registration": 1362.8508000000045,
+                "execution": 5672.373000000002,
+                "reporting": 0
+              },
+              "reportBytes": 13912890,
+              "memory": {
+                "peakRssBytes": 2813964288,
+                "peakHeapUsedBytes": 2624571432,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 7414.891299999988
+            },
+            {
+              "index": 3,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "mocha",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 8544.1933,
+              "pipelineMs": 8810.0667,
+              "phasesMs": {
+                "registration": 1443.1904999999997,
+                "execution": 7052.153099999993,
+                "reporting": 0
+              },
+              "reportBytes": 13912890,
+              "memory": {
+                "peakRssBytes": 2795528192,
+                "peakHeapUsedBytes": 2603740744,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 8867.443900000013
+            },
+            {
+              "index": 4,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "mocha",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 8851.7924,
+              "pipelineMs": 9080.998899999999,
+              "phasesMs": {
+                "registration": 1499.917499999988,
+                "execution": 7301.956899999998,
+                "reporting": 0
+              },
+              "reportBytes": 13912890,
+              "memory": {
+                "peakRssBytes": 2817220608,
+                "peakHeapUsedBytes": 2623431144,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 9140.864499999967
+            },
+            {
+              "index": 5,
+              "schemaVersion": 1,
+              "lane": "node",
+              "runner": "mocha",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 8647.7163,
+              "pipelineMs": 8904.1571,
+              "phasesMs": {
+                "registration": 1443.2663000000023,
+                "execution": 7152.382199999994,
+                "reporting": 0
+              },
+              "reportBytes": 13912890,
+              "memory": {
+                "peakRssBytes": 2814279680,
+                "peakHeapUsedBytes": 2624946328,
+                "method": "sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 159,
+                  "sha256": "15822b9d1fc7a58df46961470cb37b0c5dce559926eda95867cd3fcf82a44f65"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 572,
+                  "sha256": "1c2f3b02f52bea3a3d89da4899b05646d38681bff5381f9328755b46bb257860"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10782,
+                  "sha256": "23852a328e582ae73874af7f47e07494928d00043fd27652b738e956723808db"
+                }
+              ],
+              "coldWallMs": 8981.578800000018
+            }
+          ],
+          "summary": {
+            "verifiedSamples": 5,
+            "runner": {
+              "count": 5,
+              "minimumMs": 7069.738899999999,
+              "p25Ms": 7163.9664,
+              "medianMs": 8544.1933,
+              "p75Ms": 8647.7163,
+              "maximumMs": 8851.7924,
+              "medianAbsoluteDeviationMs": 307.59909999999945,
+              "median95ConfidenceMs": [
+                7069.738899999999,
+                8851.7924
+              ],
+              "medianCasesPerSecond": 117038.55061425165
+            },
+            "pipeline": {
+              "count": 5,
+              "minimumMs": 7341.9508000000005,
+              "p25Ms": 7400.5206,
+              "medianMs": 8810.0667,
+              "p75Ms": 8904.1571,
+              "maximumMs": 9080.998899999999,
+              "medianAbsoluteDeviationMs": 270.9321999999993,
+              "median95ConfidenceMs": [
+                7341.9508000000005,
+                9080.998899999999
+              ],
+              "medianCasesPerSecond": 113506.51862828688
+            },
+            "coldWall": {
+              "count": 5,
+              "minimumMs": 7414.891299999988,
+              "p25Ms": 7456.763999999996,
+              "medianMs": 8867.443900000013,
+              "p75Ms": 8981.578800000018,
+              "maximumMs": 9140.864499999967,
+              "medianAbsoluteDeviationMs": 273.420599999954,
+              "median95ConfidenceMs": [
+                7414.891299999988,
+                9140.864499999967
+              ],
+              "medianCasesPerSecond": 112772.06952501819
+            },
+            "peakMemoryBytes": 2817220608
+          }
+        }
+      ]
+    },
+    "browser": {
+      "entries": [
+        {
+          "id": "vanilla-test",
+          "name": "vanilla-test",
+          "kind": "subject",
+          "capabilities": [
+            "Node and real browsers",
+            "native V8 coverage",
+            "HTML, LCOV, and JSON reports"
+          ],
+          "version": "2.1.1",
+          "samples": [
+            {
+              "index": 1,
+              "schemaVersion": 1,
+              "lane": "browser",
+              "runner": "vanilla-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 10411.300000011921,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 9266.300000190735,
+                "reporting": 945.9000007510185
+              },
+              "reportBytes": 86181890,
+              "memory": {
+                "peakHeapUsedBytes": 225559274,
+                "method": "performance.memory sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 161,
+                  "sha256": "e48188afe842e281016292fcf9e551db532de57b52de374fac1a7592ddf109ec"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 578,
+                  "sha256": "e907acada5b0ab4ee4e2fbdeda859ff5f92eb6bcd6ce9bd9095d493fada1609a"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10770,
+                  "sha256": "06bd1611e338cdc82a994399069fe5ed9ff4e04f7f15ea6385fd16244332bf49"
+                }
+              ],
+              "browser": {
+                "protocolVersion": "1.3",
+                "product": "Chrome/151.0.7922.138",
+                "revision": "@41fa82442390a4d4456c78f2d69a832d5720cb27",
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "jsVersion": "15.1.206.17"
+              },
+              "pipelineMs": 10824.4329,
+              "coldWallMs": 10887.053500000038
+            },
+            {
+              "index": 2,
+              "schemaVersion": 1,
+              "lane": "browser",
+              "runner": "vanilla-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 10011.699999988079,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 8861.100001335144,
+                "reporting": 949.5999983549118
+              },
+              "reportBytes": 86181890,
+              "memory": {
+                "peakHeapUsedBytes": 226088782,
+                "method": "performance.memory sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 161,
+                  "sha256": "e48188afe842e281016292fcf9e551db532de57b52de374fac1a7592ddf109ec"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 578,
+                  "sha256": "e907acada5b0ab4ee4e2fbdeda859ff5f92eb6bcd6ce9bd9095d493fada1609a"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10770,
+                  "sha256": "06bd1611e338cdc82a994399069fe5ed9ff4e04f7f15ea6385fd16244332bf49"
+                }
+              ],
+              "browser": {
+                "protocolVersion": "1.3",
+                "product": "Chrome/151.0.7922.138",
+                "revision": "@41fa82442390a4d4456c78f2d69a832d5720cb27",
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "jsVersion": "15.1.206.17"
+              },
+              "pipelineMs": 10443.553,
+              "coldWallMs": 10528.942299999995
+            },
+            {
+              "index": 3,
+              "schemaVersion": 1,
+              "lane": "browser",
+              "runner": "vanilla-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 10686,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 9488.599999010563,
+                "reporting": 984.1000001430511
+              },
+              "reportBytes": 86181890,
+              "memory": {
+                "peakHeapUsedBytes": 225749957,
+                "method": "performance.memory sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 161,
+                  "sha256": "e48188afe842e281016292fcf9e551db532de57b52de374fac1a7592ddf109ec"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 578,
+                  "sha256": "e907acada5b0ab4ee4e2fbdeda859ff5f92eb6bcd6ce9bd9095d493fada1609a"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10770,
+                  "sha256": "06bd1611e338cdc82a994399069fe5ed9ff4e04f7f15ea6385fd16244332bf49"
+                }
+              ],
+              "browser": {
+                "protocolVersion": "1.3",
+                "product": "Chrome/151.0.7922.138",
+                "revision": "@41fa82442390a4d4456c78f2d69a832d5720cb27",
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "jsVersion": "15.1.206.17"
+              },
+              "pipelineMs": 11153.278,
+              "coldWallMs": 11220.423900000053
+            },
+            {
+              "index": 4,
+              "schemaVersion": 1,
+              "lane": "browser",
+              "runner": "vanilla-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 11871.5,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 10363.499999701977,
+                "reporting": 1288.2999997735023
+              },
+              "reportBytes": 86181890,
+              "memory": {
+                "peakHeapUsedBytes": 229005357,
+                "method": "performance.memory sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 161,
+                  "sha256": "e48188afe842e281016292fcf9e551db532de57b52de374fac1a7592ddf109ec"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 578,
+                  "sha256": "e907acada5b0ab4ee4e2fbdeda859ff5f92eb6bcd6ce9bd9095d493fada1609a"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10770,
+                  "sha256": "06bd1611e338cdc82a994399069fe5ed9ff4e04f7f15ea6385fd16244332bf49"
+                }
+              ],
+              "browser": {
+                "protocolVersion": "1.3",
+                "product": "Chrome/151.0.7922.138",
+                "revision": "@41fa82442390a4d4456c78f2d69a832d5720cb27",
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "jsVersion": "15.1.206.17"
+              },
+              "pipelineMs": 12393.6927,
+              "coldWallMs": 12470.568800000008
+            },
+            {
+              "index": 5,
+              "schemaVersion": 1,
+              "lane": "browser",
+              "runner": "vanilla-test",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 10340.400000035763,
+              "phasesMs": {
+                "registration": 0,
+                "execution": 9179.4000005126,
+                "reporting": 955.2999989390373
+              },
+              "reportBytes": 86181890,
+              "memory": {
+                "peakHeapUsedBytes": 223117705,
+                "method": "performance.memory sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 161,
+                  "sha256": "e48188afe842e281016292fcf9e551db532de57b52de374fac1a7592ddf109ec"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 578,
+                  "sha256": "e907acada5b0ab4ee4e2fbdeda859ff5f92eb6bcd6ce9bd9095d493fada1609a"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10770,
+                  "sha256": "06bd1611e338cdc82a994399069fe5ed9ff4e04f7f15ea6385fd16244332bf49"
+                }
+              ],
+              "browser": {
+                "protocolVersion": "1.3",
+                "product": "Chrome/151.0.7922.138",
+                "revision": "@41fa82442390a4d4456c78f2d69a832d5720cb27",
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "jsVersion": "15.1.206.17"
+              },
+              "pipelineMs": 10795.218299999999,
+              "coldWallMs": 10865.49450000003
+            }
+          ],
+          "summary": {
+            "verifiedSamples": 5,
+            "runner": {
+              "count": 5,
+              "minimumMs": 10011.699999988079,
+              "p25Ms": 10340.400000035763,
+              "medianMs": 10411.300000011921,
+              "p75Ms": 10686,
+              "maximumMs": 11871.5,
+              "medianAbsoluteDeviationMs": 274.69999998807907,
+              "median95ConfidenceMs": [
+                10011.699999988079,
+                11871.5
+              ],
+              "medianCasesPerSecond": 96049.48469440463
+            },
+            "pipeline": {
+              "count": 5,
+              "minimumMs": 10443.553,
+              "p25Ms": 10795.218299999999,
+              "medianMs": 10824.4329,
+              "p75Ms": 11153.278,
+              "maximumMs": 12393.6927,
+              "medianAbsoluteDeviationMs": 328.84510000000046,
+              "median95ConfidenceMs": [
+                10443.553,
+                12393.6927
+              ],
+              "medianCasesPerSecond": 92383.5926776358
+            },
+            "coldWall": {
+              "count": 5,
+              "minimumMs": 10528.942299999995,
+              "p25Ms": 10865.49450000003,
+              "medianMs": 10887.053500000038,
+              "p75Ms": 11220.423900000053,
+              "maximumMs": 12470.568800000008,
+              "medianAbsoluteDeviationMs": 333.37040000001434,
+              "median95ConfidenceMs": [
+                10528.942299999995,
+                12470.568800000008
+              ],
+              "medianCasesPerSecond": 91852.21694740423
+            },
+            "peakMemoryBytes": 229005357
+          }
+        },
+        {
+          "id": "mocha",
+          "name": "Mocha",
+          "kind": "richer-competitor",
+          "capabilities": [
+            "Node and real browsers",
+            "suites and hooks",
+            "filtering, retries, and reporters"
+          ],
+          "version": "11.8.0",
+          "samples": [
+            {
+              "index": 1,
+              "schemaVersion": 1,
+              "lane": "browser",
+              "runner": "mocha",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 8863.800000011921,
+              "phasesMs": {
+                "registration": 1053.6000019311905,
+                "execution": 7750.699999630451,
+                "reporting": 0
+              },
+              "reportBytes": 13912890,
+              "memory": {
+                "peakHeapUsedBytes": 1362302982,
+                "method": "performance.memory sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 161,
+                  "sha256": "e48188afe842e281016292fcf9e551db532de57b52de374fac1a7592ddf109ec"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 578,
+                  "sha256": "e907acada5b0ab4ee4e2fbdeda859ff5f92eb6bcd6ce9bd9095d493fada1609a"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10756,
+                  "sha256": "95e8a89894850be2b8399ddb6d77745a3726717cc069ca286a814df75b33dd3b"
+                }
+              ],
+              "browser": {
+                "protocolVersion": "1.3",
+                "product": "Chrome/151.0.7922.138",
+                "revision": "@41fa82442390a4d4456c78f2d69a832d5720cb27",
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "jsVersion": "15.1.206.17"
+              },
+              "pipelineMs": 9557.2628,
+              "coldWallMs": 9621.693300000043
+            },
+            {
+              "index": 2,
+              "schemaVersion": 1,
+              "lane": "browser",
+              "runner": "mocha",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 9169.699999988079,
+              "phasesMs": {
+                "registration": 1111.0999987125397,
+                "execution": 7990.400000154972,
+                "reporting": 0
+              },
+              "reportBytes": 13912890,
+              "memory": {
+                "peakHeapUsedBytes": 1364207858,
+                "method": "performance.memory sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 161,
+                  "sha256": "e48188afe842e281016292fcf9e551db532de57b52de374fac1a7592ddf109ec"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 578,
+                  "sha256": "e907acada5b0ab4ee4e2fbdeda859ff5f92eb6bcd6ce9bd9095d493fada1609a"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10756,
+                  "sha256": "95e8a89894850be2b8399ddb6d77745a3726717cc069ca286a814df75b33dd3b"
+                }
+              ],
+              "browser": {
+                "protocolVersion": "1.3",
+                "product": "Chrome/151.0.7922.138",
+                "revision": "@41fa82442390a4d4456c78f2d69a832d5720cb27",
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "jsVersion": "15.1.206.17"
+              },
+              "pipelineMs": 9851.302,
+              "coldWallMs": 9915.546600000001
+            },
+            {
+              "index": 3,
+              "schemaVersion": 1,
+              "lane": "browser",
+              "runner": "mocha",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 9115,
+              "phasesMs": {
+                "registration": 1090.499997973442,
+                "execution": 7958.200001478195,
+                "reporting": 0
+              },
+              "reportBytes": 13912890,
+              "memory": {
+                "peakHeapUsedBytes": 1361459094,
+                "method": "performance.memory sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 161,
+                  "sha256": "e48188afe842e281016292fcf9e551db532de57b52de374fac1a7592ddf109ec"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 578,
+                  "sha256": "e907acada5b0ab4ee4e2fbdeda859ff5f92eb6bcd6ce9bd9095d493fada1609a"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10756,
+                  "sha256": "95e8a89894850be2b8399ddb6d77745a3726717cc069ca286a814df75b33dd3b"
+                }
+              ],
+              "browser": {
+                "protocolVersion": "1.3",
+                "product": "Chrome/151.0.7922.138",
+                "revision": "@41fa82442390a4d4456c78f2d69a832d5720cb27",
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "jsVersion": "15.1.206.17"
+              },
+              "pipelineMs": 9857.3922,
+              "coldWallMs": 9921.481399999931
+            },
+            {
+              "index": 4,
+              "schemaVersion": 1,
+              "lane": "browser",
+              "runner": "mocha",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 9143.599999964237,
+              "phasesMs": {
+                "registration": 1100.2999983429909,
+                "execution": 7972.500000357628,
+                "reporting": 0
+              },
+              "reportBytes": 13912890,
+              "memory": {
+                "peakHeapUsedBytes": 1362659570,
+                "method": "performance.memory sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 161,
+                  "sha256": "e48188afe842e281016292fcf9e551db532de57b52de374fac1a7592ddf109ec"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 578,
+                  "sha256": "e907acada5b0ab4ee4e2fbdeda859ff5f92eb6bcd6ce9bd9095d493fada1609a"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10756,
+                  "sha256": "95e8a89894850be2b8399ddb6d77745a3726717cc069ca286a814df75b33dd3b"
+                }
+              ],
+              "browser": {
+                "protocolVersion": "1.3",
+                "product": "Chrome/151.0.7922.138",
+                "revision": "@41fa82442390a4d4456c78f2d69a832d5720cb27",
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "jsVersion": "15.1.206.17"
+              },
+              "pipelineMs": 9893.9615,
+              "coldWallMs": 9973.684000000008
+            },
+            {
+              "index": 5,
+              "schemaVersion": 1,
+              "lane": "browser",
+              "runner": "mocha",
+              "valid": true,
+              "counts": {
+                "cases": 1000000,
+                "suites": 1000,
+                "executed": 1000000,
+                "passed": 1000000,
+                "failed": 0
+              },
+              "checksum": 1910647429,
+              "expectedChecksum": 1910647429,
+              "runnerMs": 9136.900000035763,
+              "phasesMs": {
+                "registration": 1117.599999666214,
+                "execution": 7946.299999177456,
+                "reporting": 0
+              },
+              "reportBytes": 13912890,
+              "memory": {
+                "peakHeapUsedBytes": 1364284558,
+                "method": "performance.memory sampled after every suite phase"
+              },
+              "coverage": {
+                "statements": {
+                  "total": 6,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 66.66
+                },
+                "branches": {
+                  "total": 1,
+                  "covered": 0,
+                  "skipped": 0,
+                  "pct": 0
+                },
+                "functions": {
+                  "total": 5,
+                  "covered": 4,
+                  "skipped": 0,
+                  "pct": 80
+                },
+                "lines": {
+                  "total": 21,
+                  "covered": 13,
+                  "skipped": 0,
+                  "pct": 61.9
+                }
+              },
+              "reports": [
+                {
+                  "file": "test-results.json",
+                  "bytes": 161,
+                  "sha256": "e48188afe842e281016292fcf9e551db532de57b52de374fac1a7592ddf109ec"
+                },
+                {
+                  "file": "coverage-summary.json",
+                  "bytes": 857,
+                  "sha256": "ee44722666d32992630d715f4822c628e01db5b21068602c64429b1c3fb42926"
+                },
+                {
+                  "file": "lcov.info",
+                  "bytes": 578,
+                  "sha256": "e907acada5b0ab4ee4e2fbdeda859ff5f92eb6bcd6ce9bd9095d493fada1609a"
+                },
+                {
+                  "file": "index.html",
+                  "bytes": 10756,
+                  "sha256": "95e8a89894850be2b8399ddb6d77745a3726717cc069ca286a814df75b33dd3b"
+                }
+              ],
+              "browser": {
+                "protocolVersion": "1.3",
+                "product": "Chrome/151.0.7922.138",
+                "revision": "@41fa82442390a4d4456c78f2d69a832d5720cb27",
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "jsVersion": "15.1.206.17"
+              },
+              "pipelineMs": 9935.090100000001,
+              "coldWallMs": 10009.163100000005
+            }
+          ],
+          "summary": {
+            "verifiedSamples": 5,
+            "runner": {
+              "count": 5,
+              "minimumMs": 8863.800000011921,
+              "p25Ms": 9115,
+              "medianMs": 9136.900000035763,
+              "p75Ms": 9143.599999964237,
+              "maximumMs": 9169.699999988079,
+              "medianAbsoluteDeviationMs": 21.900000035762787,
+              "median95ConfidenceMs": [
+                8863.800000011921,
+                9169.699999988079
+              ],
+              "medianCasesPerSecond": 109446.3111116556
+            },
+            "pipeline": {
+              "count": 5,
+              "minimumMs": 9557.2628,
+              "p25Ms": 9851.302,
+              "medianMs": 9857.3922,
+              "p75Ms": 9893.9615,
+              "maximumMs": 9935.090100000001,
+              "medianAbsoluteDeviationMs": 36.5692999999992,
+              "median95ConfidenceMs": [
+                9557.2628,
+                9935.090100000001
+              ],
+              "medianCasesPerSecond": 101446.70920164869
+            },
+            "coldWall": {
+              "count": 5,
+              "minimumMs": 9621.693300000043,
+              "p25Ms": 9915.546600000001,
+              "medianMs": 9921.481399999931,
+              "p75Ms": 9973.684000000008,
+              "maximumMs": 10009.163100000005,
+              "medianAbsoluteDeviationMs": 52.20260000007693,
+              "median95ConfidenceMs": [
+                9621.693300000043,
+                10009.163100000005
+              ],
+              "medianCasesPerSecond": 100791.399961704
+            },
+            "peakMemoryBytes": 1364284558
+          }
+        }
+      ]
+    }
+  }
+}

@@ -63,7 +63,7 @@ function renderLane(lane, value) {
         const runner = document.createElement('th');
         runner.scope = 'row';
         const name = element('span', 'benchmark-runner', `${index + 1}. ${entry.name}`);
-        const detail = element('small', '', `${entry.version} · ${entry.kind === 'subject' ? 'subject' : 'richer competitor'}`);
+        const detail = element('small', '', `${entry.version} · ${entry.kind === 'subject' ? 'subject' : 'richer competitor'} · ${entry.summary.verifiedSamples}/${benchmark.protocol.measuredSamples} verified`);
         runner.append(name, detail);
         const wall = element('td', 'metric-value', duration(entry.summary.coldWall.medianMs));
         wall.append(element('small', '', `range ${duration(entry.summary.coldWall.minimumMs)}–${duration(entry.summary.coldWall.maximumMs)}`));
@@ -71,14 +71,13 @@ function renderLane(lane, value) {
         const runnerPhase = element('td', '', duration(entry.summary.runner.medianMs));
         const rate = element('td', '', throughput(entry.summary.coldWall.medianCasesPerSecond));
         const memory = element('td', '', memorySize(entry.summary.peakMemoryBytes));
-        const verified = element('td', '', `${entry.summary.verifiedSamples}/${benchmark.protocol.measuredSamples}`);
-        row.append(runner, wall, pipeline, runnerPhase, rate, memory, verified);
+        row.append(runner, wall, pipeline, runnerPhase, rate, memory);
         body.append(row);
     }
     if (entries.length === 0) {
         const row = document.createElement('tr');
         const cell = element('td', '', 'This runtime lane was not included in the published run.');
-        cell.colSpan = 7;
+        cell.colSpan = 6;
         row.append(cell);
         body.append(row);
     }
@@ -135,7 +134,7 @@ try {
     for (const body of document.querySelectorAll('[data-benchmark-lane]')) {
         const row = document.createElement('tr');
         const cell = element('td', '', 'No verified benchmark data is available yet.');
-        cell.colSpan = 7;
+        cell.colSpan = 6;
         row.append(cell);
         body.replaceChildren(row);
     }

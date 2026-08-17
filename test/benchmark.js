@@ -100,3 +100,38 @@ test('benchmark dependencies are pinned privately and the published package rema
     assert.match(browserWorker, /writeNativeCoverageReport/);
     assert.match(nodeWorker, /runNodeCoverage/);
 });
+
+test('published benchmark data contains only verified million-case native pipeline samples', async () => {
+    const source = await fs.readFile(path.join(projectRoot, 'data', 'benchmarks.json'), 'utf8');
+    const result = JSON.parse(source);
+    assert.equal(result.schemaVersion, 1);
+    assert.equal(result.publishable, true);
+    assert.match(result.source.commit, /^[0-9a-f]{40}$/);
+    assert.equal(result.source.dirty, false);
+    assert.equal(result.protocol.caseCount, 1_000_000);
+    assert.equal(result.protocol.batchSize, 1_000);
+    assert.equal(result.protocol.measuredSamples, 5);
+    assert.deepEqual(result.lanes.node.entries.map(({ id }) => id), ['vanilla-test', 'node-test', 'mocha']);
+    assert.deepEqual(result.lanes.browser.entries.map(({ id }) => id), ['vanilla-test', 'mocha']);
+
+    for (const [lane, { entries }] of Object.entries(result.lanes)) {
+        for (const entry of entries) {
+            assert.equal(entry.summary.verifiedSamples, 5, `${lane}/${entry.id} has missing verified samples.`);
+            assert.equal(entry.samples.length, 5);
+            for (const sample of entry.samples) {
+                assert.equal(sample.valid, true);
+                assert.deepEqual(sample.counts, {
+                    cases: 1_000_000, suites: 1_000, executed: 1_000_000, passed: 1_000_000, failed: 0
+                });
+                assert.equal(sample.checksum, sample.expectedChecksum);
+                assert.deepEqual(sample.reports.map(({ file }) => file), [
+                    'test-results.json', 'coverage-summary.json', 'lcov.info', 'index.html'
+                ]);
+                assert.ok(sample.reports.every(({ bytes, sha256 }) => bytes > 0 && /^[0-9a-f]{64}$/.test(sha256)));
+            }
+        }
+    }
+
+    assert.equal(Object.hasOwn(result.machine, 'hostname'), false);
+    assert.doesNotMatch(source, /(?:[A-Z]:\\Users\\|\/home\/)[^"\\/]+/i);
+});

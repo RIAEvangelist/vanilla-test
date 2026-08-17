@@ -23,7 +23,7 @@ Each fresh sample includes:
 4. Test JSON plus coverage JSON, LCOV, and standalone HTML writes.
 5. Validation and process/browser teardown.
 
-Coverage is intentionally enabled because this is an end-to-end pipeline benchmark, not a pure runner microbenchmark. The data retains both runner time and cold wall time so those boundaries remain visible.
+Coverage is intentionally enabled because this is an end-to-end pipeline benchmark, not a pure runner microbenchmark. The same project-owned native V8 collector and deterministic HTML/LCOV/JSON reporter wrap every entrant, holding those phases constant while the runner changes. The data retains both runner time and cold wall time so those boundaries remain visible.
 
 One full rehearsal is discarded. Five measured samples follow in deterministic randomized runner order. Entrants never run in parallel, no measured sample is removed, and median, quartiles, median absolute deviation, range, and a deterministic bootstrap interval are published with the raw samples. A sample is invalid if any case is missing, duplicated, failed, or has the wrong checksum or report set.
 

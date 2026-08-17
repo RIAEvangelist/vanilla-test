@@ -194,7 +194,8 @@ async function runToolingTests(root) {
         'tooling.js',
         'output.js',
         'server-security.js',
-        'status-builder.js'
+        'status-builder.js',
+        'benchmark.js'
     ].map((name) => path.join(root, 'test', name));
     let stdout;
     let stderr = '';

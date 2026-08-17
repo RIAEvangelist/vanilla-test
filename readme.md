@@ -550,6 +550,18 @@ The [benchmark dashboard](https://riaevangelist.github.io/vanilla-test/benchmark
 
 Every cold-wall sample includes host startup, framework lifecycle, detailed report materialization into a silent sink, native V8 coverage, exact-count and checksum validation, test JSON, coverage JSON, LCOV and standalone HTML writes, and teardown. The dashboard publishes all samples, distribution statistics, package integrity, commit provenance, and the benchmark machine's CPU, cores, RAM, OS, Node, V8, Chrome, power plan, and affinity policy.
 
+Reference run on commit `65a0dfa3b96a59469ee0ac81704bbeb73736fde9` (five measured samples, medians):
+
+| Native lane | Runner | Cold wall | Cold throughput | Peak sampled memory |
+|---|---:|---:|---:|---:|
+| Node | Mocha 11.8.0 | 8.87 s | 112,772 cases/s | 2,687 MiB RSS |
+| Node | vanilla-test 2.1.1 | 12.50 s | 79,975 cases/s | 377 MiB RSS |
+| Node | node:test / Node 24.18.0 | 78.16 s | 12,794 cases/s | 6,425 MiB RSS |
+| Chrome | Mocha 11.8.0 | 9.92 s | 100,791 cases/s | 1,301 MiB JS heap |
+| Chrome | vanilla-test 2.1.1 | 10.89 s | 91,852 cases/s | 218 MiB JS heap |
+
+Those numbers describe this exact hardware and workload: Alienware 18 Area-51 AA18250, Intel Core Ultra 9 275HX (24 logical cores), 63.46 GiB RAM, Windows 11 Home build 26200, Balanced power plan, Node 24.18.0 / V8 13.6, and Chrome 151.0.7922.138 / V8 15.1. Node and Chrome remain separate rankings; their memory counters are also host-specific.
+
 ```sh
 npm ci --prefix benchmark
 npm run benchmark

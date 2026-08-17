@@ -160,6 +160,25 @@ try {
         if (benchmark.rows !== 5 || benchmark.machineFields < 7 || !/Verified publishable run/.test(benchmark.state)) {
             throw new Error('The published benchmark page did not render five verified runner rows and machine specifications.');
         }
+        await page.evaluate("document.querySelector('[data-benchmark-source=\"run.js\"]').click()");
+        await page.waitForFunction(
+            () => document.querySelector('[data-source-dialog]')?.open
+                && document.querySelector('[data-source-code]')?.textContent.includes('parseArguments')
+        );
+        const sourceDisclosure = await page.evaluate(`(() => ({
+            localSource: document.querySelector('[data-source-code]').textContent.includes('validateWorkerResult'),
+            pinnedLink: document.querySelector('[data-source-github]').href
+        }))()`);
+        if (!sourceDisclosure.localSource || !/\/blob\/[0-9a-f]{40}\/benchmark\/run\.js$/.test(sourceDisclosure.pinnedLink)) {
+            throw new Error('The benchmark source dialog did not expose local code and its commit-pinned repository link.');
+        }
+        await page.evaluate("document.querySelector('[data-source-dialog]').close()");
+        await page.setViewport({ width: 320, height: 800, deviceScaleFactor: 1 });
+        const benchmarkReflowsAt320 = await page.evaluate(
+            'document.documentElement.scrollWidth <= document.documentElement.clientWidth'
+        );
+        if (!benchmarkReflowsAt320) throw new Error('The benchmark page overflows horizontally at 320 CSS pixels.');
+        await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
         await page.screenshot({
             path: resolve(imageDirectory, 'vanilla-test-benchmark-v2.png'),
             fullPage: true

@@ -63,8 +63,8 @@
                     <div class="benchmark-heading"><div><p class="eyebrow">Native Node only</p><h2 id="node-heading">Node pipeline</h2></div><p>Fresh worker + test child per sample</p></div>
                     <div class="table-wrap"><table class="benchmark-table">
                         <caption>One-million-case Node results; lower time is better within this lane only</caption>
-                        <thead><tr><th scope="col">Runner</th><th scope="col">Cold wall</th><th scope="col">Full pipeline</th><th scope="col">Runner phase</th><th scope="col">Cold throughput</th><th scope="col">Peak sampled</th><th scope="col">Verified</th></tr></thead>
-                        <tbody data-benchmark-lane="node"><tr><td colspan="7">Loading Node samples…</td></tr></tbody>
+                        <thead><tr><th scope="col">Runner</th><th scope="col">Cold wall</th><th scope="col">Full pipeline</th><th scope="col">Runner phase</th><th scope="col">Cold throughput</th><th scope="col">Peak sampled</th></tr></thead>
+                        <tbody data-benchmark-lane="node"><tr><td colspan="6">Loading Node samples…</td></tr></tbody>
                     </table></div>
                 </section>
 
@@ -72,8 +72,8 @@
                     <div class="benchmark-heading"><div><p class="eyebrow">Real browser only</p><h2 id="browser-heading">Google Chrome pipeline</h2></div><p>Fresh isolated Chrome profile per sample</p></div>
                     <div class="table-wrap"><table class="benchmark-table">
                         <caption>One-million-case Chrome results; lower time is better within this lane only</caption>
-                        <thead><tr><th scope="col">Runner</th><th scope="col">Cold wall</th><th scope="col">Full pipeline</th><th scope="col">Runner phase</th><th scope="col">Cold throughput</th><th scope="col">Peak sampled</th><th scope="col">Verified</th></tr></thead>
-                        <tbody data-benchmark-lane="browser"><tr><td colspan="7">Loading browser samples…</td></tr></tbody>
+                        <thead><tr><th scope="col">Runner</th><th scope="col">Cold wall</th><th scope="col">Full pipeline</th><th scope="col">Runner phase</th><th scope="col">Cold throughput</th><th scope="col">Peak sampled</th></tr></thead>
+                        <tbody data-benchmark-lane="browser"><tr><td colspan="6">Loading browser samples…</td></tr></tbody>
                     </table></div>
                     <p>Node peak is sampled process RSS; Chrome peak is sampled renderer JavaScript heap. Treat them as host-specific context, not a cross-runtime memory ranking.</p>
                     <div class="callout"><strong>No cross-runtime leaderboard.</strong><p>Node and Chrome have different startup and host costs. They are independent native lanes, never numbers in one ranking.</p></div>
@@ -88,7 +88,7 @@
                         <li><strong>Native coverage.</strong><span>Collect untransformed V8 ranges from the identical shared workload in the selected host.</span></li>
                         <li><strong>Four files and teardown.</strong><span>Write test JSON, coverage JSON, LCOV, and standalone HTML; validate hashes and exact counts; then close the host.</span></li>
                     </ol>
-                    <p>Because coverage is enabled intentionally, these are complete pipeline measurements—not claims about isolated assertion nanoseconds. Runner, pipeline, and cold-wall boundaries remain separate in every raw sample.</p>
+                    <p>Because coverage is enabled intentionally, these are complete pipeline measurements—not claims about isolated assertion nanoseconds. The same project-owned native V8 collector and deterministic HTML/LCOV/JSON reporter wrap every entrant, holding those phases constant while the runner changes. Runner, pipeline, and cold-wall boundaries remain separate in every raw sample.</p>
                     <div class="actions">
                         <a class="button" href="../data/benchmarks.json">Download raw benchmark JSON</a>
                         <a class="button button--secondary" href="./README.md">Read the reproduction protocol</a>
