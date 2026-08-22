@@ -591,17 +591,19 @@ Every cold-wall sample includes host startup, framework lifecycle, detailed repo
 
 ![vanilla-test one-million-case native pipeline chart](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/assets/benchmark-native-pipelines.svg)
 
-Reference run on commit `65a0dfa3b96a59469ee0ac81704bbeb73736fde9` (five measured samples, medians):
+Reference run on commit `ae23a463c109466a1ebcf91bee913dcc0bd9f779` (five measured samples, medians):
 
 | Native lane | Runner | Cold wall | Cold throughput | Peak sampled memory |
 |---|---:|---:|---:|---:|
-| Node | Mocha 11.8.0 | 8.87 s | 112,772 cases/s | 2,687 MiB RSS |
-| Node | vanilla-test 2.1.1 | 12.50 s | 79,975 cases/s | 377 MiB RSS |
-| Node | node:test / Node 24.18.0 | 78.16 s | 12,794 cases/s | 6,425 MiB RSS |
-| Chrome | Mocha 11.8.0 | 9.92 s | 100,791 cases/s | 1,301 MiB JS heap |
-| Chrome | vanilla-test 2.1.1 | 10.89 s | 91,852 cases/s | 218 MiB JS heap |
+| Node | vanilla-test 2.1.2 | 2.76 s | 362,436 cases/s | 188 MiB RSS |
+| Node | Mocha 11.8.0 | 9.70 s | 103,103 cases/s | 2,681 MiB RSS |
+| Node | node:test / Node 24.18.0 | 84.31 s | 11,861 cases/s | 6,423 MiB RSS |
+| Chrome | vanilla-test 2.1.2 | 2.58 s | 388,143 cases/s | 105 MiB JS heap |
+| Chrome | Mocha 11.8.0 | 10.53 s | 94,939 cases/s | 1,302 MiB JS heap |
 
-Those numbers describe this exact hardware and workload: Alienware 18 Area-51 AA18250, Intel Core Ultra 9 275HX (24 logical cores), 63.46 GiB RAM, Windows 11 Home build 26200, Balanced power plan, Node 24.18.0 / V8 13.6, and Chrome 151.0.7922.138 / V8 15.1. Node and Chrome remain separate rankings; their memory counters are also host-specific.
+On this recorded machine and protocol, vanilla-test's median cold wall was 3.5× lower than Mocha's in Node and 4.1× lower in Chrome. Those are workload-specific observations, not universal framework claims.
+
+The numbers describe this exact hardware and workload: Alienware 18 Area-51 AA18250, Intel Core Ultra 9 275HX (24 logical cores), 63.46 GiB RAM, Windows 11 Home build 26200, Balanced power plan, Node 24.18.0 / V8 13.6, and Chrome 151.0.7922.138 / V8 15.1. Node and Chrome remain separate rankings; their memory counters are also host-specific.
 
 ```sh
 npm ci --prefix benchmark

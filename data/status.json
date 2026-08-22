@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-17T16:09:36.462Z",
+  "generatedAt": "2026-08-22T04:20:35.067Z",
   "commit": {
     "sha": null,
     "short": null,
@@ -8,7 +8,7 @@
   },
   "package": {
     "name": "vanilla-test",
-    "version": "2.1.1"
+    "version": "2.1.2"
   },
   "runtimes": {
     "node": "v24.18.0",
@@ -24,8 +24,8 @@
       "node": {
         "runtime": "node",
         "ok": true,
-        "total": 42,
-        "passedCount": 42,
+        "total": 45,
+        "passedCount": 45,
         "failureCount": 0,
         "passed": [
           "Unit › default and named exports reference the same class",
@@ -59,6 +59,9 @@
           "Integration › rendered reports include status and both outcome lists",
           "Integration › completion dispatch occurs after report returns",
           "Integration › completion event carries its public type and exact snapshot",
+          "Integration › reports without completion subscriptions do not queue completion work",
+          "Integration › first completion listener can subscribe after report",
+          "Integration › native event type coercion still observes completion listeners",
           "Integration › completion unsubscribe remains idempotent",
           "Integration › instances isolate descriptions and outcomes",
           "Regression › duplicate descriptions do not corrupt later numbering",
@@ -76,8 +79,8 @@
       "chrome": {
         "runtime": "chrome",
         "ok": true,
-        "total": 42,
-        "passedCount": 42,
+        "total": 45,
+        "passedCount": 45,
         "failureCount": 0,
         "passed": [
           "Unit › default and named exports reference the same class",
@@ -111,6 +114,9 @@
           "Integration › rendered reports include status and both outcome lists",
           "Integration › completion dispatch occurs after report returns",
           "Integration › completion event carries its public type and exact snapshot",
+          "Integration › reports without completion subscriptions do not queue completion work",
+          "Integration › first completion listener can subscribe after report",
+          "Integration › native event type coercion still observes completion listeners",
           "Integration › completion unsubscribe remains idempotent",
           "Integration › instances isolate descriptions and outcomes",
           "Regression › duplicate descriptions do not corrupt later numbering",
@@ -130,8 +136,8 @@
       "runtime": "node",
       "suite": "tooling",
       "ok": true,
-      "total": 37,
-      "passedCount": 37,
+      "total": 41,
+      "passedCount": 41,
       "failureCount": 0,
       "skippedCount": 0,
       "cancelledCount": 0
@@ -156,23 +162,23 @@
       "minimumPct": 100,
       "metrics": {
         "statements": {
-          "covered": 54,
-          "total": 54,
+          "covered": 63,
+          "total": 63,
           "pct": 100
         },
         "branches": {
-          "covered": 35,
-          "total": 35,
+          "covered": 42,
+          "total": 42,
           "pct": 100
         },
         "functions": {
-          "covered": 19,
-          "total": 19,
+          "covered": 21,
+          "total": 21,
           "pct": 100
         },
         "lines": {
-          "covered": 173,
-          "total": 173,
+          "covered": 199,
+          "total": 199,
           "pct": 100
         }
       }
@@ -183,23 +189,23 @@
       "minimumPct": 100,
       "metrics": {
         "statements": {
-          "covered": 54,
-          "total": 54,
+          "covered": 63,
+          "total": 63,
           "pct": 100
         },
         "branches": {
-          "covered": 35,
-          "total": 35,
+          "covered": 42,
+          "total": 42,
           "pct": 100
         },
         "functions": {
-          "covered": 19,
-          "total": 19,
+          "covered": 21,
+          "total": 21,
           "pct": 100
         },
         "lines": {
-          "covered": 173,
-          "total": 173,
+          "covered": 199,
+          "total": 199,
           "pct": 100
         }
       }

@@ -193,6 +193,7 @@ try {
                 throw new Error(`Coverage report is unavailable at ${url}`);
             }
             await page.goto(url);
+            await page.evaluate('globalThis.scrollTo(0, 0)');
             await page.screenshot({ path: resolve(imageDirectory, filename), fullPage: true });
         }
     } finally {
