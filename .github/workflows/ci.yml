@@ -59,11 +59,16 @@ jobs:
           node-version: '24'
           cache: npm
 
-      - name: Install Google Chrome Stable
+      - name: Locate preinstalled Google Chrome Stable
         id: chrome
-        uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # v2
-        with:
-          chrome-version: stable
+        shell: bash
+        run: |
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || true)"
+          if [[ -z "$chrome_path" ]]; then
+            echo "::error::The GitHub runner does not provide Google Chrome Stable."
+            exit 1
+          fi
+          echo "chrome-path=$chrome_path" >> "$GITHUB_OUTPUT"
 
       - name: Show runtime versions
         env:
