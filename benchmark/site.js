@@ -1,6 +1,9 @@
 const state = document.querySelector('[data-benchmark-state]');
 const machine = document.querySelector('[data-benchmark-machine]');
 const provenance = document.querySelector('[data-benchmark-provenance]');
+const scalingState = document.querySelector('[data-scaling-state]');
+const scalingProvenance = document.querySelector('[data-scaling-provenance]');
+const scalingBody = document.querySelector('[data-scaling-points]');
 const dialog = document.querySelector('[data-source-dialog]');
 const sourceCode = dialog?.querySelector('[data-source-code]');
 const sourceTitle = dialog?.querySelector('[data-source-title]');
@@ -83,6 +86,31 @@ function renderLane(lane, value) {
     }
 }
 
+function renderScaling(value) {
+    scalingBody.replaceChildren();
+    const [baseline, candidate] = value.series;
+    for (const [index, candidatePoint] of candidate.points.entries()) {
+        const baselinePoint = baseline.points[index];
+        if (baselinePoint.caseCount !== candidatePoint.caseCount) {
+            throw new Error('Scaling series case counts do not align.');
+        }
+        const row = document.createElement('tr');
+        const cases = document.createElement('th');
+        cases.scope = 'row';
+        cases.textContent = candidatePoint.caseCount.toLocaleString();
+        const measurement = (point) => {
+            const cell = element('td', 'metric-value', duration(point.summary.medianMs));
+            cell.append(element('small', '', `range ${duration(point.summary.minimumMs)}–${duration(point.summary.maximumMs)}`));
+            return cell;
+        };
+        const baselinePerCase = element('td', '', `${((baselinePoint.summary.medianMs / baselinePoint.caseCount) * 1_000).toFixed(2)} µs`);
+        const candidatePerCase = element('td', '', `${((candidatePoint.summary.medianMs / candidatePoint.caseCount) * 1_000).toFixed(2)} µs`);
+        const improvement = element('td', '', `${(baselinePoint.summary.medianMs / candidatePoint.summary.medianMs).toFixed(1)}×`);
+        row.append(cases, measurement(baselinePoint), measurement(candidatePoint), baselinePerCase, candidatePerCase, improvement);
+        scalingBody.append(row);
+    }
+}
+
 async function loadSource(pathname) {
     sourceTitle.textContent = pathname;
     sourceCode.textContent = 'Loading source…';
@@ -138,4 +166,26 @@ try {
         row.append(cell);
         body.replaceChildren(row);
     }
+}
+
+try {
+    const response = await fetch('../data/scaling.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Scaling data request returned ${response.status}.`);
+    const scaling = await response.json();
+    if (scaling?.schemaVersion !== 1 || scaling.protocol?.id !== 'core-suite-scaling-v1'
+        || !Array.isArray(scaling.series) || scaling.series.length !== 2) {
+        throw new Error('Scaling data has an unsupported schema.');
+    }
+    const generated = new Date(scaling.generatedAt);
+    scalingState.textContent = `${scaling.publishable ? 'Verified publishable run' : 'Preview run'} · ${generated.toLocaleString()}`;
+    scalingProvenance.textContent = `${scaling.protocol.measuredSamples} measured samples · baseline ${scaling.source.baseline.tag} @ ${scaling.source.baseline.commit.slice(0, 12)} · candidate ${scaling.source.candidate.packageVersion} @ ${scaling.source.candidate.commit.slice(0, 12)}`;
+    renderScaling(scaling);
+} catch (error) {
+    scalingState.textContent = `Scaling data unavailable: ${error?.message || error}`;
+    scalingProvenance.textContent = 'Run npm run benchmark:scale to generate the verified dataset.';
+    const row = document.createElement('tr');
+    const cell = element('td', '', 'No verified scaling data is available yet.');
+    cell.colSpan = 6;
+    row.append(cell);
+    scalingBody?.replaceChildren(row);
 }

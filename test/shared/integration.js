@@ -106,6 +106,58 @@ export default Object.freeze({
             }
         },
         {
+            name: 'reports without completion subscriptions do not queue completion work',
+            run() {
+                const originalQueueMicrotask = globalThis.queueMicrotask;
+                let queued = 0;
+                globalThis.queueMicrotask = (callback) => {
+                    queued++;
+                    return originalQueueMicrotask(callback);
+                };
+
+                try {
+                    const test = new VanillaTest();
+                    test.addEventListener('unrelated-event', () => {});
+                    test.report();
+                    equal(queued, 0);
+                } finally {
+                    globalThis.queueMicrotask = originalQueueMicrotask;
+                }
+            }
+        },
+        {
+            name: 'first completion listener can subscribe after report',
+            async run() {
+                const test = new VanillaTest();
+                const snapshot = test.report();
+                let received;
+
+                test.addEventListener(VANILLA_TEST_COMPLETE_EVENT, ({ detail }) => {
+                    received = detail;
+                }, { once: true });
+
+                equal(received, undefined);
+                await flushMicrotasks();
+                equal(received, snapshot);
+            }
+        },
+        {
+            name: 'native event type coercion still observes completion listeners',
+            async run() {
+                const test = new VanillaTest();
+                const eventType = { toString: () => VANILLA_TEST_COMPLETE_EVENT };
+                let received;
+
+                test.addEventListener(eventType, ({ detail }) => {
+                    received = detail;
+                }, { once: true });
+
+                const snapshot = test.report();
+                await flushMicrotasks();
+                equal(received, snapshot);
+            }
+        },
+        {
             name: 'completion unsubscribe remains idempotent',
             async run() {
                 const test = new VanillaTest();

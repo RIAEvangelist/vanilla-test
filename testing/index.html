@@ -80,12 +80,12 @@
 
                 <section>
                     <h2>Suite topology</h2>
-                    <p>The shared inventory contains 42 unique, narrowly scoped cases: 15 Unit, 10 Functional, 8 Integration, and 9 Regression. That inventory is executed unchanged in both Node and Chrome.</p>
+                    <p>The shared inventory contains 45 unique, narrowly scoped cases: 15 Unit, 10 Functional, 11 Integration, and 9 Regression. That inventory is executed unchanged in both Node and Chrome.</p>
                     <div class="table-wrap">
                         <table>
                             <thead><tr><th>Gate</th><th>Runtime</th><th>Evidence</th><th>Failure means</th></tr></thead>
                             <tbody>
-                                <tr><td>Shared categorized inventory</td><td>Node 22.12, Node 24, Chrome Stable</td><td>42 unique Unit, Functional, Integration, and Regression cases from the same source modules</td><td>The public Web-standard API does not behave consistently.</td></tr>
+                                <tr><td>Shared categorized inventory</td><td>Node 22.12, Node 24, Chrome Stable</td><td>45 unique Unit, Functional, Integration, and Regression cases from the same source modules</td><td>The public Web-standard API does not behave consistently.</td></tr>
                                 <tr><td>Node tooling integration</td><td>Node 22.12 and Node 24</td><td>Argument parsing, exit codes, result validation, glob matching, configuration, local server safety, timeouts and leaked handles</td><td>The developer-facing CLI or harness boundary is broken.</td></tr>
                                 <tr><td>Native coverage gates</td><td>Node 24 and Chrome Stable</td><td>Independent executable-range, block-range, function-range, and executable-line measurements of <code>index.js</code></td><td>One runtime did not exercise the complete configured core scope.</td></tr>
                                 <tr><td>Packed npm artifact</td><td>Clean Node 24 project</td><td><code>npm pack</code>, install the tarball, import package name, run and validate one result</td><td>The repository may pass while the published file set is unusable.</td></tr>
@@ -94,7 +94,7 @@
                     </div>
                     <div class="callout">
                         <strong>Count unique cases separately from runtime executions.</strong>
-                        <p>The four category totals are one 42-case inventory. Node and Chrome execute that same inventory; they are evidence from different hosts, not 84 different cases. Tooling, coverage gates, and package smoke retain their own scopes.</p>
+                        <p>The four category totals are one 45-case inventory. Node and Chrome execute that same inventory; they are evidence from different hosts, not 90 different cases. Tooling, coverage gates, and package smoke retain their own scopes.</p>
                     </div>
                 </section>
 
@@ -132,9 +132,9 @@ npm run coverage:chrome</code></pre></div>
                             <p>Numbered expectations, pass/fail recording, active-test guards, undecided failure, reporting preconditions, and the empty suite.</p>
                         </article>
                         <article class="card">
-                            <span class="card__label">Integration · 8 cases</span>
+                            <span class="card__label">Integration · 11 cases</span>
                             <h3>Contracts working together</h3>
-                            <p>Mixed reports, immutable snapshots, rendered output, completion events, listener cleanup, and isolated instances.</p>
+                            <p>Mixed reports, immutable snapshots, rendered output, subscription-free scheduling, late completion subscriptions, native event-type coercion, cleanup, and isolated instances.</p>
                         </article>
                         <article class="card">
                             <span class="card__label">Regression · 9 cases</span>

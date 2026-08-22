@@ -1,6 +1,14 @@
 # vanilla-test benchmark
 
-This private benchmark workspace measures complete native testing pipelines without changing the published `vanilla-test` package or its production dependencies.
+This private benchmark workspace measures both core lifecycle scaling and complete native testing pipelines without changing the published `vanilla-test` package or its production dependencies.
+
+## Core suite-size scaling
+
+`scale.js` compares the exact `2.1.1:index.js` reconstructed from Git with the current candidate. Both implementations resolve the same installed runtime dependencies. The sweep puts 250, 500, 1,000, 2,000, 4,000, 8,000, and 16,000 uniquely named synchronous passing cases in one runner.
+
+Each implementation/size pair runs in a fresh Node process. Imports are excluded from the timer; runner construction and every `expects()` → `pass()` → `done()` lifecycle are included. `report()` runs after timing only to validate the exact total, pass count, failure count, and status. One randomized serial warmup is discarded, five randomized serial samples are retained, and every value plus its source hash and machine provenance is published.
+
+This is an algorithm-focused scaling measurement, not an end-to-end pipeline or cross-framework ranking. It exists specifically to show how lifecycle cost changes as one runner retains more history.
 
 ## What is compared
 
@@ -34,7 +42,9 @@ Each fresh Node worker receives the same 16 GiB V8 heap ceiling. The cap is inte
 ```sh
 npm ci
 npm ci --prefix benchmark
+npm run benchmark:scale
 npm run benchmark
+npm run benchmark:charts
 ```
 
 Run one isolated lane or a small harness smoke:
@@ -45,6 +55,8 @@ node benchmark/run.js --runtime browser
 npm run benchmark:smoke
 ```
 
-The default command writes `data/benchmarks.json` and a timestamped immutable copy under `benchmark/results/`. Machine data records the model, CPU, logical and available cores, RAM, OS, Node, V8, npm, Chrome protocol/runtime fields, power plan, commit, lock hash, and dependency integrity. It deliberately omits hostname, username, and absolute local paths.
+The scaling command writes `data/scaling.json` plus a timestamped immutable result. The full pipeline writes `data/benchmarks.json` plus its own timestamped immutable result under `benchmark/results/`. `benchmark:charts` deterministically renders both datasets into dependency-free accessible SVGs, while `benchmark:charts:check` fails if a committed chart is stale.
+
+Machine data records the model, CPU, logical and available cores, RAM, OS, Node, V8, npm, Chrome protocol/runtime fields where applicable, power plan, commit, lock hash, source hashes, and dependency integrity. It deliberately omits hostname, username, and absolute local paths.
 
 Official capability references: [Node 24.18 test runner](https://nodejs.org/download/release/v24.18.0/docs/api/test.html), [Mocha browser support](https://mochajs.org/running/browsers/), and [Mocha native ESM](https://mochajs.org/explainers/nodejs-native-esm-support/).

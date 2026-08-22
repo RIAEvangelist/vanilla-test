@@ -31,6 +31,16 @@ class VanillaTest extends EventTarget {
         this.#is.strict = strict;
     }
 
+    addEventListener(type, listener, options) {
+        const eventType = typeof type === 'string' ? type : `${type}`;
+        super.addEventListener(eventType, listener, options);
+
+        if (eventType === VANILLA_TEST_COMPLETE_EVENT && listener !== null && listener !== undefined) {
+            this.#completionObserved = true;
+            this.#scheduleCompletion();
+        }
+    }
+
     expects(description) {
         this.#requireType(description, 'string', 'description');
 
@@ -64,7 +74,7 @@ class VanillaTest extends EventTarget {
         this.#requireType(strict, 'boolean', 'strict');
         this.#requireActiveTest('pass');
 
-        if (this.#passed.includes(this.#test) || this.#failed.includes(this.#test)) {
+        if (this.#decision !== null) {
             if (strict) {
                 throw new ReferenceError(
                     `${ansi.red(this.#test)} has already passed or failed and is waiting for .done(). It cannot pass or fail again.`
@@ -75,6 +85,7 @@ class VanillaTest extends EventTarget {
         }
 
         this.#passed.push(this.#test);
+        this.#decision = 'passed';
         console.log(ansi.greenBright('   pass\n'));
 
         return this.#test;
@@ -84,7 +95,7 @@ class VanillaTest extends EventTarget {
         this.#requireType(strict, 'boolean', 'strict');
         this.#requireActiveTest('fail');
 
-        if (this.#passed.includes(this.#test) || this.#failed.includes(this.#test)) {
+        if (this.#decision !== null) {
             if (strict) {
                 throw new ReferenceError(
                     `${ansi.red(this.#test)} has already passed or failed and is waiting for .done(). It cannot pass or fail again.`
@@ -95,6 +106,7 @@ class VanillaTest extends EventTarget {
         }
 
         this.#failed.push(this.#test);
+        this.#decision = 'failed';
         console.log(ansi.redBright('   fail\n'));
 
         return this.#test;
@@ -103,12 +115,13 @@ class VanillaTest extends EventTarget {
     done() {
         this.#requireActiveTest('finish');
 
-        if (!this.#passed.includes(this.#test) && !this.#failed.includes(this.#test)) {
+        if (this.#decision === null) {
             this.fail();
         }
 
         const test = this.#test;
         this.#test = null;
+        this.#decision = null;
 
         return test;
     }
@@ -161,8 +174,8 @@ ${ansi.redBright('Failed :')} ${this.#failed.length}\n`;
         }
 
         const renderedReport = ansi.bgBlack(report);
-        const passed = Object.freeze([...this.#passed]);
-        const failed = Object.freeze([...this.#failed]);
+        const passed = Object.freeze(this.#passed);
+        const failed = Object.freeze(this.#failed);
 
         this.#snapshot = Object.freeze({
             passed,
@@ -172,17 +185,12 @@ ${ansi.redBright('Failed :')} ${this.#failed.length}\n`;
             ok: failed.length === 0,
             report: renderedReport
         });
+        this.#descriptions = null;
 
         console.log(renderedReport);
+        this.#scheduleCompletion();
 
-        const snapshot = this.#snapshot;
-        queueMicrotask(() => {
-            this.dispatchEvent(new CustomEvent(VANILLA_TEST_COMPLETE_EVENT, {
-                detail: snapshot
-            }));
-        });
-
-        return snapshot;
+        return this.#snapshot;
     }
 
     // Chew on something to give async operations a moment without host APIs.
@@ -211,12 +219,33 @@ ${ansi.redBright('Failed :')} ${this.#failed.length}\n`;
         }
     }
 
+    #scheduleCompletion() {
+        if (!this.#snapshot || !this.#completionObserved
+            || this.#completionScheduled || this.#completionDispatched) {
+            return;
+        }
+
+        this.#completionScheduled = true;
+        const snapshot = this.#snapshot;
+        queueMicrotask(() => {
+            this.#completionScheduled = false;
+            this.#completionDispatched = true;
+            this.dispatchEvent(new CustomEvent(VANILLA_TEST_COMPLETE_EVENT, {
+                detail: snapshot
+            }));
+        });
+    }
+
     #is = new Is();
     #test = null;
+    #decision = null;
     #descriptions = new Set();
     #passed = [];
     #failed = [];
     #snapshot = null;
+    #completionObserved = false;
+    #completionScheduled = false;
+    #completionDispatched = false;
 }
 
 export {

@@ -1,0 +1,761 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-22T03:50:05.204Z",
+  "publishable": false,
+  "source": {
+    "baseline": {
+      "tag": "2.1.1",
+      "commit": "f954fdc864d2e632bcd324714ed80f9abf59a38f",
+      "indexSha256": "6fd442b5de14c05d79db7a76861ea0088380727094b13366df15dd1f617f65e7"
+    },
+    "candidate": {
+      "packageVersion": "2.1.1",
+      "commit": "7959ce0561504047b065e52389cd625490ac0d9a",
+      "dirty": true,
+      "indexSha256": "bdbaa323b897eddd8c6672edc963162ff6e74cc3d8715708724acc60f55a5351"
+    }
+  },
+  "protocol": {
+    "id": "core-suite-scaling-v1",
+    "sizes": [
+      250,
+      500,
+      1000,
+      2000,
+      4000,
+      8000,
+      16000
+    ],
+    "warmups": 1,
+    "measuredSamples": 5,
+    "orderSeed": 5360158,
+    "processPolicy": "one fresh Node process per implementation and suite size; serial randomized order",
+    "boundary": "imports excluded; construction plus expects/pass/done included; report excluded from timing and used only for exact-result validation",
+    "workload": "uniquely named synchronous passing cases in one VanillaTest instance",
+    "comparison": "exact 2.1.1 index.js reconstructed from Git versus the candidate using the same installed runtime dependencies"
+  },
+  "machine": {
+    "model": "Alienware 18 Area-51 AA18250",
+    "os": {
+      "platform": "win32",
+      "release": "10.0.26200",
+      "version": "Windows 11 Home",
+      "architecture": "x64"
+    },
+    "cpu": {
+      "model": "Intel(R) Core(TM) Ultra 9 275HX",
+      "logicalCores": 24,
+      "availableParallelism": 24
+    },
+    "memory": {
+      "totalBytes": 68137205760
+    },
+    "node": {
+      "version": "v24.18.0",
+      "architecture": "x64",
+      "v8": "13.6.233.17-node.50"
+    },
+    "powerPlan": "Balanced",
+    "affinity": "operating-system default; workers execute serially"
+  },
+  "series": [
+    {
+      "id": "baseline",
+      "label": "vanilla-test 2.1.1",
+      "points": [
+        {
+          "caseCount": 250,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 250,
+              "lifecycleMs": 4.277200000000008,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 250,
+              "lifecycleMs": 3.2265000000000015,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 250,
+              "lifecycleMs": 2.849899999999991,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 250,
+              "lifecycleMs": 1.3909999999999982,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 250,
+              "lifecycleMs": 1.4426000000000023,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 1.3909999999999982,
+            "p25Ms": 1.4426000000000023,
+            "medianMs": 2.849899999999991,
+            "p75Ms": 3.2265000000000015,
+            "maximumMs": 4.277200000000008,
+            "medianAbsoluteDeviationMs": 1.4072999999999887,
+            "median95ConfidenceMs": [
+              1.3909999999999982,
+              4.277200000000008
+            ],
+            "medianCasesPerSecond": 87722.37622372742
+          }
+        },
+        {
+          "caseCount": 500,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 500,
+              "lifecycleMs": 7.119699999999995,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 500,
+              "lifecycleMs": 7.8252000000000095,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 500,
+              "lifecycleMs": 18.888099999999994,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 500,
+              "lifecycleMs": 3.5123999999999995,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 500,
+              "lifecycleMs": 4.3126999999999995,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 3.5123999999999995,
+            "p25Ms": 4.3126999999999995,
+            "medianMs": 7.119699999999995,
+            "p75Ms": 7.8252000000000095,
+            "maximumMs": 18.888099999999994,
+            "medianAbsoluteDeviationMs": 2.806999999999995,
+            "median95ConfidenceMs": [
+              3.5123999999999995,
+              18.888099999999994
+            ],
+            "medianCasesPerSecond": 70227.67813250564
+          }
+        },
+        {
+          "caseCount": 1000,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 1000,
+              "lifecycleMs": 19.772899999999993,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 1000,
+              "lifecycleMs": 27.918200000000006,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 1000,
+              "lifecycleMs": 11.661800000000003,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 1000,
+              "lifecycleMs": 11.841999999999999,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 1000,
+              "lifecycleMs": 14.173599999999997,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 11.661800000000003,
+            "p25Ms": 11.841999999999999,
+            "medianMs": 14.173599999999997,
+            "p75Ms": 19.772899999999993,
+            "maximumMs": 27.918200000000006,
+            "medianAbsoluteDeviationMs": 2.511799999999994,
+            "median95ConfidenceMs": [
+              11.661800000000003,
+              27.918200000000006
+            ],
+            "medianCasesPerSecond": 70553.70548061185
+          }
+        },
+        {
+          "caseCount": 2000,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 2000,
+              "lifecycleMs": 31.559600000000003,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 2000,
+              "lifecycleMs": 37.485699999999994,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 2000,
+              "lifecycleMs": 35.243100000000005,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 2000,
+              "lifecycleMs": 28.175199999999997,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 2000,
+              "lifecycleMs": 28.590000000000003,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 28.175199999999997,
+            "p25Ms": 28.590000000000003,
+            "medianMs": 31.559600000000003,
+            "p75Ms": 35.243100000000005,
+            "maximumMs": 37.485699999999994,
+            "medianAbsoluteDeviationMs": 3.3844000000000065,
+            "median95ConfidenceMs": [
+              28.175199999999997,
+              37.485699999999994
+            ],
+            "medianCasesPerSecond": 63372.15934295745
+          }
+        },
+        {
+          "caseCount": 4000,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 4000,
+              "lifecycleMs": 180.3,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 4000,
+              "lifecycleMs": 175.8013,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 4000,
+              "lifecycleMs": 128.4781,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 4000,
+              "lifecycleMs": 122.1392,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 4000,
+              "lifecycleMs": 145.7506,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 122.1392,
+            "p25Ms": 128.4781,
+            "medianMs": 145.7506,
+            "p75Ms": 175.8013,
+            "maximumMs": 180.3,
+            "medianAbsoluteDeviationMs": 23.61139999999999,
+            "median95ConfidenceMs": [
+              122.1392,
+              180.3
+            ],
+            "medianCasesPerSecond": 27444.140881752806
+          }
+        },
+        {
+          "caseCount": 8000,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 8000,
+              "lifecycleMs": 855.6147000000001,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 8000,
+              "lifecycleMs": 781.4318999999999,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 8000,
+              "lifecycleMs": 669.7385,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 8000,
+              "lifecycleMs": 562.0375,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 8000,
+              "lifecycleMs": 583.4199,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 562.0375,
+            "p25Ms": 583.4199,
+            "medianMs": 669.7385,
+            "p75Ms": 781.4318999999999,
+            "maximumMs": 855.6147000000001,
+            "medianAbsoluteDeviationMs": 107.70100000000002,
+            "median95ConfidenceMs": [
+              562.0375,
+              855.6147000000001
+            ],
+            "medianCasesPerSecond": 11944.960607759596
+          }
+        },
+        {
+          "caseCount": 16000,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 16000,
+              "lifecycleMs": 2531.2007999999996,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 16000,
+              "lifecycleMs": 2127.7206,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 16000,
+              "lifecycleMs": 1533.8493,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 16000,
+              "lifecycleMs": 1504.0258000000001,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 16000,
+              "lifecycleMs": 1547.0436,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 1504.0258000000001,
+            "p25Ms": 1533.8493,
+            "medianMs": 1547.0436,
+            "p75Ms": 2127.7206,
+            "maximumMs": 2531.2007999999996,
+            "medianAbsoluteDeviationMs": 43.01779999999985,
+            "median95ConfidenceMs": [
+              1504.0258000000001,
+              2531.2007999999996
+            ],
+            "medianCasesPerSecond": 10342.307094641676
+          }
+        }
+      ]
+    },
+    {
+      "id": "candidate",
+      "label": "vanilla-test 2.1.1",
+      "points": [
+        {
+          "caseCount": 250,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 250,
+              "lifecycleMs": 1.5037999999999982,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 250,
+              "lifecycleMs": 2.346599999999995,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 250,
+              "lifecycleMs": 0.9283000000000001,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 250,
+              "lifecycleMs": 1.3495999999999988,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 250,
+              "lifecycleMs": 0.9914000000000023,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 0.9283000000000001,
+            "p25Ms": 0.9914000000000023,
+            "medianMs": 1.3495999999999988,
+            "p75Ms": 1.5037999999999982,
+            "maximumMs": 2.346599999999995,
+            "medianAbsoluteDeviationMs": 0.3581999999999965,
+            "median95ConfidenceMs": [
+              0.9283000000000001,
+              2.346599999999995
+            ],
+            "medianCasesPerSecond": 185240.0711321875
+          }
+        },
+        {
+          "caseCount": 500,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 500,
+              "lifecycleMs": 5.3722000000000065,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 500,
+              "lifecycleMs": 3.0090000000000003,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 500,
+              "lifecycleMs": 1.8725000000000023,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 500,
+              "lifecycleMs": 2.5273999999999965,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 500,
+              "lifecycleMs": 2.0928999999999967,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 1.8725000000000023,
+            "p25Ms": 2.0928999999999967,
+            "medianMs": 2.5273999999999965,
+            "p75Ms": 3.0090000000000003,
+            "maximumMs": 5.3722000000000065,
+            "medianAbsoluteDeviationMs": 0.4816000000000038,
+            "median95ConfidenceMs": [
+              1.8725000000000023,
+              5.3722000000000065
+            ],
+            "medianCasesPerSecond": 197831.76386800694
+          }
+        },
+        {
+          "caseCount": 1000,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 1000,
+              "lifecycleMs": 7.561000000000007,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 1000,
+              "lifecycleMs": 5.372399999999999,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 1000,
+              "lifecycleMs": 3.022400000000001,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 1000,
+              "lifecycleMs": 2.5122,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 1000,
+              "lifecycleMs": 2.5532000000000004,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 2.5122,
+            "p25Ms": 2.5532000000000004,
+            "medianMs": 3.022400000000001,
+            "p75Ms": 5.372399999999999,
+            "maximumMs": 7.561000000000007,
+            "medianAbsoluteDeviationMs": 0.5102000000000011,
+            "median95ConfidenceMs": [
+              2.5122,
+              7.561000000000007
+            ],
+            "medianCasesPerSecond": 330862.8904182106
+          }
+        },
+        {
+          "caseCount": 2000,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 2000,
+              "lifecycleMs": 10.3031,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 2000,
+              "lifecycleMs": 12.197100000000006,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 2000,
+              "lifecycleMs": 5.237000000000002,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 2000,
+              "lifecycleMs": 4.249300000000002,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 2000,
+              "lifecycleMs": 4.326499999999999,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 4.249300000000002,
+            "p25Ms": 4.326499999999999,
+            "medianMs": 5.237000000000002,
+            "p75Ms": 10.3031,
+            "maximumMs": 12.197100000000006,
+            "medianAbsoluteDeviationMs": 0.9877000000000002,
+            "median95ConfidenceMs": [
+              4.249300000000002,
+              12.197100000000006
+            ],
+            "medianCasesPerSecond": 381898.0332251287
+          }
+        },
+        {
+          "caseCount": 4000,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 4000,
+              "lifecycleMs": 19.786,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 4000,
+              "lifecycleMs": 15.447699999999998,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 4000,
+              "lifecycleMs": 9.7161,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 4000,
+              "lifecycleMs": 8.4574,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 4000,
+              "lifecycleMs": 7.142899999999997,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 7.142899999999997,
+            "p25Ms": 8.4574,
+            "medianMs": 9.7161,
+            "p75Ms": 15.447699999999998,
+            "maximumMs": 19.786,
+            "medianAbsoluteDeviationMs": 2.5732000000000035,
+            "median95ConfidenceMs": [
+              7.142899999999997,
+              19.786
+            ],
+            "medianCasesPerSecond": 411687.8171282716
+          }
+        },
+        {
+          "caseCount": 8000,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 8000,
+              "lifecycleMs": 25.879599999999996,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 8000,
+              "lifecycleMs": 16.527899999999995,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 8000,
+              "lifecycleMs": 15.393799999999995,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 8000,
+              "lifecycleMs": 12.271900000000002,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 8000,
+              "lifecycleMs": 20.250500000000002,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 12.271900000000002,
+            "p25Ms": 15.393799999999995,
+            "medianMs": 16.527899999999995,
+            "p75Ms": 20.250500000000002,
+            "maximumMs": 25.879599999999996,
+            "medianAbsoluteDeviationMs": 3.722600000000007,
+            "median95ConfidenceMs": [
+              12.271900000000002,
+              25.879599999999996
+            ],
+            "medianCasesPerSecond": 484030.0340636138
+          }
+        },
+        {
+          "caseCount": 16000,
+          "samples": [
+            {
+              "index": 1,
+              "caseCount": 16000,
+              "lifecycleMs": 58.547700000000006,
+              "valid": true
+            },
+            {
+              "index": 2,
+              "caseCount": 16000,
+              "lifecycleMs": 44.1258,
+              "valid": true
+            },
+            {
+              "index": 3,
+              "caseCount": 16000,
+              "lifecycleMs": 52.185199999999995,
+              "valid": true
+            },
+            {
+              "index": 4,
+              "caseCount": 16000,
+              "lifecycleMs": 24.910200000000003,
+              "valid": true
+            },
+            {
+              "index": 5,
+              "caseCount": 16000,
+              "lifecycleMs": 25.1859,
+              "valid": true
+            }
+          ],
+          "summary": {
+            "count": 5,
+            "minimumMs": 24.910200000000003,
+            "p25Ms": 25.1859,
+            "medianMs": 44.1258,
+            "p75Ms": 52.185199999999995,
+            "maximumMs": 58.547700000000006,
+            "medianAbsoluteDeviationMs": 14.421900000000008,
+            "median95ConfidenceMs": [
+              24.910200000000003,
+              58.547700000000006
+            ],
+            "medianCasesPerSecond": 362599.6582498221
+          }
+        }
+      ]
+    }
+  ]
+}

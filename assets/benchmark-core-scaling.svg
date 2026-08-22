@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 1200 660" font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+<rect width="1200" height="660" rx="24" fill="#07110f"/>
+<title>vanilla-test core lifecycle scaling from 250 to 16000 cases in one runner</title>
+<desc>Lower is better. Five fresh-process medians with observed ranges. vanilla-test 2.1.1: 250 cases 11.4 microseconds per case, 500 cases 14.239 microseconds per case, 1000 cases 14.174 microseconds per case, 2000 cases 15.78 microseconds per case, 4000 cases 36.438 microseconds per case, 8000 cases 83.717 microseconds per case, 16000 cases 96.69 microseconds per case. vanilla-test 2.1.1: 250 cases 5.398 microseconds per case, 500 cases 5.055 microseconds per case, 1000 cases 3.022 microseconds per case, 2000 cases 2.619 microseconds per case, 4000 cases 2.429 microseconds per case, 8000 cases 2.066 microseconds per case, 16000 cases 2.758 microseconds per case. Raw data: data/scaling.json.</desc>
+<text x="60" y="58" fill="#f3fbf7" font-size="30" font-weight="700">Core lifecycle cost stays flat after the decision-state fix</text>
+<text x="60" y="90" fill="#a9c1b8" font-size="17">One runner per point · construction + expects/pass/done · report excluded · lower is better</text>
+<rect x="100" y="138" width="1040" height="390" rx="12" fill="#0d1c18"/>
+<line x1="100" y1="528" x2="1140" y2="528" stroke="#29473f" stroke-width="1"/>
+<text x="86" y="533" text-anchor="end" fill="#a9c1b8" font-size="14">1 µs</text>
+<line x1="100" y1="398" x2="1140" y2="398" stroke="#29473f" stroke-width="1"/>
+<text x="86" y="403" text-anchor="end" fill="#a9c1b8" font-size="14">10 µs</text>
+<line x1="100" y1="268" x2="1140" y2="268" stroke="#29473f" stroke-width="1"/>
+<text x="86" y="273" text-anchor="end" fill="#a9c1b8" font-size="14">100 µs</text>
+<line x1="100" y1="138" x2="1140" y2="138" stroke="#29473f" stroke-width="1"/>
+<text x="86" y="143" text-anchor="end" fill="#a9c1b8" font-size="14">1,000 µs</text>
+<line x1="100" y1="138" x2="100" y2="528" stroke="#29473f" stroke-width="1" opacity="0.5"/>
+<text x="100" y="558" text-anchor="middle" fill="#a9c1b8" font-size="14">250</text>
+<line x1="273.3333333333333" y1="138" x2="273.3333333333333" y2="528" stroke="#29473f" stroke-width="1" opacity="0.5"/>
+<text x="273.3333333333333" y="558" text-anchor="middle" fill="#a9c1b8" font-size="14">500</text>
+<line x1="446.66666666666663" y1="138" x2="446.66666666666663" y2="528" stroke="#29473f" stroke-width="1" opacity="0.5"/>
+<text x="446.66666666666663" y="558" text-anchor="middle" fill="#a9c1b8" font-size="14">1,000</text>
+<line x1="620" y1="138" x2="620" y2="528" stroke="#29473f" stroke-width="1" opacity="0.5"/>
+<text x="620" y="558" text-anchor="middle" fill="#a9c1b8" font-size="14">2,000</text>
+<line x1="793.3333333333333" y1="138" x2="793.3333333333333" y2="528" stroke="#29473f" stroke-width="1" opacity="0.5"/>
+<text x="793.3333333333333" y="558" text-anchor="middle" fill="#a9c1b8" font-size="14">4,000</text>
+<line x1="966.6666666666667" y1="138" x2="966.6666666666667" y2="528" stroke="#29473f" stroke-width="1" opacity="0.5"/>
+<text x="966.6666666666667" y="558" text-anchor="middle" fill="#a9c1b8" font-size="14">8,000</text>
+<line x1="1140" y1="138" x2="1140" y2="528" stroke="#29473f" stroke-width="1" opacity="0.5"/>
+<text x="1140" y="558" text-anchor="middle" fill="#a9c1b8" font-size="14">16,000</text>
+<text x="620" y="590" text-anchor="middle" fill="#f3fbf7" font-size="15">Cases retained in one VanillaTest runner</text>
+<text transform="translate(26 333) rotate(-90)" text-anchor="middle" fill="#f3fbf7" font-size="15">Median lifecycle microseconds per case · log scale</text>
+<line x1="100" y1="431.0996742283989" x2="100" y2="367.6814585676691" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="95" y1="431.0996742283989" x2="105" y2="431.0996742283989" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="95" y1="367.6814585676691" x2="105" y2="367.6814585676691" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="273.3333333333333" y1="417.9375846610983" x2="273.3333333333333" y2="322.9616250244297" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="268.3333333333333" y1="417.9375846610983" x2="278.3333333333333" y2="417.9375846610983" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="268.3333333333333" y1="322.9616250244297" x2="278.3333333333333" y2="322.9616250244297" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="446.66666666666663" y1="389.3204734308207" x2="446.66666666666663" y2="340.03463616431884" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="441.66666666666663" y1="389.3204734308207" x2="451.66666666666663" y2="389.3204734308207" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="441.66666666666663" y1="340.03463616431884" x2="451.66666666666663" y2="340.03463616431884" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="620" y1="378.6511884557378" x2="620" y2="362.5313681628179" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="615" y1="378.6511884557378" x2="625" y2="378.6511884557378" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="615" y1="362.5313681628179" x2="625" y2="362.5313681628179" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="793.3333333333333" y1="334.9766396319593" x2="793.3333333333333" y2="312.9883543987229" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="788.3333333333333" y1="334.9766396319593" x2="798.3333333333333" y2="334.9766396319593" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="788.3333333333333" y1="312.9883543987229" x2="798.3333333333333" y2="312.9883543987229" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="966.6666666666667" y1="287.9322101764929" x2="966.6666666666667" y2="264.20552744479414" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="961.6666666666667" y1="287.9322101764929" x2="971.6666666666667" y2="287.9322101764929" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="961.6666666666667" y1="264.20552744479414" x2="971.6666666666667" y2="264.20552744479414" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="1140" y1="271.4924105405506" x2="1140" y2="242.10313986502945" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="1135" y1="271.4924105405506" x2="1145" y2="271.4924105405506" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<line x1="1135" y1="242.10313986502945" x2="1145" y2="242.10313986502945" stroke="#ffbf69" stroke-width="2" opacity="0.65"/>
+<polyline points="100,390.6043503533874 273.3333333333333,378.0460803012329 446.66666666666663,378.3075776186209 620,372.24680571857994 793.3333333333333,324.99845320876057 966.6666666666667,278.03401384264333 1140,269.9002657901857" fill="none" stroke="#ffbf69" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="100" cy="390.6043503533874" r="6" fill="#07110f" stroke="#ffbf69" stroke-width="4"/>
+<circle cx="273.3333333333333" cy="378.0460803012329" r="6" fill="#07110f" stroke="#ffbf69" stroke-width="4"/>
+<circle cx="446.66666666666663" cy="378.3075776186209" r="6" fill="#07110f" stroke="#ffbf69" stroke-width="4"/>
+<circle cx="620" cy="372.24680571857994" r="6" fill="#07110f" stroke="#ffbf69" stroke-width="4"/>
+<circle cx="793.3333333333333" cy="324.99845320876057" r="6" fill="#07110f" stroke="#ffbf69" stroke-width="4"/>
+<circle cx="966.6666666666667" cy="278.03401384264333" r="6" fill="#07110f" stroke="#ffbf69" stroke-width="4"/>
+<circle cx="1140" cy="269.9002657901857" r="6" fill="#07110f" stroke="#ffbf69" stroke-width="4"/>
+<line x1="700" y1="116" x2="730" y2="116" stroke="#ffbf69" stroke-width="4"/>
+<text x="739" y="121" fill="#f3fbf7" font-size="14">vanilla-test 2.1.1</text>
+<line x1="100" y1="453.9327155684343" x2="100" y2="401.5751225037143" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="95" y1="453.9327155684343" x2="105" y2="453.9327155684343" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="95" y1="401.5751225037143" x2="105" y2="401.5751225037143" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="273.3333333333333" y1="453.45126313538685" x2="273.3333333333333" y2="393.94631813675386" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="268.3333333333333" y1="453.45126313538685" x2="278.3333333333333" y2="453.45126313538685" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="268.3333333333333" y1="393.94631813675386" x2="278.3333333333333" y2="393.94631813675386" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="446.66666666666663" y1="475.99295253426635" x2="446.66666666666663" y2="413.78469905191145" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="441.66666666666663" y1="475.99295253426635" x2="451.66666666666663" y2="475.99295253426635" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="441.66666666666663" y1="413.78469905191145" x2="451.66666666666663" y2="413.78469905191145" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="620" y1="485.45263830692164" x2="620" y2="425.9205434553509" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="615" y1="485.45263830692164" x2="625" y2="485.45263830692164" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="615" y1="425.9205434553509" x2="625" y2="425.9205434553509" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="793.3333333333333" y1="495.26410476212646" x2="793.3333333333333" y2="437.7412582562543" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="788.3333333333333" y1="495.26410476212646" x2="798.3333333333333" y2="495.26410476212646" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="788.3333333333333" y1="437.7412582562543" x2="798.3333333333333" y2="437.7412582562543" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="966.6666666666667" y1="503.8431633099032" x2="966.6666666666667" y2="461.7172155725544" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="961.6666666666667" y1="503.8431633099032" x2="971.6666666666667" y2="503.8431633099032" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="961.6666666666667" y1="461.7172155725544" x2="971.6666666666667" y2="461.7172155725544" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="1140" y1="503.0065598692096" x2="1140" y2="454.7593186975121" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="1135" y1="503.0065598692096" x2="1145" y2="503.0065598692096" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<line x1="1135" y1="454.7593186975121" x2="1145" y2="454.7593186975121" stroke="#55e6a5" stroke-width="2" opacity="0.65"/>
+<polyline points="100,432.80554208182605 273.3333333333333,436.51848301362423 446.66666666666663,465.5542477248914 620,473.65316482912436 793.3333333333333,477.8938419926642 966.6666666666667,487.0334003589044 1140,470.72556075682735" fill="none" stroke="#55e6a5" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="100" cy="432.80554208182605" r="6" fill="#07110f" stroke="#55e6a5" stroke-width="4"/>
+<circle cx="273.3333333333333" cy="436.51848301362423" r="6" fill="#07110f" stroke="#55e6a5" stroke-width="4"/>
+<circle cx="446.66666666666663" cy="465.5542477248914" r="6" fill="#07110f" stroke="#55e6a5" stroke-width="4"/>
+<circle cx="620" cy="473.65316482912436" r="6" fill="#07110f" stroke="#55e6a5" stroke-width="4"/>
+<circle cx="793.3333333333333" cy="477.8938419926642" r="6" fill="#07110f" stroke="#55e6a5" stroke-width="4"/>
+<circle cx="966.6666666666667" cy="487.0334003589044" r="6" fill="#07110f" stroke="#55e6a5" stroke-width="4"/>
+<circle cx="1140" cy="470.72556075682735" r="6" fill="#07110f" stroke="#55e6a5" stroke-width="4"/>
+<line x1="920" y1="116" x2="950" y2="116" stroke="#55e6a5" stroke-width="4"/>
+<text x="959" y="121" fill="#f3fbf7" font-size="14">vanilla-test 2.1.1</text>
+<text x="60" y="615" fill="#f3fbf7" font-size="16" font-weight="700">At 16,000 cases: 35.1× faster lifecycle in this benchmark</text>
+<text x="60" y="641" fill="#a9c1b8" font-size="13">Baseline 2.1.1 @ f954fdc864d2 · candidate 2.1.1 @ 7959ce056150 · Node v24.18.0 · 5 measured samples · data/scaling.json</text>
+</svg>

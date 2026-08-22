@@ -82,7 +82,7 @@
                                 <tr>
                                     <td><code>VANILLA_TEST_COMPLETE_EVENT</code></td>
                                     <td><code>'vanilla-test:complete'</code></td>
-                                    <td>The event type dispatched after the first successful call to <code>report()</code>.</td>
+                                    <td>The type used for the single asynchronous completion dispatch when a listener has been observed.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -132,6 +132,7 @@
                         <strong>Core lifecycle</strong>
                         <p><code>expects() → pass() | fail() → done()</code>, repeated for each case, then exactly one effective <code>report()</code>. Calling <code>done()</code> without a decision is valid but records a failure.</p>
                     </div>
+                    <p>First-decision-wins is unchanged. The active case carries its own decision marker, so <code>pass()</code>, <code>fail()</code>, and <code>done()</code> enforce that rule in constant time instead of searching the accumulated result arrays.</p>
                     <ul>
                         <li>Only one test can be active on an instance.</li>
                         <li>Raw descriptions must be unique within an instance.</li>
@@ -160,7 +161,7 @@
                             <h3>test.is</h3>
                             <p>Read-only access to the instance-owned <code>strong-type</code> helper. The same helper object is returned on every read.</p>
                             <dl>
-                                <dt>Value</dt><dd>A <code>strong-type</code> instance with the 66 methods catalogued below.</dd>
+                                <dt>Value</dt><dd>The complete isomorphic <code>strong-type</code> 2.0.1 instance, including 183 advertised shared validators plus core and extension methods.</dd>
                                 <dt>Throws</dt><dd>Nothing when read. Individual helper calls can throw on mismatches.</dd>
                                 <dt>Console</dt><dd>No output.</dd>
                             </dl>
@@ -202,12 +203,12 @@
                     <h3>Strict helper behavior</h3>
                     <div class="code-block"><pre><code><span class="code-keyword">const</span> test = <span class="code-keyword">new</span> VanillaTest();
 
+test.compare(1, 1); <span class="code-comment">// true: exact identity through Object.is</span>
+<span class="code-comment">// test.compare(1, '1'); // would throw TypeError: not identical</span>
+
 test.strict = false;
 console.log(test.is.number(<span class="code-string">'42'</span>)); <span class="code-comment">// false</span>
-console.log(test.compare(1, <span class="code-string">'1'</span>)); <span class="code-comment">// throws in strict mode: not identical</span>
-
-test.strict = true;
-test.is.number(<span class="code-string">'42'</span>); <span class="code-comment">// throws TypeError</span></code></pre></div>
+console.log(test.compare(1, <span class="code-string">'1'</span>)); <span class="code-comment">// false</span></code></pre></div>
                     <div class="callout">
                         <strong>Inspect the example output</strong>
                         <p>Browser: check the console or DevTools. Node: check the terminal.</p>
@@ -270,13 +271,13 @@ test.is.number(<span class="code-string">'42'</span>); <span class="code-comment
 
                         <article class="method" id="report">
                             <h3>test.report()</h3>
-                            <p>Builds the final result, freezes it, logs the rendered report, schedules one completion event, and seals the suite.</p>
+                            <p>Builds the final result, freezes it, logs the rendered report, and seals the suite. Completion delivery is scheduled only when a completion listener has been observed.</p>
                             <dl>
                                 <dt>Signature</dt><dd><code>report()</code></dd>
                                 <dt>Precondition</dt><dd>No test is active.</dd>
                                 <dt>Returns</dt><dd>A frozen result snapshot. Later calls return the exact same object.</dd>
                                 <dt>Throws</dt><dd><code>ReferenceError</code> when a test is still active.</dd>
-                                <dt>First call</dt><dd>Logs once and queues one event microtask.</dd>
+                                <dt>First call</dt><dd>Logs once. It queues the one event microtask only when a completion listener is already registered; otherwise the first later completion subscription schedules it.</dd>
                                 <dt>Later calls</dt><dd>No log and no new event.</dd>
                             </dl>
                         </article>
@@ -286,7 +287,7 @@ test.is.number(<span class="code-string">'42'</span>); <span class="code-comment
                             <p>Subscribes a function to <code>vanilla-test:complete</code>. The optional second argument passes through to native <code>addEventListener()</code>.</p>
                             <dl>
                                 <dt>Signature</dt><dd><code>onComplete(listener, options)</code></dd>
-                                <dt>Precondition</dt><dd><code>listener</code> is a function. Subscribe before the first effective <code>report()</code>; events are not replayed.</dd>
+                                <dt>Precondition</dt><dd><code>listener</code> is a function. The first subscription may occur before or after <code>report()</code>, provided completion has not already dispatched.</dd>
                                 <dt>Returns</dt><dd>An idempotent zero-argument unsubscribe function.</dd>
                                 <dt>Throws</dt><dd><code>TypeError</code> for a non-function listener.</dd>
                                 <dt>Console</dt><dd>No output from subscription or unsubscription.</dd>
@@ -331,11 +332,11 @@ console.log(result.ok); <span class="code-comment">// true</span></code></pre></
                 <section id="completion-events">
                     <p class="eyebrow">EventTarget integration</p>
                     <h2>Completion event timing</h2>
-                    <p>Every instance inherits native <code>addEventListener()</code>, <code>removeEventListener()</code>, and <code>dispatchEvent()</code>. Use <code>onComplete()</code> when you want the typed completion name plus an idempotent unsubscribe function; use the inherited methods for ordinary <code>EventTarget</code> integration.</p>
+                    <p><code>VanillaTest</code> extends the native <code>EventTarget</code>. Its <code>addEventListener()</code> delegates to the native implementation and additionally notices completion subscriptions; <code>removeEventListener()</code> and <code>dispatchEvent()</code> retain their ordinary <code>EventTarget</code> behavior. Use <code>onComplete()</code> when you want the typed completion name plus an idempotent unsubscribe function.</p>
                     <ol>
                         <li><code>report()</code> creates and freezes the snapshot.</li>
                         <li>It logs the rendered report.</li>
-                        <li>It queues a microtask that dispatches a native <code>CustomEvent</code>.</li>
+                        <li>If a completion listener has been observed, it queues a microtask that dispatches a native <code>CustomEvent</code>. A runner that has never registered a completion listener queues no completion work.</li>
                         <li><code>report()</code> returns the snapshot before the listener runs.</li>
                         <li>The event's <code>detail</code> is the exact returned snapshot object.</li>
                     </ol>
@@ -362,7 +363,7 @@ unsubscribe();                        <span class="code-comment">// safe after a
                         <strong>Inspect the event order</strong>
                         <p>Browser: check the console or DevTools. Node: check the terminal.</p>
                     </div>
-                    <p>There is no replay buffer. A listener added after the first effective <code>report()</code> does not receive the already-dispatched event. Repeated <code>report()</code> calls also do not dispatch again.</p>
+                    <p>Registering the first completion listener after <code>report()</code> schedules delivery from the frozen snapshot. Dispatch happens at most once, and there is no replay after it occurs. Repeated <code>report()</code> calls do not dispatch again.</p>
                 </section>
 
                 <section id="result-contract">
@@ -402,26 +403,26 @@ unsubscribe();                        <span class="code-comment">// safe after a
 
                 <section id="type-helpers">
                     <p class="eyebrow">strong-type delegation</p>
-                    <h2>All 66 type-helper methods</h2>
-                    <p><code>test.is</code> exposes the complete helper surface. Matching calls return <code>true</code>. Most mismatches throw <code>TypeError</code> while <code>test.strict</code> is <code>true</code>, or return <code>false</code> while it is <code>false</code>. <code>compare()</code> and the compare-backed <code>null()</code>, <code>globalThis()</code>, and <code>infinity()</code> helpers throw a general <code>Error</code> on strict mismatch.</p>
+                    <h2>strong-type 2.0.1 helper surface</h2>
+                    <p><code>test.is</code> exposes the complete isomorphic helper with 183 advertised shared validators plus core and extension methods. Matching calls return <code>true</code>. Mismatches throw <code>TypeError</code> while <code>test.strict</code> is <code>true</code>, or return <code>false</code> while it is <code>false</code>. The families below are a practical map, not an exhaustive substitute for the <a href="https://riaevangelist.github.io/strong-type/reference.html">searchable strong-type reference</a>.</p>
                     <div class="table-wrap">
                         <table>
                             <thead><tr><th>Signature family</th><th>Use</th><th>Success / mismatch</th></tr></thead>
                             <tbody>
-                                <tr><td><code>test.is.&lt;predicate&gt;(value)</code></td><td>Named value, function, error, typed-array, buffer, Intl, and weak-reference predicates below, except the compare-backed helpers called out separately.</td><td><code>true</code> / strict <code>TypeError</code> or non-strict <code>false</code>.</td></tr>
+                                <tr><td><code>test.is.&lt;predicate&gt;(value)</code></td><td>Named primitive, value, function, error, iterator, collection, buffer, stream, platform, and capability predicates.</td><td><code>true</code> / strict <code>TypeError</code> or non-strict <code>false</code>.</td></tr>
                                 <tr><td><code>test.is.typeCheck(value, type)</code></td><td>Compare <code>typeof value</code> with a type string.</td><td><code>true</code> / helper mismatch behavior.</td></tr>
                                 <tr><td><code>test.is.instanceCheck(value, constructor)</code></td><td>Apply <code>value instanceof constructor</code>.</td><td><code>true</code> / helper mismatch behavior.</td></tr>
                                 <tr><td><code>test.is.symbolStringCheck(value, tag)</code></td><td>Compare the native <code>Object.prototype.toString</code> tag.</td><td><code>true</code> / helper mismatch behavior.</td></tr>
                                 <tr><td><code>test.is.union(value, typesString)</code></td><td>Try exact helper names from a pipe-delimited string such as <code>'string|number'</code>.</td><td><code>true</code> / helper mismatch behavior; an unknown helper name is also a mismatch.</td></tr>
                                 <tr><td><code>test.is.compare(value, targetValue)</code></td><td>Exact-identity comparison via <code>Object.is</code>; identical to <code>test.compare</code>.</td><td><code>true</code> / strict <code>TypeError</code> or non-strict <code>false</code>.</td></tr>
-                                <tr><td><code>test.is.null(value)</code>, <code>globalThis(value)</code>, <code>infinity(value)</code></td><td>Loose-equality predicates implemented through <code>compare()</code>.</td><td><code>true</code> / strict <code>Error</code> or non-strict <code>false</code>.</td></tr>
+                                <tr><td><code>test.is.null(value)</code>, <code>globalThis(value)</code>, <code>infinity(value)</code></td><td>Exact checks for <code>null</code>, the host global object, and positive <code>Infinity</code>.</td><td><code>true</code> / strict <code>TypeError</code> or non-strict <code>false</code>.</td></tr>
                                 <tr><td><code>test.is.throw(valueType, expectedType)</code></td><td>Invoke the helper mismatch path directly; identical to <code>test.throw</code>.</td><td>Strict <code>TypeError</code> or non-strict <code>false</code>.</td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="callout callout--warning">
-                        <strong>Native coercion can fail before helper mismatch handling.</strong>
-                        <p><code>finite(value)</code> delegates to global <code>isFinite()</code>. Values that native operation cannot coerce, including symbols and bigints, throw a native <code>TypeError</code> even when <code>test.strict</code> is <code>false</code>.</p>
+                    <div class="callout">
+                        <strong>Version 2 removes coercive edge cases.</strong>
+                        <p><code>compare()</code> uses <code>Object.is</code>, <code>finite()</code> uses <code>Number.isFinite</code>, and <code>null()</code> and <code>infinity()</code> require exact values. Values such as <code>'1'</code>, <code>undefined</code>, and <code>'Infinity'</code> are not coerced into matches.</p>
                     </div>
                     <h3>How helpers decide</h3>
                     <div class="table-wrap">
@@ -434,12 +435,12 @@ unsubscribe();                        <span class="code-comment">// safe after a
                                 <tr><td><code>instanceof</code></td><td>Arrays, dates, collections, promises, errors, typed arrays, buffers, Intl objects, and weak-reference objects</td><td>The value must belong to the supplied host constructor.</td></tr>
                                 <tr><td><code>Object.prototype.toString</code></td><td>Generator values and async/function variants</td><td>The helper compares the native symbol tag.</td></tr>
                                 <tr><td>Exact identity</td><td><code>compare</code> and compare-backed helpers</td><td><code>compare(1, '1')</code> is false in non-strict mode; strict mode throws.</td></tr>
-                                <tr><td>Global numeric predicates</td><td><code>finite</code> and <code>NaN</code></td><td><code>finite</code> follows global <code>isFinite()</code> coercion; <code>NaN</code> first requires a number.</td></tr>
+                                <tr><td>Exact numeric predicates</td><td><code>finite</code> and <code>NaN</code></td><td>They use <code>Number.isFinite()</code> and <code>Number.isNaN()</code> without coercion.</td></tr>
                                 <tr><td>Alias behavior</td><td><code>defined</code>, <code>any</code>, and <code>exists</code></td><td>All three mean “not <code>undefined</code>.”</td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <h3>Method catalogue</h3>
+                    <h3>Common method catalogue</h3>
                     <div class="table-wrap">
                         <table>
                             <thead>

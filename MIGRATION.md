@@ -52,7 +52,7 @@ test.report();
 
 Check the console for the event result and test report.
 
-Completion is dispatched as `vanilla-test:complete` in a microtask. The event name is exported as `VANILLA_TEST_COMPLETE_EVENT`.
+Completion delivery is listener-aware. If a completion subscription has already been registered, the first `report()` queues `vanilla-test:complete` in a microtask. A runner that has never registered a completion listener queues no completion work; registering the first completion listener after `report()` schedules delivery from the frozen snapshot. Dispatch happens at most once, its `detail` is the exact snapshot, and listeners added after dispatch receive no replay. The event name is exported as `VANILLA_TEST_COMPLETE_EVENT`.
 
 ## Test lifecycle corrections
 

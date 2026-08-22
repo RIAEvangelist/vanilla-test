@@ -3,17 +3,17 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Reproducible one-million-case Node and real-Chrome benchmarks for vanilla-test, including native V8 coverage and report generation.">
+    <meta name="description" content="Reproducible vanilla-test core-scaling and one-million-case Node and real-Chrome native pipeline benchmarks, with raw samples and generated charts.">
     <meta name="color-scheme" content="dark">
-    <meta property="og:title" content="Native pipeline benchmarks · vanilla-test">
-    <meta property="og:description" content="One million real cases, separate Node and Chrome lanes, complete native coverage and report generation, raw samples, and machine specifications.">
+    <meta property="og:title" content="Core scaling and native pipeline benchmarks · vanilla-test">
+    <meta property="og:description" content="Core lifecycle scaling plus one million real cases through separate Node and Chrome native pipelines, with raw samples and machine specifications.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://riaevangelist.github.io/vanilla-test/benchmark/">
     <meta property="og:image" content="https://riaevangelist.github.io/vanilla-test/assets/og.png">
     <meta property="og:image:alt" content="vanilla-test — native JavaScript testing for Node.js and browsers">
     <link rel="canonical" href="https://riaevangelist.github.io/vanilla-test/benchmark/">
     <link rel="stylesheet" href="../assets/site.css">
-    <title>Native pipeline benchmarks · vanilla-test</title>
+    <title>Core scaling and native pipeline benchmarks · vanilla-test</title>
 </head>
 <body data-status-url="../data/status.json">
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -38,14 +38,14 @@
 
     <main id="main-content">
         <header class="site-shell hero--single">
-            <p class="eyebrow">Auditable native pipelines</p>
-            <h1>One million real cases. Nothing hand-waved.</h1>
-            <p class="lede">Separate Node and real-Chrome lanes measure cold startup, runner lifecycle, native V8 coverage, validation, and four report files. Every sample ships with its raw values, exact source, runtime versions, and machine specification.</p>
+            <p class="eyebrow">Auditable performance evidence</p>
+            <h1>Scaling in the core. One million through the pipeline.</h1>
+            <p class="lede">A tagged core comparison isolates suite-size scaling. Separate Node and real-Chrome lanes then measure cold startup, runner lifecycle, native V8 coverage, validation, and four report files. Every sample ships with its raw values, exact source, runtime versions, and machine specification.</p>
             <ul class="pill-row" aria-label="Benchmark protocol summary">
-                <li class="pill">1,000,000 cases</li>
+                <li class="pill">250–16,000 core cases</li>
+                <li class="pill">1,000,000 pipeline cases</li>
                 <li class="pill">1,000 × 1,000 suites</li>
                 <li class="pill">5 measured samples</li>
-                <li class="pill">coverage + reports</li>
             </ul>
         </header>
 
@@ -53,10 +53,36 @@
             <article class="prose">
                 <section aria-labelledby="result-heading">
                     <div class="status-band__header">
-                        <h2 id="result-heading">Published result</h2>
+                        <h2 id="result-heading">Published native-pipeline run</h2>
                         <p class="status-provenance" data-benchmark-state aria-live="polite">Loading signed-off benchmark data…</p>
                     </div>
                     <div class="benchmark-machine" data-benchmark-machine></div>
+                </section>
+
+                <section aria-labelledby="scaling-heading">
+                    <div class="status-band__header">
+                        <div><p class="eyebrow">Algorithm boundary</p><h2 id="scaling-heading">Core lifecycle scaling</h2></div>
+                        <p class="status-provenance" data-scaling-state aria-live="polite">Loading signed-off scaling data…</p>
+                    </div>
+                    <p>Each point puts 250 through 16,000 uniquely named passing cases in one runner. Imports and <code>report()</code> are outside the timer; construction plus <code>expects()</code>, <code>pass()</code>, and <code>done()</code> are inside it. The exact 2.1.1 <code>index.js</code> is reconstructed from Git and uses the same installed dependencies as the candidate.</p>
+                    <figure class="benchmark-chart">
+                        <img src="../assets/benchmark-core-scaling.svg" width="1200" height="660" alt="Line chart of median lifecycle microseconds per case from 250 through 16,000 cases in one runner. Version 2.1.1 rises with suite size while version 2.1.2 stays nearly flat; lower is better.">
+                        <figcaption>Median lifecycle cost per case with observed ranges from five fresh-process samples. The vertical scale is logarithmic. <a href="../data/scaling.json">Download the raw scaling JSON.</a></figcaption>
+                    </figure>
+                    <div class="table-wrap"><table class="benchmark-table">
+                        <caption>Core lifecycle scaling; lower time is better</caption>
+                        <thead><tr><th scope="col">Cases in one runner</th><th scope="col">2.1.1 median</th><th scope="col">2.1.2 median</th><th scope="col">2.1.1 per case</th><th scope="col">2.1.2 per case</th><th scope="col">Faster</th></tr></thead>
+                        <tbody data-scaling-points><tr><td colspan="6">Loading core-scaling samples…</td></tr></tbody>
+                    </table></div>
+                    <p class="status-provenance" data-scaling-provenance>Waiting for scaling provenance…</p>
+                </section>
+
+                <section aria-labelledby="pipeline-chart-heading">
+                    <div class="benchmark-heading"><div><p class="eyebrow">Complete host pipelines</p><h2 id="pipeline-chart-heading">One-million-case overview</h2></div><p>Independent zero-based axes</p></div>
+                    <figure class="benchmark-chart">
+                        <img src="../assets/benchmark-native-pipelines.svg" width="1200" height="660" alt="Bar charts of one-million-case cold-wall medians. Node compares vanilla-test, Mocha, and node:test; Chrome separately compares vanilla-test and Mocha. Each host uses an independent axis and lower is better.">
+                        <figcaption>Cold startup, runner lifecycle, native V8 coverage, validation, four report files, and teardown. Compare runners only within the same host panel. <a href="../data/benchmarks.json">Download the raw pipeline JSON.</a></figcaption>
+                    </figure>
                 </section>
 
                 <section aria-labelledby="node-heading">
@@ -108,6 +134,9 @@
                     <h2 id="source-heading">Inspect the exact benchmark code</h2>
                     <p>The implementation stays available without filling the results page with source. Open any file in a focused native dialog, copy it, or follow its commit-pinned repository link.</p>
                     <div class="benchmark-source-actions">
+                        <button class="button button--secondary" type="button" data-benchmark-source="scale.js">Scaling coordinator</button>
+                        <button class="button button--secondary" type="button" data-benchmark-source="scale-worker.js">Scaling worker</button>
+                        <button class="button button--secondary" type="button" data-benchmark-source="charts.js">Chart generator</button>
                         <button class="button button--secondary" type="button" data-benchmark-source="run.js">Coordinator</button>
                         <button class="button button--secondary" type="button" data-benchmark-source="runners/vanilla-node.js">vanilla-test · Node</button>
                         <button class="button button--secondary" type="button" data-benchmark-source="runners/node-test.js">node:test</button>
@@ -122,6 +151,8 @@
             <aside class="page-aside" aria-label="Benchmark controls">
                 <strong>Fairness controls</strong>
                 <ul>
+                    <li>Exact tagged 2.1.1 scaling baseline</li>
+                    <li>Same dependencies for both core versions</li>
                     <li>Same unique names and workload</li>
                     <li>Same 1,000 × 1,000 topology</li>
                     <li>Same native coverage scope</li>
@@ -130,6 +161,7 @@
                     <li>Same 16 GiB Node heap ceiling</li>
                     <li>No outlier deletion</li>
                     <li>Raw samples published</li>
+                    <li>Charts generated from raw JSON</li>
                 </ul>
                 <p data-benchmark-provenance>Waiting for result provenance…</p>
             </aside>

@@ -83,6 +83,21 @@ test.done();
             </div>
         </section>
 
+        <section class="section section--bordered" aria-labelledby="why-vanilla-title">
+            <div class="site-shell">
+                <div class="section-heading">
+                    <p class="eyebrow">Why vanilla JavaScript</p>
+                    <h2 id="why-vanilla-title">Less machinery between code and truth.</h2>
+                    <p>Vanilla is not a nostalgia choice here; it is a control-surface choice. A suite stays an ordinary ES module that Node.js and Chrome execute unchanged. No framework dialect, bundler, transpiler, or source rewrite sits between the code you wrote and the code that failed.</p>
+                </div>
+                <div class="grid">
+                    <article class="card"><span class="card__label">Same source</span><h3>Same suite, real hosts.</h3><p>One standards-based module executes unchanged in Node and Chrome.</p></article>
+                    <article class="card"><span class="card__label">Native evidence</span><h3>Evidence from the engine.</h3><p>Coverage comes from each runtime's V8 engine over the source you inspect.</p></article>
+                    <article class="card"><span class="card__label">Fewer seams</span><h3>A smaller control surface.</h3><p>Fewer test-specific layers mean fewer configuration seams and upgrade surfaces.</p></article>
+                </div>
+            </div>
+        </section>
+
         <section class="site-shell status-band" aria-labelledby="quality-title">
             <div class="status-band__header">
                 <h2 id="quality-title">Published quality snapshot</h2>
@@ -179,7 +194,7 @@ test.done();
                 <div>
                     <p class="eyebrow">Install</p>
                     <h2>One package, no build pipeline.</h2>
-                    <p class="lede">The shared core imports only Web-standard primitives. Host tooling stays around the suite instead of leaking into it.</p>
+                    <p class="lede">The shared core stays host-neutral and uses Web-standard lifecycle primitives. Host tooling stays around the suite instead of leaking into it.</p>
                 </div>
                 <div>
                     <div class="code-block"><pre><code>npm install vanilla-test</code></pre></div>

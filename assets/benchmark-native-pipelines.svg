@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 1200 660" font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+<rect width="1200" height="660" rx="24" fill="#07110f"/>
+<title>One-million-case native pipeline cold-wall medians</title>
+<desc>Lower is better within each host panel. Axes are independent and must not be compared across Node and Chrome. Node pipeline: vanilla-test 12.504 seconds, node:test 78.16 seconds, Mocha 8.867 seconds. Real Chrome pipeline: vanilla-test 10.887 seconds, Mocha 9.921 seconds. Raw data: data/benchmarks.json.</desc>
+<text x="60" y="58" fill="#f3fbf7" font-size="30" font-weight="700">One million cases through the complete native pipeline</text>
+<text x="60" y="90" fill="#a9c1b8" font-size="17">Cold startup + runner + precise V8 coverage + JSON/LCOV/HTML reports + teardown</text>
+<text x="60" y="111" fill="#ffbf69" font-size="14">Independent zero-based axes: compare runners only within the same host panel.</text>
+<rect x="72" y="118" width="496" height="442" rx="14" fill="#0d1c18"/>
+<text x="90" y="146" fill="#f3fbf7" font-size="20" font-weight="700">Node pipeline</text>
+<line x1="126" y1="510" x2="552" y2="510" stroke="#29473f" stroke-width="1"/>
+<text x="116" y="515" text-anchor="end" fill="#a9c1b8" font-size="13">0s</text>
+<line x1="126" y1="422.5" x2="552" y2="422.5" stroke="#29473f" stroke-width="1"/>
+<text x="116" y="427.5" text-anchor="end" fill="#a9c1b8" font-size="13">20s</text>
+<line x1="126" y1="335" x2="552" y2="335" stroke="#29473f" stroke-width="1"/>
+<text x="116" y="340" text-anchor="end" fill="#a9c1b8" font-size="13">40s</text>
+<line x1="126" y1="247.5" x2="552" y2="247.5" stroke="#29473f" stroke-width="1"/>
+<text x="116" y="252.5" text-anchor="end" fill="#a9c1b8" font-size="13">60s</text>
+<line x1="126" y1="160" x2="552" y2="160" stroke="#29473f" stroke-width="1"/>
+<text x="116" y="165" text-anchor="end" fill="#a9c1b8" font-size="13">80s</text>
+<rect x="161.71333333333334" y="471.20493293749996" width="83.90666666666667" height="38.79506706250006" rx="7" fill="#ffbf69"/>
+<text x="203.66666666666669" y="461.20493293749996" text-anchor="middle" fill="#f3fbf7" font-size="14" font-weight="700">8.87s</text>
+<text x="203.66666666666669" y="538" text-anchor="middle" fill="#f3fbf7" font-size="14">Mocha</text>
+<text x="203.66666666666669" y="558" text-anchor="middle" fill="#a9c1b8" font-size="12">11.8.0</text>
+<rect x="297.04666666666674" y="455.29538806249985" width="83.90666666666667" height="54.70461193750016" rx="7" fill="#55e6a5"/>
+<text x="339.00000000000006" y="445.29538806249985" text-anchor="middle" fill="#f3fbf7" font-size="14" font-weight="700">12.5s</text>
+<text x="339.00000000000006" y="538" text-anchor="middle" fill="#f3fbf7" font-size="14">vanilla-test</text>
+<text x="339.00000000000006" y="558" text-anchor="middle" fill="#a9c1b8" font-size="12">2.1.1</text>
+<rect x="432.38" y="168.05191799999994" width="83.90666666666667" height="341.94808200000006" rx="7" fill="#5cc8ff"/>
+<text x="474.3333333333333" y="175" text-anchor="middle" fill="#f3fbf7" font-size="14" font-weight="700">78.16s</text>
+<text x="474.3333333333333" y="538" text-anchor="middle" fill="#f3fbf7" font-size="14">node:test</text>
+<text x="474.3333333333333" y="558" text-anchor="middle" fill="#a9c1b8" font-size="12">v24.18.0</text>
+<rect x="632" y="118" width="496" height="442" rx="14" fill="#0d1c18"/>
+<text x="650" y="146" fill="#f3fbf7" font-size="20" font-weight="700">Real Chrome pipeline</text>
+<line x1="686" y1="510" x2="1112" y2="510" stroke="#29473f" stroke-width="1"/>
+<text x="676" y="515" text-anchor="end" fill="#a9c1b8" font-size="13">0s</text>
+<line x1="686" y1="422.5" x2="1112" y2="422.5" stroke="#29473f" stroke-width="1"/>
+<text x="676" y="427.5" text-anchor="end" fill="#a9c1b8" font-size="13">3.8s</text>
+<line x1="686" y1="335" x2="1112" y2="335" stroke="#29473f" stroke-width="1"/>
+<text x="676" y="340" text-anchor="end" fill="#a9c1b8" font-size="13">7.5s</text>
+<line x1="686" y1="247.5" x2="1112" y2="247.5" stroke="#29473f" stroke-width="1"/>
+<text x="676" y="252.5" text-anchor="end" fill="#a9c1b8" font-size="13">11.3s</text>
+<line x1="686" y1="160" x2="1112" y2="160" stroke="#29473f" stroke-width="1"/>
+<text x="676" y="165" text-anchor="end" fill="#a9c1b8" font-size="13">15s</text>
+<rect x="749.5" y="278.49876733333497" width="96" height="231.50123266666506" rx="7" fill="#ffbf69"/>
+<text x="797.5" y="268.49876733333497" text-anchor="middle" fill="#f3fbf7" font-size="14" font-weight="700">9.92s</text>
+<text x="797.5" y="538" text-anchor="middle" fill="#f3fbf7" font-size="14">Mocha</text>
+<text x="797.5" y="558" text-anchor="middle" fill="#a9c1b8" font-size="12">11.8.0</text>
+<rect x="952.5" y="255.96875166666578" width="96" height="254.03124833333422" rx="7" fill="#55e6a5"/>
+<text x="1000.5" y="245.96875166666578" text-anchor="middle" fill="#f3fbf7" font-size="14" font-weight="700">10.89s</text>
+<text x="1000.5" y="538" text-anchor="middle" fill="#f3fbf7" font-size="14">vanilla-test</text>
+<text x="1000.5" y="558" text-anchor="middle" fill="#a9c1b8" font-size="12">2.1.1</text>
+<text x="60" y="602" fill="#f3fbf7" font-size="15" font-weight="700">Same 1,000 × 1,000 workload · five measured fresh-host samples · no outlier deletion</text>
+<text x="60" y="631" fill="#a9c1b8" font-size="13">Source 65a0dfa3b96a · Node v24.18.0 · Chrome Chrome/151.0.7922.138 · data/benchmarks.json</text>
+</svg>

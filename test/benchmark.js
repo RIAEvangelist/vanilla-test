@@ -4,7 +4,9 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { buildCharts } from '../benchmark/charts.js';
 import { parseArguments, summarizeSamples, validateWorkerResult } from '../benchmark/run.js';
+import { parseScaleArguments } from '../benchmark/scale.js';
 import { caseName, executeCase, expectedChecksum, updateChecksum } from '../benchmark/workload.js';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -25,6 +27,16 @@ test('benchmark arguments preserve the million-case bounded-suite protocol', () 
     assert.throws(() => parseArguments(['--cases', '10', '--batch-size', '11']), /cannot exceed/);
     assert.throws(() => parseArguments(['--samples', '0']), /at least 1/);
     assert.throws(() => parseArguments(['--unknown']), /Unknown benchmark option/);
+});
+
+test('scaling benchmark arguments preserve the monolithic-suite sweep', () => {
+    const defaults = parseScaleArguments([]);
+    assert.deepEqual(defaults.sizes, [250, 500, 1_000, 2_000, 4_000, 8_000, 16_000]);
+    assert.equal(defaults.samples, 5);
+    assert.equal(defaults.warmups, 1);
+    assert.throws(() => parseScaleArguments(['--sizes', '100,100']), /unique positive integers/);
+    assert.throws(() => parseScaleArguments(['--sizes', '0,100']), /unique positive integers/);
+    assert.throws(() => parseScaleArguments(['--samples', '0']), /at least 1/);
 });
 
 test('benchmark workload names and checksum prove every case exactly once', () => {
@@ -134,4 +146,51 @@ test('published benchmark data contains only verified million-case native pipeli
 
     assert.equal(Object.hasOwn(result.machine, 'hostname'), false);
     assert.doesNotMatch(source, /(?:[A-Z]:\\Users\\|\/home\/)[^"\\/]+/i);
+});
+
+test('published scaling data compares exact 2.1.1 and candidate sources with verified samples', async () => {
+    const source = await fs.readFile(path.join(projectRoot, 'data', 'scaling.json'), 'utf8');
+    const result = JSON.parse(source);
+    assert.equal(result.schemaVersion, 1);
+    assert.equal(result.publishable, true);
+    assert.equal(result.source.baseline.tag, '2.1.1');
+    assert.match(result.source.baseline.commit, /^[0-9a-f]{40}$/);
+    assert.match(result.source.baseline.indexSha256, /^[0-9a-f]{64}$/);
+    assert.equal(result.source.candidate.packageVersion, '2.1.2');
+    assert.match(result.source.candidate.commit, /^[0-9a-f]{40}$/);
+    assert.match(result.source.candidate.indexSha256, /^[0-9a-f]{64}$/);
+    assert.equal(result.source.candidate.dirty, false);
+    assert.deepEqual(result.protocol.sizes, [250, 500, 1_000, 2_000, 4_000, 8_000, 16_000]);
+    assert.equal(result.protocol.measuredSamples, 5);
+    assert.deepEqual(result.series.map(({ id }) => id), ['baseline', 'candidate']);
+
+    for (const series of result.series) {
+        assert.equal(series.points.length, result.protocol.sizes.length);
+        for (const point of series.points) {
+            assert.equal(point.samples.length, result.protocol.measuredSamples);
+            assert.equal(point.summary.count, result.protocol.measuredSamples);
+            assert.ok(point.samples.every((sample) => sample.valid && sample.caseCount === point.caseCount));
+        }
+    }
+    assert.doesNotMatch(source, /(?:[A-Z]:\\Users\\|\/home\/)[^"\\/]+/i);
+});
+
+test('published benchmark SVGs are deterministic, accessible, and current', async () => {
+    const charts = await buildCharts();
+    for (const [name, file] of Object.entries({
+        scaling: 'benchmark-core-scaling.svg',
+        pipelines: 'benchmark-native-pipelines.svg'
+    })) {
+        const source = await fs.readFile(path.join(projectRoot, 'assets', file), 'utf8');
+        assert.equal(source, charts[name]);
+        assert.match(source, /<title>[^<]+<\/title>/);
+        assert.match(source, /<desc>[^<]+<\/desc>/);
+        assert.match(source, /role="img"/);
+    }
+});
+
+test('core lifecycle uses active decision state instead of scanning result history', async () => {
+    const source = await fs.readFile(path.join(projectRoot, 'index.js'), 'utf8');
+    assert.match(source, /#decision/);
+    assert.doesNotMatch(source, /#(?:passed|failed)\.includes\(/);
 });

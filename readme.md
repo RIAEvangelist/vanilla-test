@@ -2,7 +2,7 @@
 
 [![vanilla-test — native JavaScript testing for Node.js and browsers](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/assets/vanilla-test-header.png)](https://riaevangelist.github.io/vanilla-test/)
 
-[Website](https://riaevangelist.github.io/vanilla-test/) · [Guide](https://riaevangelist.github.io/vanilla-test/guide/) · [Examples](https://riaevangelist.github.io/vanilla-test/example/) · [API](https://riaevangelist.github.io/vanilla-test/api/) · [Playground](https://riaevangelist.github.io/vanilla-test/playground/) · [CLI](https://riaevangelist.github.io/vanilla-test/cli/) · [Testing](https://riaevangelist.github.io/vanilla-test/testing/) · [Coverage](https://riaevangelist.github.io/vanilla-test/coverage/)
+[Website](https://riaevangelist.github.io/vanilla-test/) · [Guide](https://riaevangelist.github.io/vanilla-test/guide/) · [Examples](https://riaevangelist.github.io/vanilla-test/example/) · [API](https://riaevangelist.github.io/vanilla-test/api/) · [Playground](https://riaevangelist.github.io/vanilla-test/playground/) · [CLI](https://riaevangelist.github.io/vanilla-test/cli/) · [Testing](https://riaevangelist.github.io/vanilla-test/testing/) · [Benchmarks](https://riaevangelist.github.io/vanilla-test/benchmark/) · [Coverage](https://riaevangelist.github.io/vanilla-test/coverage/)
 
 [![CI](https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml/badge.svg)](https://github.com/RIAEvangelist/vanilla-test/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/vanilla-test.svg)](https://www.npmjs.com/package/vanilla-test)
@@ -19,7 +19,13 @@
 
 Minimal, extensible testing for JavaScript that runs directly in Node.js and the browser. The core speaks Web standards: the same untransformed ES module can execute in both runtimes, without a bundle, transpiler, or host-specific branch.
 
-`vanilla-test` uses `EventTarget`, `CustomEvent`, and `queueMicrotask` for completion. The shared core does not import Node modules, inspect `process`, or decide a process exit code. Host tooling adapts around the test result.
+`vanilla-test` uses `EventTarget`, `CustomEvent`, and listener-aware microtasks for completion. The shared core does not import Node modules, inspect `process`, or decide a process exit code. Host tooling adapts around the test result.
+
+## Less machinery between code and truth
+
+Vanilla is not a nostalgia choice here; it is a control-surface choice. `vanilla-test` keeps a suite as an ordinary ES module and lets Node.js and Chrome execute it unchanged. No framework dialect, bundler, transpiler, or source rewrite sits between the code you wrote and the code that failed.
+
+You still get strict runtime assertions, first-decision lifecycle guards, immutable results, completion events, native V8 coverage, and auditable reports. The advantage is fewer layers to configure, debug, update, and trust—and tests that remain useful anywhere standards-based JavaScript runs.
 
 ## Install
 
@@ -170,8 +176,8 @@ import VanillaTest, {
 | `test.pass(strict = false)` | Boolean | Active description string | Records the active test as passed. A later decision is ignored unless that later call passes `true`. |
 | `test.fail(strict = false)` | Boolean | Active description string | Records the active test as failed, with the same duplicate-decision rule as `pass()`. |
 | `test.done()` | No arguments | Active description string | Closes the active test. An undecided test is recorded as failed first. |
-| `test.report()` | No arguments | Frozen `TestResult` | Logs and freezes the first report, queues one completion event, and seals the suite. Later calls return the identical object. |
-| `test.onComplete(listener, options?)` | Function and native event-listener options | Idempotent unsubscribe function | Subscribes to completion. Register before the first report event is dispatched. |
+| `test.report()` | No arguments | Frozen `TestResult` | Logs and freezes the first report and seals the suite. It queues completion only when a completion listener has been observed. Later calls return the identical object. |
+| `test.onComplete(listener, options?)` | Function and native event-listener options | Idempotent unsubscribe function | Subscribes to the single asynchronous completion dispatch. The first subscription may be registered before or after `report()`, provided dispatch has not already occurred. |
 | `test.delay(iterations = 1000)` | Nonnegative safe integer | The same `test` instance | Runs a synchronous busy loop and supports chaining. It is not a timer or asynchronous wait. |
 
 All typed arguments are validated even when `test.strict` is `false`; for example, `test.expects(42)` and `test.delay(-1)` still throw `TypeError`.
@@ -181,7 +187,7 @@ All typed arguments are validated even when `test.strict` is `false`; for exampl
 | Property | Default | What it means |
 | --- | --- | --- |
 | `test.is` | A strict `strong-type` instance | Full runtime type-checking surface. A valid check returns `true`; an invalid check throws in strict mode or returns `false` in non-strict mode. |
-| `test.compare(actual, expected)` | Strict | Alias of `test.is.compare`. It uses JavaScript loose equality (`==`), not deep or strict equality. A mismatch throws `Error` in strict mode or returns `false` otherwise. |
+| `test.compare(actual, expected)` | Strict | Alias of `test.is.compare`. It uses exact identity through `Object.is`; a mismatch throws `TypeError` in strict mode or returns `false` otherwise. |
 | `test.throw(valueType, expectedType)` | Strict | Alias of the low-level `test.is.throw` type-error helper. It is not an `assert.throws(callback)` method. |
 | `test.strict` | `true` | Gets or sets the `strong-type` failure mode. Only booleans are accepted. |
 
@@ -190,11 +196,12 @@ All typed arguments are validated even when `test.strict` is `false`; for exampl
 ```js
 const test = new VanillaTest();
 
-test.compare(1, '1');       // true: compare uses ==
+test.compare(1, 1);         // true: exact identity through Object.is
+// test.compare(1, '1');    // would throw TypeError: not identical
 
 test.strict = false;
 test.is.string(42);         // false instead of TypeError
-test.compare(1, 2);         // false instead of Error
+test.compare(1, '1');       // false instead of TypeError
 
 test.expects('first decision wins');
 test.pass();
@@ -203,7 +210,9 @@ test.fail(true);            // ReferenceError: a decision was already recorded
 test.done();
 ```
 
-The exact `strong-type` checker names exposed through `test.is` are:
+First-decision-wins is unchanged. The active case now carries its own decision marker, so `pass()`, `fail()`, and `done()` enforce that rule in constant time instead of searching the accumulated result arrays.
+
+Common `strong-type` helper families exposed through `test.is` include:
 
 | Group | Methods | Meaning |
 | --- | --- | --- |
@@ -215,7 +224,7 @@ The exact `strong-type` checker names exposed through `test.is` are:
 | Internationalization | `intlDateTimeFormat`, `intlCollator`, `intlDisplayNames`, `intlListFormat`, `intlLocale`, `intlNumberFormat`, `intlPluralRules`, `intlRelativeTimeFormat` | Check supported `Intl` objects. |
 | Garbage collection | `finalizationRegistry`, `weakRef` | Check `FinalizationRegistry` and `WeakRef` instances. |
 
-See [`strong-type`](https://github.com/RIAEvangelist/strong-type) for the dependency's detailed checker semantics. This release uses strong-type v2, including its exact-identity `compare` behavior (`Object.is`). Some helpers intentionally follow JavaScript primitives—for example, `object` uses `typeof`.
+`test.is` is the complete `strong-type` 2.0.1 isomorphic instance, including its 183 advertised shared validators plus core and extension methods. See [`strong-type`](https://github.com/RIAEvangelist/strong-type) for the searchable reference and detailed checker semantics. Its `compare` behavior uses exact identity through `Object.is`; some other helpers intentionally follow JavaScript primitives—for example, `object` uses `typeof`.
 
 ### Result object
 
@@ -249,7 +258,7 @@ const result = test.report();
 console.log(result.ok); // runs before the queued completion listeners
 ```
 
-The first `report()` queues one `CustomEvent` in a microtask. Its `detail` is the exact frozen result object returned by `report()`. There is no replay for a listener registered after dispatch. `onComplete()` returns an unsubscribe function that is safe to call more than once. Check the browser or terminal console for the event result and rendered report.
+Completion delivery is listener-aware. If a completion subscription has already been registered, the first `report()` queues one `CustomEvent` in a microtask. A runner that has never registered a completion listener queues no completion work; registering the first completion listener after `report()` schedules delivery from the frozen snapshot. Dispatch happens at most once, `event.detail` is the exact snapshot, and listeners added after dispatch receive no replay. `onComplete()` returns an unsubscribe function that is safe to call more than once. Check the browser or terminal console for the event result and rendered report.
 
 ### Lifecycle rules and errors
 
@@ -336,14 +345,17 @@ These scripts are included in this repository:
 | npm command | Underlying command | What it is for |
 | --- | --- | --- |
 | `npm test` | `npm run test:core && npm run test:tooling` | Runs every core and tooling test in sequence. This is the normal local verification command. |
-| `npm run test:core` | `node ./test/node.js` | Runs all 42 unique shared cases across the Unit, Functional, Integration, and Regression sets directly in Node.js. |
+| `npm run test:core` | `node ./test/node.js` | Runs all 45 unique shared cases across the Unit, Functional, Integration, and Regression sets directly in Node.js. |
 | `npm run test:unit` | `node ./test/node.js unit` | Runs the 15 isolated export, type, delegate, strict-state, and delay cases. |
 | `npm run test:functional` | `node ./test/node.js functional` | Runs the 10 public lifecycle and reporting-outcome cases. |
-| `npm run test:integration` | `node ./test/node.js integration` | Runs the 8 report, event, listener, and instance-composition cases. |
+| `npm run test:integration` | `node ./test/node.js integration` | Runs the 11 report, event, listener, and instance-composition cases. |
 | `npm run test:regression` | `node ./test/node.js regression` | Runs the 9 state-integrity and idempotence cases. |
 | `npm run test:tooling` | `node --test ./test/tooling.js ./test/output.js ./test/server-security.js ./test/status-builder.js ./test/benchmark.js` | Runs CLI, reporting, output-transaction, local-server security, benchmark-harness, and site-status tests. |
 | `npm run benchmark` | `node ./benchmark/run.js` | Runs the auditable one-million-case Node and real-Chrome pipelines with native coverage and report generation. Install the private pinned competitors first with `npm ci --prefix benchmark`. |
 | `npm run benchmark:smoke` | `node ./benchmark/run.js --cases 101 ...` | Runs the same complete benchmark paths with 101 cases and one measured sample for harness verification. |
+| `npm run benchmark:scale` | `node ./benchmark/scale.js` | Compares monolithic-suite lifecycle scaling against the exact 2.1.1 core in fresh, serial Node processes. |
+| `npm run benchmark:charts` | `node ./benchmark/charts.js` | Regenerates the two dependency-free SVG charts from the committed raw benchmark data. |
+| `npm run benchmark:charts:check` | `node ./benchmark/charts.js --check` | Fails when either committed chart has drifted from its raw JSON source. |
 | `npm run coverage` | `node ./bin/vanilla-test.js coverage` | Runs both native coverage collectors. |
 | `npm run coverage:node` | `node ./bin/vanilla-test.js coverage node` | Runs only Node coverage. |
 | `npm run coverage:chrome` | `node ./bin/vanilla-test.js coverage chrome` | Runs only Chrome coverage. |
@@ -544,11 +556,30 @@ The selected runtime is written to a temporary staging directory first. After a 
 | `coverage/chrome/.vanilla-test-coverage.json` | Ownership marker that permits later vanilla-test runs to replace this exact Chrome report safely. An unmarked or differently owned directory is refused. |
 | `coverage/chrome/vanilla-test-chrome.png` | Successful Chrome harness screenshot. |
 
-## Reproducible one-million-case benchmarks
+Each runtime validates the returned result once and normalizes each passed and failed list in a single traversal. Non-string entries are omitted and terminal control sequences are stripped before the ANSI-free `test-results.json` summary is written. Its public shape is unchanged.
+
+## Benchmarks
+
+### Core lifecycle scaling
+
+The suite-size sweep compares the exact `2.1.1` core with `2.1.2` in fresh Node processes while holding installed dependencies constant. Each point is one runner containing 250 through 16,000 uniquely named passing cases. Imports and `report()` are outside the timed boundary; construction plus `expects()` → `pass()` → `done()` are inside it, and `report()` validates every count afterward.
+
+![vanilla-test core lifecycle scaling chart](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/assets/benchmark-core-scaling.svg)
+
+The chart reports median microseconds per case with the full observed range over five measured samples after one discarded warmup. Lower is better. This is an algorithm-focused scaling benchmark, not a full pipeline or cross-framework ranking. Raw samples, source hashes, runtime details, and machine provenance are published in [`data/scaling.json`](data/scaling.json).
+
+```sh
+npm run benchmark:scale
+npm run benchmark:charts
+```
+
+### One-million-case native pipelines
 
 The [benchmark dashboard](https://riaevangelist.github.io/vanilla-test/benchmark/) keeps Node and real-Chrome results in separate lanes and compares vanilla-test only with comparable or richer runners: the exact runtime's built-in `node:test` and pinned Mocha. The workload is exactly 1,000,000 uniquely named real cases in 1,000 bounded suites of 1,000—not a raw loop and not a claimed monolithic suite.
 
 Every cold-wall sample includes host startup, framework lifecycle, detailed report materialization into a silent sink, native V8 coverage, exact-count and checksum validation, test JSON, coverage JSON, LCOV and standalone HTML writes, and teardown. The dashboard publishes all samples, distribution statistics, package integrity, commit provenance, and the benchmark machine's CPU, cores, RAM, OS, Node, V8, Chrome, power plan, and affinity policy.
+
+![vanilla-test one-million-case native pipeline chart](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/assets/benchmark-native-pipelines.svg)
 
 Reference run on commit `65a0dfa3b96a59469ee0ac81704bbeb73736fde9` (five measured samples, medians):
 
@@ -571,7 +602,7 @@ node benchmark/run.js --runtime node
 node benchmark/run.js --runtime browser
 ```
 
-The complete source stays in [`benchmark/`](benchmark/README.md), and the dashboard exposes each runner adapter in a focused source dialog instead of crowding the result tables. Raw published data is available at [`data/benchmarks.json`](data/benchmarks.json).
+The complete source stays in [`benchmark/`](benchmark/README.md), and the dashboard exposes each runner adapter in a focused source dialog instead of crowding the result tables. Raw published pipeline data is available at [`data/benchmarks.json`](data/benchmarks.json).
 
 ## Reports and screenshots
 
@@ -581,7 +612,7 @@ The same source is exercised untransformed in real Chrome and Node.js.
 
 ![vanilla-test running in Google Chrome](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/example/img/vanilla-test-chrome-v2.png)
 
-The captured page groups 42 unique cases into Unit, Functional, Integration, and Regression sets. Its visible Chrome-console panel renders the same `ansi-colors-es6` test output forwarded to the real DevTools console.
+The captured page groups 45 unique cases into Unit, Functional, Integration, and Regression sets. Its visible Chrome-console panel renders the same `ansi-colors-es6` test output forwarded to the real DevTools console.
 
 ### Browser playground
 

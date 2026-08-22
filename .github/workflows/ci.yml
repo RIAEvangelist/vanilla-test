@@ -240,6 +240,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify benchmark charts match published data
+        run: npm run benchmark:charts:check
+
       - name: Download native V8 reports
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
@@ -286,7 +289,7 @@ jobs:
           cp guide/index.html _site/guide/
           cp api/index.html _site/api/
           cp testing/index.html _site/testing/
-          cp benchmark/index.html benchmark/site.js benchmark/README.md benchmark/run.js benchmark/workload.js _site/benchmark/
+          cp benchmark/index.html benchmark/site.js benchmark/README.md benchmark/run.js benchmark/workload.js benchmark/scale.js benchmark/scale-worker.js benchmark/charts.js _site/benchmark/
           cp benchmark/runners/*.js _site/benchmark/runners/
           cp coverage/index.html _site/coverage/
           cp cli/index.html _site/cli/
@@ -295,8 +298,8 @@ jobs:
           cp --recursive test/shared _site/test/
           cp example/index.html example/basic.js _site/example/
           cp example/img/vanilla-test-*-v2.png _site/example/img/
-          cp assets/ansi-console.js assets/site.css assets/site.js assets/og.png _site/assets/
-          cp data/status.json data/benchmarks.json _site/data/
+          cp assets/ansi-console.js assets/site.css assets/site.js assets/og.png assets/benchmark-core-scaling.svg assets/benchmark-native-pipelines.svg _site/assets/
+          cp data/status.json data/benchmarks.json data/scaling.json _site/data/
           cp badges/*.json _site/badges/
           cp index.js _site/
           cp node_modules/ansi-colors-es6/index.js _site/node_modules/ansi-colors-es6/
@@ -310,6 +313,9 @@ jobs:
           test -f _site/testing/index.html
           test -f _site/benchmark/index.html
           test -f _site/benchmark/site.js
+          test -f _site/benchmark/scale.js
+          test -f _site/benchmark/scale-worker.js
+          test -f _site/benchmark/charts.js
           test -f _site/benchmark/runners/node-test.js
           test -f _site/coverage/index.html
           test -f _site/cli/index.html
@@ -318,8 +324,11 @@ jobs:
           test -f _site/test/shared/unit.js
           test -f _site/assets/ansi-console.js
           test -f _site/assets/og.png
+          test -f _site/assets/benchmark-core-scaling.svg
+          test -f _site/assets/benchmark-native-pipelines.svg
           test -f _site/data/status.json
           test -f _site/data/benchmarks.json
+          test -f _site/data/scaling.json
           test -f _site/example/index.html
           test -f _site/example/basic.js
           test -f _site/example/img/vanilla-test-chrome-v2.png

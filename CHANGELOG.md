@@ -4,6 +4,27 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+## [2.1.2] - 2026-08-21
+
+### Added
+
+- A reproducible fresh-process core lifecycle scaling benchmark against the exact `2.1.1` implementation, with raw samples, source hashes, machine provenance, and immutable result archives.
+- Deterministic accessible SVG charts for core scaling and the one-million-case native pipelines, published in the README and GitHub Pages with raw-data fallbacks.
+- “Less machinery between code and truth” documentation explaining the control-surface benefits of standards-based JavaScript testing.
+
+### Changed
+
+- Updated `strong-type` from `2.0.0` to `2.0.1`, retaining bound `test.compare` and `test.throw` access while exposing the expanded isomorphic validator surface.
+- Result artifacts now validate once and normalize each passed and failed list in one traversal, without the prior `filter().map()` intermediate arrays.
+- Completion delivery is listener-aware: runners that never register a completion listener queue no completion microtask, while a first completion subscription before or after `report()` schedules the single asynchronous dispatch.
+
+### Performance
+
+- Replaced growing passed/failed history scans with per-active-test decision state. First-decision-wins, strict repeated-decision errors, and automatic undecided failure remain unchanged while lifecycle bookkeeping becomes constant-time per case.
+- Final reports reuse and freeze the private result arrays directly and release the no-longer-needed description index after sealing.
+
+## [2.1.1] - 2026-08-16
+
 ### Changed
 
 - Updated the runtime dependency to `strong-type` v2 and retained bound helper access through `test.compare` and `test.throw`.

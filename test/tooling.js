@@ -165,8 +165,8 @@ test('result selection and validation reject ambiguous failure states', () => {
         ok: false,
         failureCount: 1,
         total: 2,
-        passed: ['\u001B[32mpass\u001B[39m'],
-        failed: ['\u001B[31mfail\u001B[39m']
+        passed: ['\u001B[32mpass\u001B[39m', 42, null],
+        failed: [false, '\u001B[31mfail\u001B[39m', {}]
     }, 'node'), {
         schemaVersion: 1,
         runtime: 'node',
@@ -324,6 +324,11 @@ test('Chrome sandbox bypass requires an explicit validated environment opt-in', 
 test('entry runner maps pass, failure, invalid output, timeout, and leaked handles', async (context) => {
     assert.equal((await runEntry(context, 'export default () => ({ ok: true, failureCount: 0 });\n')).code, 0);
     assert.equal((await runEntry(context, 'export const run = () => ({ ok: false, failureCount: 2 });\n')).code, 1);
+    assert.equal((await runEntry(context, `export default () => {
+        const result = { ok: true, failureCount: 0 };
+        Object.defineProperty(result, 'passed', { get() { throw new Error('optional getter read'); } });
+        return result;
+    };\n`)).code, 0);
 
     const invalid = await runEntry(context, 'export default () => ({ ok: true, failureCount: 1 });\n');
     assert.equal(invalid.code, 2);
@@ -564,6 +569,9 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
         'test:tooling',
         'benchmark',
         'benchmark:smoke',
+        'benchmark:scale',
+        'benchmark:charts',
+        'benchmark:charts:check',
         'coverage',
         'coverage:node',
         'coverage:chrome',
@@ -584,7 +592,10 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
     assert.match(readme, /test-results\.json/);
     assert.match(readme, /\.vanilla-test-coverage\.json/);
     assert.match(coverage, /screenshot-gallery/);
-    assert.match(benchmark, /One million real cases/);
+    assert.match(benchmark, /1,000,000 pipeline cases/);
+    assert.match(benchmark, /benchmark-core-scaling\.svg/);
+    assert.match(benchmark, /benchmark-native-pipelines\.svg/);
+    assert.match(benchmark, /data\/scaling\.json/);
     assert.match(benchmark, /node:test/);
     assert.match(benchmark, /Mocha/);
     assert.match(benchmark, /Download raw benchmark JSON/);
@@ -647,11 +658,12 @@ test('README and Pages documentation cover the public API, CLI, config, reports,
         'Console',
         'Result contract',
         'Error matrix',
-        'All 66 type-helper methods',
-        'Method catalogue'
+        'strong-type 2.0.1 helper surface',
+        'Common method catalogue'
     ]) {
         assert.ok(api.includes(engineeringContract), `API reference is missing ${engineeringContract}.`);
     }
+    assert.match(home, /Less machinery between code and truth/);
     assert.match(browserVerification, /Chrome console/);
     assert.match(browserVerification, /Check the console or DevTools/);
     assert.match(browserVerification, /visible panel safely renders/);
