@@ -566,7 +566,17 @@ The suite-size sweep compares the exact `2.1.1` core with `2.1.2` in fresh Node 
 
 ![vanilla-test core lifecycle scaling chart](https://raw.githubusercontent.com/RIAEvangelist/vanilla-test/main/assets/benchmark-core-scaling.svg)
 
-The chart reports median microseconds per case with the full observed range over five measured samples after one discarded warmup. Lower is better. This is an algorithm-focused scaling benchmark, not a full pipeline or cross-framework ranking. Raw samples, source hashes, runtime details, and machine provenance are published in [`data/scaling.json`](data/scaling.json).
+| Cases in one runner | 2.1.1 median (range) | 2.1.2 median (range) | 2.1.1 per case | 2.1.2 per case | Faster |
+|---:|---:|---:|---:|---:|---:|
+| 250 | 1.38 ms (1.34–1.88 ms) | 0.97 ms (0.88–1.66 ms) | 5.50 µs | 3.87 µs | 1.4× |
+| 500 | 3.72 ms (3.58–5.20 ms) | 1.76 ms (1.69–2.07 ms) | 7.43 µs | 3.51 µs | 2.1× |
+| 1,000 | 12.2 ms (11.2–16.1 ms) | 2.50 ms (2.30–4.08 ms) | 12.16 µs | 2.50 µs | 4.9× |
+| 2,000 | 28.5 ms (27.9–32.5 ms) | 4.49 ms (4.19–5.05 ms) | 14.27 µs | 2.25 µs | 6.4× |
+| 4,000 | 120.6 ms (119.1–130.6 ms) | 7.71 ms (6.76–8.42 ms) | 30.15 µs | 1.93 µs | 15.6× |
+| 8,000 | 537.3 ms (524.4–623.2 ms) | 13.1 ms (11.8–14.0 ms) | 67.17 µs | 1.64 µs | 41.0× |
+| 16,000 | 1.46 s (1.40–1.62 s) | 24.4 ms (21.7–28.1 ms) | 91.37 µs | 1.53 µs | 59.9× |
+
+The chart reports median microseconds per case with the full observed range over five measured samples after one discarded warmup. Lower is better; at 16,000 cases the 2.1.2 lifecycle was 59.9× faster within this boundary. This is an algorithm-focused scaling benchmark, not a full pipeline or cross-framework ranking. Raw samples, source hashes, runtime details, and machine provenance are published in [`data/scaling.json`](data/scaling.json).
 
 ```sh
 npm run benchmark:scale
